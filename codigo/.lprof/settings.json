@@ -1,0 +1,13 @@
+{
+  "path": ".",
+  "unit_test": false,
+  "functions": [
+    {
+      "path": "/home/pablo/trabajo/codigo/new_exp/new_exp.py",
+      "unit_test": false,
+      "function": "main",
+      "module": null
+    }
+  ],
+  "script": null
+}
