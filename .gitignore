@@ -4,3 +4,5 @@ codigo/new_exp/__pycache__
 codigo/new_exp/prototypes/__pycache__
 *.pyc
 codigo/new_exp/tiempos.txt
+
+**/__pycache__/
