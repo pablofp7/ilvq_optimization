@@ -5,68 +5,69 @@ import time
 import random
 import pickle
 
-N_NODOS = 5
 
-def setup_dealer(context, dealer_ports):
-    """Configura el DEALER para enviar mensajes a los ROUTERs de otros nodos."""
+N_NODOS = 3
+
+def setup_router(port):
+    """Configura el socket ROUTER para recibir mensajes."""
+    context = zmq.Context()
+    router = context.socket(zmq.ROUTER)
+    router.bind(f"tcp://*:{port}")
+    print(f"Router escuchando en el puerto {port}")
+    return router
+
+def setup_dealer(ports, node_id):
+    """Configura el socket DEALER para enviar mensajes."""
+    context = zmq.Context()
     dealer = context.socket(zmq.DEALER)
-    for port in dealer_ports:
+    dealer.setsockopt(zmq.IDENTITY, f"nodo{node_id}".encode())
+
+    # Conectar a los ROUTERs de los nodos vecinos
+    for port in ports:
         dealer.connect(f"tcp://localhost:{port}")
     return dealer
 
-def dealer_thread(dealer):
-    """Envía mensajes a través del DEALER."""
+
+def send_messages(dealer, node_id, ports):
+    """Envía mensajes desde el socket DEALER."""
     while True:
-        # Aquí implementarías la lógica de envío de mensajes.
-        # Elegir dos vecinos al azar
-        if id == 0:
-            selected_neighbors = random.sample(vecinos, 2)
-            message = f"EL NAAANO EL MEJOR DE TODOS LOS TIEMPOS"
-            packet = pickle.dumps([id, selected_neighbors, message])
-            print(f"Enviando {pickle.loads(packet)}....")
-            dealer.send(packet)
-            time.sleep(3)
+        if node_id == 0:
+            # n_vecinos = random.randrange(N_NODOS)
+            n_vecinos = 2
+            selec_vecinos = random.sample(vecinos, n_vecinos)
+            packet = [f"nodo{node_id}".encode(),f"Destino hipotético: {selec_vecinos}".encode(), f"Hola desde nodo {node_id}".encode()]
+            # packet_bytes = pickle.dumps(packet)
+            # dealer.send(packet_bytes)
+            dealer.send((f"nodo{node_id}." + f"Destino hipotético: {selec_vecinos}." + f"Hola desde nodo {node_id}").encode())
+            print(f"Se ha enviado: {packet}")
+            time.sleep(2)  # Espera un segundo antes de enviar el siguiente lote de mensajes
         else:
-            break
+            time.sleep(10)
 
-def setup_router(context, router_port):
-    """Configura el ROUTER para recibir mensajes de los DEALERs de otros nodos."""
-    router = context.socket(zmq.ROUTER)
-    router.bind(f"tcp://*:{router_port}")
-    return router
 
-def router_thread(router):
-    """Recibe mensajes a través del ROUTER."""
+def receive_messages(router):
+    """Recibe mensajes en el socket ROUTER."""
     while True:
-        message = pickle.loads(router.recv_multipart()[1])
-        print(f"MENSAAJE: {message}")
-        orig = message[0]
-        dest = message[1]
-        content = message[2]
-        # print(f"Quiero comparar id y ver si esta en des: {id}, {dest}")
-        if id in dest:
-            print(f"El nodo {id}, ha recibido un mensaje con origen {orig}, destino: {dest}. Contenido: {content}")
+        message = router.recv()
+        print(f"Se ha recibido: {message}")
+
+
 
 if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Uso: script.py <node_id>")
+        sys.exit(1)
 
-    id = int(sys.argv[1])
-    print(f"Inicializando nodo {id}...")
-
-
-    # Ejemplo de puertos para DEALER conectarse a otros nodos' ROUTERs
+    node_id = int(sys.argv[1])
     vecinos = [i for i in range(N_NODOS)]
-    vecinos.remove(id)
+    vecinos.remove(node_id)
     
-    context = zmq.Context()
-    dealer_ports = [f'1000{i}' for i in vecinos]  # Asumiendo que este es el nodo 0
-    router_port = f'1000{id}'  # Puerto en el que este nodo ROUTER escucha
+    router_port = 10000 + node_id
+    dealer_ports = [10000 + i for i in range(5) if i != node_id]
 
-    dealer = setup_dealer(context, dealer_ports)
-    router = setup_router(context, router_port)
+    # Configura y ejecuta el router y dealer en hilos separados
+    router = setup_router(router_port)
+    dealer = setup_dealer(dealer_ports, node_id)
 
-    # Iniciar hilos para DEALER y ROUTER
-    threading.Thread(target=dealer_thread, args=(dealer,)).start()
-    threading.Thread(target=router_thread, args=(router,)).start()
-    
-    
-    
+    threading.Thread(target=receive_messages, args=(router,)).start()
+    threading.Thread(target=send_messages, args=(dealer, node_id, dealer_ports)).start()
