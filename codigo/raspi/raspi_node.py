@@ -234,8 +234,9 @@ class RaspiNodev1:
         server_socket = server_context.socket(zmq.ROUTER)
         server_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
         server_socket.bind(f"tcp://*:{self.puerto_base + self.id}")
-        
-        server_socket.setsockopt(zmq.RCVTIMEO, 10000)  # Establecer un tiempo de espera para el socket
+        timeout_s = 10
+        timeout = timeout_s * 1000  # Convertir a milisegundos
+        server_socket.setsockopt(zmq.RCVTIMEO, timeout)  # Establecer un tiempo de espera para el socket
         while True:
             try:
                 # Bloquear hasta que un mensaje esté disponible
