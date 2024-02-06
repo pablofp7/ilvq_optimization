@@ -1,0 +1,39 @@
+
+ITERACIONES:
+S: 1, T:0.0 - Tiempo de ejecución: 1.010782245794932
+
+ITERACIONES:
+S: 1, T:0.05 - Tiempo de ejecución: 0.5344193418820699
+
+ITERACIONES:
+S: 1, T:0 - Tiempo de ejecución: 0.08629446427027385
+
+ITERACIONES:
+S: 1, T:0.3 - Tiempo de ejecución: 0.08763876358668009
+
+ITERACIONES:
+S: 4, T:0.3 - Tiempo de ejecución: 0.11594781080881754
+
+ITERACIONES:
+S: 1, T:0.3 - Tiempo de ejecución: 0.08516168594360352
+
+ITERACIONES:
+S: 1, T:0.3 - Tiempo de ejecución: 0.10037282705307007
+
+ITERACIONES:
+S: 4, T:0.3 - Tiempo de ejecución: 0.09954572518666585
+
+ITERACIONES:
+S: 1, T:0.3 - Tiempo de ejecución: 0.10593814452489217
+
+ITERACIONES:
+S: 4, T:0.3 - Tiempo de ejecución: 0.09423677921295166
+
+ITERACIONES:
+S: 1, T:0.3 - Tiempo de ejecución: 0.09536817073822021
+
+ITERACIONES:
+S: 4, T:0.3 - Tiempo de ejecución: 0.08407666285832723
+
+ITERACIONES:
+S: 1, T:0 - Tiempo de ejecución: 4.347976311047872

@@ -1,4 +1,4 @@
-import sysv_ipc
+import zmq
 import numpy as np
 import random
 import pickle
@@ -6,41 +6,36 @@ import threading
 import time
 from collections import deque
 
-class Nodev3:
+class RaspiNodev1:
     
-    def __init__(self, id, dataset, modelo_proto, modelo_pred = None, share_protocol=None, recomendador=None, nodos=5, s = 4, T = 0.1, media_llegadas = 0.1):
+    def __init__(self, id, dataset, modelo_proto, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000):
         
         self.id = id
         self.modelo_proto = modelo_proto
         self.s = min(s, nodos - 1)
         self.T = T        
         self.share_protocol = share_protocol
-        #Se pasan la filas del dataframe a listas x,y donde 'x' es una lista con la variables de entrada e 'y' es la etiqueta correspondiente
-        self.datalist = [(fila[:-1], fila[-1]) for fila in dataset.values] 
+        self.datalist = [(fila[:-1], fila[-1]) for fila in dataset.values]
         print(f"El nodo {self.id} tiene {len(self.datalist)} muestras.") 
         self.recomendador = recomendador        
         self.matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
-        self.colas = [sysv_ipc.MessageQueue(key=id + 10, flags=sysv_ipc.IPC_CREAT, max_message_size=100000) for id in range(nodos)]
+
         self.cola_protos = [deque(maxlen=100000) for _ in range(self.nodos)]
         self.cola_index = 0
         
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         
-
         #Modelo de predicción no siempre es igual al de generación de prototipos (ILVQ/ILVQ o ARF/ILVQ)
         if modelo_pred:
             self.modelo_pred = modelo_pred
         else:
             self.modelo_pred = modelo_proto
             
-        #Atributos para controlar el fin de la ejecución
-        self.fin_hilo = False
 
         #Atributos para gestionar hilos
         self.hilo_receptor = threading.Thread(target=self.recibir)
-        self.lock_cola = threading.Lock()
         
         #Atributos auxiliares para obtener estadísticas
         self.muestras_train = 0
@@ -59,6 +54,7 @@ class Nodev3:
         self.tiempo_share = 0
         self.tiempo_espera_total = 0
         
+        self.socket_recibir, self.socket_enviar, self.server_context, self.client_context = self.create_sockets(puerto_base)
     
         
     def run(self):
@@ -91,10 +87,7 @@ class Nodev3:
             self.share()
             self.tiempo_share += time.time() - inicio_share  # Acumular tiempo en "share".
 
-        self.fin_hilo = True
 
-        print(f"Esperando a que acabe el hilo de recibir en el nodo {self.id}")
-        self.hilo_receptor.join()
         
         self.tiempo_learn_queue = self.tiempo_learn_queue / 1e9  # Convertir a segundos.
 
@@ -109,6 +102,7 @@ class Nodev3:
             f"Ha tardado {self.tiempo_learn_queue / 60} minutos en learn from queue.\n"
             f"Ha tardado {self.tiempo_share / 60} minutos en share.\n")  # <-- Añadir tiempo de "share".
         
+       
         return
 
         
@@ -187,80 +181,78 @@ class Nodev3:
         self.cola_index = (self.cola_index + 1) % self.nodos
         if self.cola_index == self.id:
             self.cola_index = (self.cola_index + 1) % self.nodos
-    
-    def share(self, tipo='proto'):
+            
         
-        if "proto" in tipo:
-            #Sólo se comparte T% de las veces
-            if random.random() < self.T:
-                
-                self.shared_times += 1
-                
-                #Se obtienen los prototipos del modelo
-                protos = list(self.modelo_proto.buffer.prototypes.values())
-                self.compartidos += len(protos)
-                
-                # print(f"El nodo 1 va a compartir {len(protos)} prototipos.") if self.id == 0 else None
-                
-                proto_to_share = pickle.dumps({"id": self.id, "protos": [{'x': proto['x'], 'y': proto['y']} for proto in protos]})
-            
-                #Se seleccionan aleatoriamente 's' vecinos
-                vecinos_seleccionados = random.sample(self.vecinos, self.s)
-                
-                # for proto in protos:
-                #     for vecino in vecinos_seleccionados:
-                #         #Se formatea cada prototipo para enviar solo los campos necesarios ('x' e 'y')
-                #         proto_aux = {'x': proto['x'], 'y': proto['y']}
-                #         self.colas[vecino].send(pickle.dumps(proto_aux), type=1, block = False)
-                
-                for vecino in vecinos_seleccionados:   
-                    try:
-                        self.colas[vecino].send(proto_to_share, type=1, block = False)
-                    except Exception as e:
-                        print(f"Demasiado grande el mensaje: {len(proto_to_share)}")        
-                # print(f"El nodo {self.id} ha enviado {len(protos)} prototipos.")
-                
-        elif "fin" in tipo:
-            # print(f"El nodo {self.id} ha terminado el dataset, deja de compartir. Enviar mensaje tipo 2 al resto de nodos.")
-            for vecino in self.vecinos:
-                self.colas[vecino].send(str(self.id), type=2, block = False)
-            
-        return
-    
+    def share(self):
+        if random.random() < self.T:
+            self.shared_times += 1
 
-    def recibir(self):
-    
-        if self.nodos == 1:
+            # Obtener los prototipos del modelo
+            protos = list(self.modelo_proto.buffer.prototypes.values())
+            self.compartidos += len(protos)
+
+            # Serializar los datos a compartir
+            proto_to_share = pickle.dumps({"id": self.id, "protos": [{'x': proto['x'], 'y': proto['y']} for proto in protos]})
+
+            # Seleccionar aleatoriamente 's' vecinos
+            vecinos_seleccionados = random.sample(self.vecinos, self.s)
+
+            # Enviar los prototipos a los vecinos seleccionados
+            for vecino in vecinos_seleccionados:
+                # Preparar el mensaje para enviar a través de ZeroMQ ROUTER
+                self.socket_enviar.send_multipart([f"{vecino}".encode(), proto_to_share])
+
+                                
             return
         
-        while True:
-            
-            if self.fin_hilo:
-                return
-            
-            try:
-                msg, t = self.colas[self.id].receive(block = False)
-                if t == 1:
-                    
-                    temp = time.time()
-                    msg = pickle.loads(msg)
-                    id_recibido = msg["id"]
-                    protos = msg["protos"]
-                    self.tam_lotes_recibidos.append((id_recibido, len(protos)))
-                     
-                    self.cola_protos[id_recibido].extendleft(protos)
-                    self.t_queue_recibir += (time.time() - temp)
-                    # print(f"El nodo {self.id} ha recibido un prototipo del nodo {id_recibido}.") if self.id == 0 else None
-                        
-            except sysv_ipc.BusyError:
-                if self.colas[self.id].last_receive_time != 0:
-                    t_sin_recibir = time.time()  - self.colas[self.id].last_receive_time
-                    # print(f"Tiempo sin recibir en el nodo {self.id}: {t_sin_recibir}, tiempo actual: {time.time()}, ultima recepción: {self.colas[self.id].last_receive_time}")
-                    if (t_sin_recibir % 10) == 0:
-                        print(f"El nodo {self.id} lleva {t_sin_recibir} segundos sin recibir nada.")
-                        # return
-                
-            # time.sleep(0.01)
-            
-        # print(f"Saliendo de hilo de recepcion NODO -> {self.id}")
+
+    def recibir(self):
+        if self.nodos == 1 or self.s == 0 or self.T == 0:
+            return  # No proceder si solo hay un nodo o no hay comparticion
         
+        self.socket_recibir.setsockopt(zmq.RCVTIMEO, 5000)  # Establecer un tiempo de espera para el socket
+        while True:
+            try:
+                # Bloquear hasta que un mensaje esté disponible
+                identidad, mensaje = self.socket_recibir.recv_multipart()
+                # id_emisor = identidad.decode()  # Convertir la identidad del emisor de bytes a str si es necesario
+                
+                data = pickle.loads(mensaje)
+                id_recibido = data["id"]  
+                protos = data["protos"]
+                
+                if self.id == 0:
+                    print(f"El nodo {self.id} ha recibido {len(protos)} prototipos del nodo {id_recibido}.")
+                            
+                # Procesar los prototipos recibidos
+                # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
+                self.cola_protos[id_recibido].extend(protos)
+                self.tam_lotes_recibidos.append((id_recibido, len(protos)))
+
+    
+            except zmq.ContextTerminated:
+                print(f"El contexto de ZeroMQ ha terminado en el nodo {self.id}.")
+                break
+            except Exception as e:
+                print(f"Error al recibir datos en el nodo {self.id}: {e}")
+                break
+
+            
+
+    def create_sockets(self, puerto_base):
+                
+        puerto_base = puerto_base
+        server_context = zmq.Context()
+        server_socket = server_context.socket(zmq.ROUTER)
+        server_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
+        server_socket.bind(f"tcp://*:{puerto_base + self.id}")
+        
+        puertos_vecinos = [puerto_base + i for i in self.vecinos]
+        # Ahora los sockets para enviar
+        client_context = zmq.Context()
+        client_socket = client_context.socket(zmq.ROUTER)
+        client_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
+        for puerto in puertos_vecinos:
+            client_socket.connect(f"tcp://localhost:{puerto}")
+            
+        return server_socket, client_socket, server_context, client_context

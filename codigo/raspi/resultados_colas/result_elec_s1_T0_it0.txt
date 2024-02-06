@@ -1,0 +1,75 @@
+ - NODO 0.
+Precision: 0.465
+Recall: 0.471
+F1: 0.468
+Se ha entrenado con 1000 muestras.
+Se ha entrenado con 0 prototipos.
+Ha compartido 0 veces.
+Ha compartido 0 prototipos a cada uno de los 1 vecino/s.
+Tiempo de aprendizaje (muestras): 58.1264226436615
+Tiempo de aprendizaje (prototipos): 182.798154699
+Tiempo compartiendo prototipos: 0.0012598037719726562
+Tiempo total: 253.20104479789734
+Capacidad de ejecución: 0.0
+ID, Tamaño de lotes recibidos: []
+
+ - NODO 1.
+Precision: 0.496
+Recall: 0.462
+F1: 0.478
+Se ha entrenado con 1000 muestras.
+Se ha entrenado con 0 prototipos.
+Ha compartido 0 veces.
+Ha compartido 0 prototipos a cada uno de los 1 vecino/s.
+Tiempo de aprendizaje (muestras): 57.71966910362244
+Tiempo de aprendizaje (prototipos): 180.735185207
+Tiempo compartiendo prototipos: 0.0013277530670166016
+Tiempo total: 244.5899841785431
+Capacidad de ejecución: 0.0
+ID, Tamaño de lotes recibidos: []
+
+ - NODO 2.
+Precision: 0.507
+Recall: 0.634
+F1: 0.563
+Se ha entrenado con 1000 muestras.
+Se ha entrenado con 0 prototipos.
+Ha compartido 0 veces.
+Ha compartido 0 prototipos a cada uno de los 1 vecino/s.
+Tiempo de aprendizaje (muestras): 61.995031118392944
+Tiempo de aprendizaje (prototipos): 189.712031427
+Tiempo compartiendo prototipos: 0.0012938976287841797
+Tiempo total: 260.84182620048523
+Capacidad de ejecución: 0.0
+ID, Tamaño de lotes recibidos: []
+
+ - NODO 3.
+Precision: 0.525
+Recall: 0.43
+F1: 0.473
+Se ha entrenado con 1000 muestras.
+Se ha entrenado con 0 prototipos.
+Ha compartido 0 veces.
+Ha compartido 0 prototipos a cada uno de los 1 vecino/s.
+Tiempo de aprendizaje (muestras): 62.18489694595337
+Tiempo de aprendizaje (prototipos): 183.986515672
+Tiempo compartiendo prototipos: 0.001291036605834961
+Tiempo total: 250.91334509849548
+Capacidad de ejecución: 0.0
+ID, Tamaño de lotes recibidos: []
+
+ - NODO 4.
+Precision: 0.516
+Recall: 0.413
+F1: 0.459
+Se ha entrenado con 1000 muestras.
+Se ha entrenado con 0 prototipos.
+Ha compartido 0 veces.
+Ha compartido 0 prototipos a cada uno de los 1 vecino/s.
+Tiempo de aprendizaje (muestras): 65.40183758735657
+Tiempo de aprendizaje (prototipos): 189.287276128
+Tiempo compartiendo prototipos: 0.0013256072998046875
+Tiempo total: 259.91340708732605
+Capacidad de ejecución: 0.0
+ID, Tamaño de lotes recibidos: []
+

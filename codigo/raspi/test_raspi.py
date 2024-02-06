@@ -1,6 +1,6 @@
 from prototypes import XuILVQ
 import pandas as pd
-from nodev4 import Nodev4
+from raspi_node import RaspiNodev1
 import os
 import time
 import threading
@@ -38,7 +38,7 @@ def main(df: pd.DataFrame):
     
     nodos = []
     for id in range(n_nodos):
-        nodo = Nodev4(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+        nodo = RaspiNodev1(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
         nodos.append(nodo)    
     
     hilos = []
@@ -49,17 +49,28 @@ def main(df: pd.DataFrame):
 
     for hilo in hilos:
         hilo.join()
+        
+    for nodo in nodos:
+        nodo.socket_recibir.close()
+        nodo.socket_enviar.close()
+        nodo.server_context.term()
+        nodo.client_context.term()
+        
 
-    for cola in nodos[0].colas:
-        cola.remove()
-
+        
     to_write = []
     # to_write.append(f" - TIEMPO EJECUCION: {(time.time() - tiempo_inicio) / 60} minutos.\n\n")
     #Vamos a guardar en una string lo que se va a escribir en el archivo
     for nodo in nodos:
-        precision = round(nodo.matriz_conf["TP"] / (nodo.matriz_conf["TP"] + nodo.matriz_conf["FP"]), 3)
-        recall = round(nodo.matriz_conf["TP"] / (nodo.matriz_conf["TP"] + nodo.matriz_conf["FN"]), 3)
-        f1 = round(2 * (precision * recall) / (precision + recall), 3)     
+        
+        tp = nodo.matriz_conf["TP"]
+        fp = nodo.matriz_conf["FP"]
+        fn = nodo.matriz_conf["FN"]        
+        precision = round(tp / (tp + fp), 3) if tp + fp != 0 else 0
+        recall = round(tp / (tp + fn), 3) if tp + fn != 0 else 0
+        f1 = round(2 * (precision * recall) / (precision + recall), 3) if precision + recall != 0 else 0 
+
+
         if nodo.tiempo_learn_queue == 0:
             cap_ejec = 0
         else:    
@@ -89,17 +100,19 @@ if __name__ == "__main__":
         n_muestras = 1000
         
         S = [i for i in range(1, 5)]
-        T = np.array([i for i in range(0, 1001, 25)])
-        T = T / 1000
-        tasa_llegadas = 10
+        # T = np.array([i for i in range(0, 1001, 50)])
+        # T = T / 1000
+        T = [0, 0.5, 1]
+        S = [1, 4]
+        tasa_llegadas = 5
         media_llegadas = 1/ tasa_llegadas
         
-        iteraciones = 50
+        iteraciones = 20
         datasets = ["elec", "phis", "elec2"]
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
-        directorio_resultados = "resultados_colas_v4"
+        directorio_resultados = "resultados_colas"
         
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
@@ -123,7 +136,7 @@ if __name__ == "__main__":
                         
                         main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.time() - tiempo_inicio) / 60} minutos.\n")
-                        with open("tiempos_mu_v4.txt", "a") as f:
+                        with open("tiempos_mu.txt", "a") as f:
                             f.write(f"\nITERACIONES:\nS: {s}, T:{t} - Tiempo de ejecución: {(time.time() - tiempo_inicio) / 60}\n") if i == 0 else None
         
     except KeyboardInterrupt as e:

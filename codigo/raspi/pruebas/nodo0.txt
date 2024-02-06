@@ -1,0 +1,94 @@
+[ENVIADO]: Mensaje de 0, NUM:57 a nodo/s: [2]
+
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:38 a nodo/s: [0, 1], de 3. Con destino/s: [0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:12 a nodo/s: [0, 2], de 1. Con destino/s: [0, 2]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:25 a nodo/s: [0, 1, 2], de 4. Con destino/s: [0, 1, 2]
+[ENVIADO]: Mensaje de 0, NUM:63 a nodo/s: [1, 2]
+
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:85 a nodo/s: [1, 0], de 2. Con destino/s: [1, 0]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:30 a nodo/s: [0], de 2. Con destino/s: [0]
+[ENVIADO]: Mensaje de 0, NUM:26 a nodo/s: [1]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:18 a nodo/s: [2, 0], de 1. Con destino/s: [2, 0]
+[ENVIADO]: Mensaje de 0, NUM:94 a nodo/s: [2]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:72 a nodo/s: [0], de 1. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:89 a nodo/s: [1, 0], de 2. Con destino/s: [1, 0]
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:90 a nodo/s: [0], de 3. Con destino/s: [0]
+[ENVIADO]: Mensaje de 0, NUM:62 a nodo/s: [1, 2]
+
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:46 a nodo/s: [1, 2, 0], de 4. Con destino/s: [1, 2, 0]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:20 a nodo/s: [1, 0], de 2. Con destino/s: [1, 0]
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:26 a nodo/s: [0, 2], de 1. Con destino/s: [0, 2]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:10 a nodo/s: [0], de 4. Con destino/s: [0]
+[ENVIADO]: Mensaje de 0, NUM:97 a nodo/s: [2]
+
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:32 a nodo/s: [0, 2, 1], de 3. Con destino/s: [0, 2, 1]
+[ENVIADO]: Mensaje de 0, NUM:45 a nodo/s: [2]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:94 a nodo/s: [0, 2], de 1. Con destino/s: [0, 2]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:4 a nodo/s: [1, 0], de 2. Con destino/s: [1, 0]
+[ENVIADO]: Mensaje de 0, NUM:70 a nodo/s: [1]
+
+[ENVIADO]: Mensaje de 0, NUM:18 a nodo/s: [1]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:0 a nodo/s: [0], de 1. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:56 a nodo/s: [2, 0, 1], de 4. Con destino/s: [2, 0, 1]
+[ENVIADO]: Mensaje de 0, NUM:39 a nodo/s: [2]
+
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:47 a nodo/s: [1, 0], de 2. Con destino/s: [1, 0]
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:8 a nodo/s: [0], de 1. Con destino/s: [0]
+[ENVIADO]: Mensaje de 0, NUM:68 a nodo/s: [1]
+
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:91 a nodo/s: [1, 0, 2], de 3. Con destino/s: [1, 0, 2]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:63 a nodo/s: [0], de 2. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:9 a nodo/s: [0, 2], de 4. Con destino/s: [0, 2]
+[ENVIADO]: Mensaje de 0, NUM:46 a nodo/s: [2, 1]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:36 a nodo/s: [2, 0], de 1. Con destino/s: [2, 0]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:63 a nodo/s: [0, 1], de 2. Con destino/s: [0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:25 a nodo/s: [0, 2], de 4. Con destino/s: [0, 2]
+[ENVIADO]: Mensaje de 0, NUM:76 a nodo/s: [2]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:93 a nodo/s: [2, 0], de 1. Con destino/s: [2, 0]
+[ENVIADO]: Mensaje de 0, NUM:27 a nodo/s: [2, 1]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:31 a nodo/s: [0], de 1. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:97 a nodo/s: [0, 1], de 4. Con destino/s: [0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:56 a nodo/s: [1, 0], de 2. Con destino/s: [1, 0]
+[ENVIADO]: Mensaje de 0, NUM:97 a nodo/s: [1, 2]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:63 a nodo/s: [2, 0], de 1. Con destino/s: [2, 0]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:54 a nodo/s: [0], de 2. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:61 a nodo/s: [2, 1, 0], de 3. Con destino/s: [2, 1, 0]
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:66 a nodo/s: [0, 2], de 1. Con destino/s: [0, 2]
+[ENVIADO]: Mensaje de 0, NUM:97 a nodo/s: [2]
+
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:85 a nodo/s: [0], de 2. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:83 a nodo/s: [2, 1, 0], de 4. Con destino/s: [2, 1, 0]
+[ENVIADO]: Mensaje de 0, NUM:87 a nodo/s: [2, 1]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:58 a nodo/s: [0, 2], de 1. Con destino/s: [0, 2]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:10 a nodo/s: [0, 1, 2], de 4. Con destino/s: [0, 1, 2]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:17 a nodo/s: [0, 1], de 2. Con destino/s: [0, 1]
+[ENVIADO]: Mensaje de 0, NUM:10 a nodo/s: [1]
+
+[ENVIADO]: Mensaje de 0, NUM:33 a nodo/s: [1]
+
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:68 a nodo/s: [0, 2], de 1. Con destino/s: [0, 2]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:70 a nodo/s: [0], de 2. Con destino/s: [0]
+[ENVIADO]: Mensaje de 0, NUM:44 a nodo/s: [1]
+
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:96 a nodo/s: [2, 0, 1], de 3. Con destino/s: [2, 0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:7 a nodo/s: [2, 0, 1], de 4. Con destino/s: [2, 0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:25 a nodo/s: [0], de 2. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:26 a nodo/s: [0], de 1. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 2, NUM:93 a nodo/s: [0, 1], de 2. Con destino/s: [0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:85 a nodo/s: [1, 0], de 3. Con destino/s: [1, 0]
+[RECIBIDO] 0 recibió: Mensaje de 1, NUM:61 a nodo/s: [2, 0], de 1. Con destino/s: [2, 0]
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:61 a nodo/s: [1, 0, 2], de 3. Con destino/s: [1, 0, 2]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:8 a nodo/s: [0, 1], de 4. Con destino/s: [0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:11 a nodo/s: [0, 1, 2], de 3. Con destino/s: [0, 1, 2]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:71 a nodo/s: [0], de 4. Con destino/s: [0]
+[RECIBIDO] 0 recibió: Mensaje de 3, NUM:35 a nodo/s: [2, 0, 1], de 3. Con destino/s: [2, 0, 1]
+[RECIBIDO] 0 recibió: Mensaje de 4, NUM:91 a nodo/s: [1, 2, 0], de 4. Con destino/s: [1, 2, 0]
