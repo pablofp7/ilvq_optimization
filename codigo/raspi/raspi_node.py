@@ -21,6 +21,7 @@ class RaspiNodev1:
         self.matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
+        self.puerto_base = puerto_base
 
         self.cola_protos = [deque(maxlen=100000) for _ in range(self.nodos)]
         self.cola_index = 0
@@ -53,15 +54,24 @@ class RaspiNodev1:
         self.tiempo_final_total = 0
         self.tiempo_share = 0
         self.tiempo_espera_total = 0
-        
-        self.socket_recibir, self.socket_enviar, self.server_context, self.client_context = self.create_sockets(puerto_base)
-    
+            
         
     def run(self):
+        
+        self.hilo_receptor.start()
+        
+        puertos_vecinos = [self.puerto_base + i for i in self.vecinos]
+        # Ahora los sockets para enviar
+        client_context = zmq.Context()
+        client_socket = client_context.socket(zmq.ROUTER)
+        client_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
+        for puerto in puertos_vecinos:
+            client_socket.connect(f"tcp://localhost:{puerto}")
+            
+            
         print(f"Inicia ejecución del nodo {self.id}")
         tiempo_inicio_total = time.time()  # Iniciar el temporizador para toda la ejecución.
 
-        self.hilo_receptor.start()
 
         # Iterar sobre cada muestra y su tiempo de espera correspondiente.
         for t_espera in self.t_llegadas:
@@ -70,8 +80,7 @@ class RaspiNodev1:
             # Esperamos el tiempo designado, pero mientras esperamos, continuamos procesando la cola.
             while time.time() - inicio_wait < t_espera:
                 inicio_procesamiento = time.perf_counter_ns()  # Iniciar el temporizador para el procesamiento.
-                if self.cola_protos:  # si hay prototipos en la cola
-                    self.learn_from_queue()  # método hipotético para procesar el prototipo
+                self.learn_from_queue()  # método hipotético para procesar el prototipo
                 self.tiempo_learn_queue += time.perf_counter_ns() - inicio_procesamiento  # Acumular tiempo.
 
             self.tiempo_espera = time.time() - inicio_wait
@@ -84,7 +93,7 @@ class RaspiNodev1:
 
             # Temporizador para "share" después de procesar la muestra.
             inicio_share = time.time()
-            self.share()
+            self.share(socket_enviar=client_socket)
             self.tiempo_share += time.time() - inicio_share  # Acumular tiempo en "share".
 
 
@@ -92,6 +101,12 @@ class RaspiNodev1:
         self.tiempo_learn_queue = self.tiempo_learn_queue / 1e9  # Convertir a segundos.
 
         self.tiempo_final_total = time.time() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
+        
+        # Cerramos socket de enviar y contexto
+        client_socket.close()
+        client_context.term()
+        
+        self.hilo_receptor.join()
 
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
         print(f" - El nodo {self.id} ha terminado de ejecutar TODO.\n"
@@ -145,6 +160,11 @@ class RaspiNodev1:
     def learn_from_queue(self):
         
         self.update_cola_index()
+        #Si la cola está vacía, se salta el nodo
+        if not self.cola_protos[self.cola_index]:
+            return        
+        
+        # print(f"El nodo {self.id} está procesando la cola {self.cola_index}, que tiene {len(self.cola_protos[self.cola_index])} prototipos.")
         colas_revisadas = 0
         colas_a_revisar = self.nodos - 1
         
@@ -183,7 +203,7 @@ class RaspiNodev1:
             self.cola_index = (self.cola_index + 1) % self.nodos
             
         
-    def share(self):
+    def share(self, socket_enviar):
         if random.random() < self.T:
             self.shared_times += 1
 
@@ -200,7 +220,7 @@ class RaspiNodev1:
             # Enviar los prototipos a los vecinos seleccionados
             for vecino in vecinos_seleccionados:
                 # Preparar el mensaje para enviar a través de ZeroMQ ROUTER
-                self.socket_enviar.send_multipart([f"{vecino}".encode(), proto_to_share])
+                socket_enviar.send_multipart([f"{vecino}".encode(), proto_to_share])
 
                                 
             return
@@ -209,12 +229,17 @@ class RaspiNodev1:
     def recibir(self):
         if self.nodos == 1 or self.s == 0 or self.T == 0:
             return  # No proceder si solo hay un nodo o no hay comparticion
+
+        server_context = zmq.Context()
+        server_socket = server_context.socket(zmq.ROUTER)
+        server_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
+        server_socket.bind(f"tcp://*:{self.puerto_base + self.id}")
         
-        self.socket_recibir.setsockopt(zmq.RCVTIMEO, 10000)  # Establecer un tiempo de espera para el socket
+        server_socket.setsockopt(zmq.RCVTIMEO, 10000)  # Establecer un tiempo de espera para el socket
         while True:
             try:
                 # Bloquear hasta que un mensaje esté disponible
-                identidad, mensaje = self.socket_recibir.recv_multipart()
+                identidad, mensaje = server_socket.recv_multipart()
                 # id_emisor = identidad.decode()  # Convertir la identidad del emisor de bytes a str si es necesario
                 
                 data = pickle.loads(mensaje)
@@ -232,30 +257,22 @@ class RaspiNodev1:
     
             except zmq.ContextTerminated:
                 print(f"El contexto de ZeroMQ ha terminado en el nodo {self.id}.")
-                break
+                server_socket.close()   
+                server_context.term()
+
+                return
             except zmq.Again:
+                server_socket.close()   
+                server_context.term()
                 print(f"El nodo {self.id} ha agotado el tiempo de espera.")
-                break
+                return
+            
             except Exception as e:
+                server_socket.close()   
+                server_context.term()
                 print(f"Error al recibir datos en el nodo {self.id}: {e}")
-                break
+                return
 
-            
 
-    def create_sockets(self, puerto_base):
-                
-        puerto_base = puerto_base
-        server_context = zmq.Context()
-        server_socket = server_context.socket(zmq.ROUTER)
-        server_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
-        server_socket.bind(f"tcp://*:{puerto_base + self.id}")
+
         
-        puertos_vecinos = [puerto_base + i for i in self.vecinos]
-        # Ahora los sockets para enviar
-        client_context = zmq.Context()
-        client_socket = client_context.socket(zmq.ROUTER)
-        client_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
-        for puerto in puertos_vecinos:
-            client_socket.connect(f"tcp://localhost:{puerto}")
-            
-        return server_socket, client_socket, server_context, client_context

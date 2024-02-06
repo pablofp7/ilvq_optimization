@@ -50,11 +50,6 @@ def main(df: pd.DataFrame):
     for hilo in hilos:
         hilo.join()
         
-    for nodo in nodos:
-        nodo.socket_recibir.close()
-        nodo.socket_enviar.close()
-        nodo.server_context.term()
-        nodo.client_context.term()
         
 
         
@@ -102,7 +97,7 @@ if __name__ == "__main__":
         S = [i for i in range(1, 5)]
         # T = np.array([i for i in range(0, 1001, 50)])
         # T = T / 1000
-        T = [0, 0.5, 1]
+        T = [0.5, 1]
         S = [1, 4]
         tasa_llegadas = 5
         media_llegadas = 1/ tasa_llegadas
