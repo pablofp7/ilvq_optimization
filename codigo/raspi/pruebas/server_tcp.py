@@ -1,23 +1,21 @@
-import socket
+import zmq
 import time
 
-HOST = 'localhost'  # Dirección IP del servidor
-PORT = 12345       # Puerto de escucha
-MAX_BUFFER_SIZE = 5 * 1024 * 1024  # Tamaño máximo del buffer
+def iniciar_emisor():
+    context = zmq.Context()
+    socket = context.socket(zmq.ROUTER)
+    socket.setsockopt(zmq.IDENTITY, b"dispositivo2")
+    # Asegúrate de que la dirección y puerto coincidan con el Dispositivo 1
+    socket.connect("tcp://localhost:5555")
 
-# Crea un socket TCP
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-    server_socket.bind((HOST, PORT))  # Enlaza el socket al host y puerto
-    server_socket.listen(2)  # Espera por conexiones entrantes
-    print(f"Servidor escuchando en {HOST}:{PORT}")
+    print("Dispositivo 2 enviando mensajes...")
 
-    conn, addr = server_socket.accept()  # Acepta la conexión entrante
-    with conn:
-        print(f"Conexión establecida desde {addr}")
+    while True:
+        mensaje = "Hola desde el Dispositivo 2"
+        # El primer frame es la identidad del receptor, el segundo es un delimitador vacío, y el tercero es el mensaje
+        socket.send_multipart([b"dispositivo1", b"", mensaje.encode()])
+        print(f"Enviado: {mensaje}")
+        time.sleep(3)  # Esperar 3 segundos antes de enviar el siguiente mensaje
 
-        while True:
-            time.sleep(2)
-            data = conn.recv(MAX_BUFFER_SIZE)  # Recibe datos del cliente
-            if not data:
-                break
-            print(f"Mensaje recibido del cliente: {data.decode()}")
+if __name__ == "__main__":
+    iniciar_emisor()
