@@ -221,8 +221,8 @@ class RaspiNodev1:
                 id_recibido = data["id"]  
                 protos = data["protos"]
                 
-                if self.id == 0:
-                    print(f"El nodo {self.id} ha recibido {len(protos)} prototipos del nodo {id_recibido}.")
+                # if self.id == 0:
+                #     print(f"El nodo {self.id} ha recibido {len(protos)} prototipos del nodo {id_recibido}.")
                             
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
