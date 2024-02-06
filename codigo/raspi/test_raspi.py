@@ -136,8 +136,6 @@ if __name__ == "__main__":
                         
                         main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.time() - tiempo_inicio) / 60} minutos.\n")
-                        with open("tiempos_mu.txt", "a") as f:
-                            f.write(f"\nITERACIONES:\nS: {s}, T:{t} - Tiempo de ejecución: {(time.time() - tiempo_inicio) / 60}\n") if i == 0 else None
         
     except KeyboardInterrupt as e:
         os.system("ipcrm --all=msg")

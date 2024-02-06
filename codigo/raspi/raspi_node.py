@@ -210,7 +210,7 @@ class RaspiNodev1:
         if self.nodos == 1 or self.s == 0 or self.T == 0:
             return  # No proceder si solo hay un nodo o no hay comparticion
         
-        self.socket_recibir.setsockopt(zmq.RCVTIMEO, 5000)  # Establecer un tiempo de espera para el socket
+        self.socket_recibir.setsockopt(zmq.RCVTIMEO, 10000)  # Establecer un tiempo de espera para el socket
         while True:
             try:
                 # Bloquear hasta que un mensaje esté disponible
@@ -232,6 +232,9 @@ class RaspiNodev1:
     
             except zmq.ContextTerminated:
                 print(f"El contexto de ZeroMQ ha terminado en el nodo {self.id}.")
+                break
+            except zmq.Again:
+                print(f"El nodo {self.id} ha agotado el tiempo de espera.")
                 break
             except Exception as e:
                 print(f"Error al recibir datos en el nodo {self.id}: {e}")
