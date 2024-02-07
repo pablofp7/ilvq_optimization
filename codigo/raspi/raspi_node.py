@@ -237,7 +237,7 @@ class RaspiNodev1:
         # El timeout depende de T, porque con T bajo, el nodo debe esperar más tiempo
         
         timeout_s = 1.5 / self.T
-        timeout = timeout_s * 1000  # Convertir a milisegundos
+        timeout = int(timeout_s * 1000)  # Convertir a milisegundos
         server_socket.setsockopt(zmq.RCVTIMEO, timeout)  # Establecer un tiempo de espera para el socket
         while True:
             try:
