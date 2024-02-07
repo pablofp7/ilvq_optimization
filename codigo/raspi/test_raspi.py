@@ -95,12 +95,10 @@ if __name__ == "__main__":
         n_muestras = 1000
         
         S = [i for i in range(1, 5)]
-        # T = np.array([i for i in range(0, 1001, 50)])
-        # T = T / 1000
-        T = [0.5, 1]
-        S = [1, 4]
-        tasa_llegadas = 5
-        media_llegadas = 1/ tasa_llegadas
+        T = np.array([i for i in range(0, 1001, 50)])
+        T = T / 1000
+        tasa_llegadas = 4
+        media_llegadas = 1 / tasa_llegadas
         
         iteraciones = 20
         datasets = ["elec", "phis", "elec2"]
