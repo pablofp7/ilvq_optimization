@@ -92,7 +92,7 @@ if __name__ == "__main__":
     
     try:
         n_nodos = 5
-        n_muestras = 50
+        n_muestras = 1000
         
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 100)])
