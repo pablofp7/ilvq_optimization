@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
-        directorio_resultados = "resultados_colas"
+        directorio_resultados = "resultados_raspi"
         
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
