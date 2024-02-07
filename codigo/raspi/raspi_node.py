@@ -22,10 +22,8 @@ class RaspiNodev1:
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
         self.puerto_base = puerto_base
-
         self.cola_protos = [deque(maxlen=100000) for _ in range(self.nodos)]
         self.cola_index = 0
-        
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         
         #Modelo de predicción no siempre es igual al de generación de prototipos (ILVQ/ILVQ o ARF/ILVQ)
@@ -37,6 +35,7 @@ class RaspiNodev1:
 
         #Atributos para gestionar hilos
         self.hilo_receptor = threading.Thread(target=self.recibir)
+        self.fin_hilo = False
         
         #Atributos auxiliares para obtener estadísticas
         self.muestras_train = 0
@@ -102,11 +101,15 @@ class RaspiNodev1:
 
         self.tiempo_final_total = time.time() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
         
+        
+        self.fin_hilo = True
+        self.hilo_receptor.join()
+        
         # Cerramos socket de enviar y contexto
+        client_socket.setsockopt(zmq.LINGER, 0)
         client_socket.close()
         client_context.term()
         
-        self.hilo_receptor.join()
 
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
         print(f" - El nodo {self.id} ha terminado de ejecutar TODO.\n"
@@ -236,10 +239,11 @@ class RaspiNodev1:
         server_socket.bind(f"tcp://*:{self.puerto_base + self.id}")
         # El timeout depende de T, porque con T bajo, el nodo debe esperar más tiempo
         
-        timeout_s = 5 / self.T
+        timeout_s = 3
         timeout = int(timeout_s * 1000)  # Convertir a milisegundos
         server_socket.setsockopt(zmq.RCVTIMEO, timeout)  # Establecer un tiempo de espera para el socket
-        while True:
+        
+        while not self.fin_hilo:
             try:
                 # Bloquear hasta que un mensaje esté disponible
                 identidad, mensaje = server_socket.recv_multipart()
@@ -249,7 +253,7 @@ class RaspiNodev1:
                 id_recibido = data["id"]  
                 protos = data["protos"]
                 
-                print(f"El nodo {self.id} ha recibido {len(protos)} prototipos del nodo {id_recibido}.")
+                # print(f"El nodo {self.id} ha recibido {len(protos)} prototipos del nodo {id_recibido}.")
                             
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
@@ -259,22 +263,32 @@ class RaspiNodev1:
     
             except zmq.ContextTerminated:
                 print(f"El contexto de ZeroMQ ha terminado en el nodo {self.id}.")
+                server_socket.setsockopt(zmq.LINGER, 0)
                 server_socket.close()   
                 server_context.term()
 
                 return
             except zmq.Again:
-                server_socket.close()   
-                server_context.term()
-                print(f"El nodo {self.id} ha agotado el tiempo de espera.")
-                return
+                # print(f"El nodo {self.id} ha agotado el tiempo de espera.")
+                if self.fin_hilo:
+                    server_socket.setsockopt(zmq.LINGER, 0)
+                    server_socket.close()
+                    server_context.term()
+                    print(f"El nodo {self.id} ha terminado de recibir.")
+                    return
+                # else:
+                #     print(f"El nodo {self.id} lleva {timeout_s} segundos esperando. Pero no ha acabado de recibir")
             
             except Exception as e:
+                server_socket.setsockopt(zmq.LINGER, 0)
                 server_socket.close()   
                 server_context.term()
                 print(f"Error al recibir datos en el nodo {self.id}: {e}")
                 return
-
+        
+        server_socket.setsockopt(zmq.LINGER, 0)
+        server_socket.close()
+        server_context.term()
 
 
         
