@@ -14,7 +14,8 @@ def enviar_comando(comando, n_nodos):
                 mensaje = f"{comando} {n_nodos}".encode('utf-8')
                 sock.sendto(mensaje, (nodo_ip, PUERTO))
                 print(f"Comando '{comando} {n_nodos}' enviado a {nodo_ip}:{PUERTO}")
-        elif comando == "fin":
+                
+        elif comando == "stop":
             # Enviar comando fin a todos los nodos conocidos
             for i in range(n_nodos):
                 nodo_ip = f"nodo{i}.local"

@@ -36,15 +36,7 @@ while True:
         except ValueError:
             print("Error: Formato de comando 'start' incorrecto. Uso esperado: 'start N_NODOS'")
     
-    elif comando == "fin":
-        if proceso:
-            proceso.kill()
-            print("Proceso terminado")
-            proceso = None  # Reiniciar la variable del proceso
-        else:
-            print("No hay un proceso en ejecución para terminar.")
-    
-    elif comando == "exit":
+    elif comando == "stop":
         if proceso:
             proceso.kill()
         print("Saliendo del launcher.")
