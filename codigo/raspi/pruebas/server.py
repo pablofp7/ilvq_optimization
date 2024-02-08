@@ -7,7 +7,8 @@ import sys
 def main():
     context = zmq.Context()
     socket = context.socket(zmq.ROUTER)
-    socket.setsockopt(zmq.IDENTITY, f"nodo{int(sys.argv[1])}".encode())  # Identificador del servidor
+    identidad = f"nodo{int(sys.argv[1])}"  # Identificador del servidor
+    socket.setsockopt(zmq.IDENTITY, identidad.encode())  # Identificador del servidor
     socket.bind("tcp://*:5555")
 
     print("Servidor iniciado en el puerto 5555 esperando mensajes...")
