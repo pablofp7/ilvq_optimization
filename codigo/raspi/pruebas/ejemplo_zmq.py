@@ -60,7 +60,7 @@ def send_messages(socket: zmq.Socket):
         to_write.put(f"[ENVIADO]: {mensaje}\n")
         
         for dest in destinatarios:
-            print(f"Se va a enviar lo siguiente: [{dest}, destinatarios, mensaje]")
+            print(f"Se va a enviar lo siguiente: [{dest}, {destinatarios}, {mensaje}]")
             socket.send_multipart([f"{dest}".encode(), destinatarios_encoded, mensaje.encode()])
             print(f"[ENVIADO]: {mensaje}\n")
             # time.sleep(0.1)
