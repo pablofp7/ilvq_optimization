@@ -1,5 +1,6 @@
 import socket
 import subprocess
+import os
 
 # Configuración del socket UDP
 HOST = '0.0.0.0'  # Escucha en todas las interfaces
@@ -18,13 +19,15 @@ while True:
     comando = data.decode('utf-8').strip()
 
     if comando.startswith("start"):
-        # Extrae el número de nodos del mensaje, asumiendo formato "start N_NODOS"
         try:
             _, n_nodos = comando.split()
             if proceso:
                 proceso.kill()  # Asegurarse de que no hay otro proceso corriendo
-            # Lanza el script con el número de nodos como argumento
-            proceso = subprocess.Popen(['python3', 'ejemplo_zmq.py', n_nodos])
+            # Ignorar la salida estándar y el error estándar
+            with open(os.devnull, 'wb') as devnull:
+                proceso = subprocess.Popen(['python3', 'ejemplo_zmq.py', n_nodos],
+                                           stdout=devnull,
+                                           stderr=subprocess.STDOUT)
             print(f"Proceso lanzado con N_NODOS={n_nodos}")
         except ValueError:
             print("Error: Formato de comando 'start' incorrecto. Uso esperado: 'start N_NODOS'")
