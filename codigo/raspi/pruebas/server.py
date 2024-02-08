@@ -8,6 +8,7 @@ def main():
     context = zmq.Context()
     socket = context.socket(zmq.ROUTER)
     identidad = f"nodo{int(sys.argv[1])}"  # Identificador del servidor
+    print(identidad)
     socket.setsockopt(zmq.IDENTITY, identidad.encode())  # Identificador del servidor
     socket.bind("tcp://*:5555")
 
