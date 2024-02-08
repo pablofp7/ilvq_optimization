@@ -5,9 +5,21 @@ import sys
 import random
 import pickle
 import queue
+import socket as socket_lib
 
-# Número total de nodos conocido a priori
-N_NODOS = 3  # Ajusta este valor según el número real de nodos en tu red
+# Número total de nodos, recibido como argumento
+N_NODOS = int(sys.argv[1])
+
+# Lista de nombres de host de los nodos
+dir_nodos = [f"nodo{i}.local" for i in range(N_NODOS)]
+dir_nodos_vecinos = [dir_nodos[i] for i in range(N_NODOS) if i != id]
+
+def get_node_id():
+    hostname = socket_lib.gethostname()
+    # Extraer el ID del nodo a partir del nombre de la máquina (nodoX)
+    id_str = ''.join(filter(str.isdigit, hostname))
+    return int(id_str)
+
 
 def start_server():
     global to_write
@@ -31,8 +43,8 @@ def start_sender():
     socket.setsockopt(zmq.IDENTITY, f"{id}".encode())
 
     # Conectar con los demás nodos
-    for puerto in puertos_vecinos:
-        socket.connect(f"tcp://localhost:{puerto}")
+    for dir, puerto in zip(dir_nodos_vecinos, puertos_vecinos):
+        socket.connect(f"tcp://{dir}:{puerto}")
 
     time.sleep(3) # Esperar a que los nodos se conecten
     return socket
@@ -54,7 +66,8 @@ def send_messages(socket: zmq.Socket):
 
 if __name__ == "__main__":
 
-    id = int(sys.argv[1])
+    id = get_node_id()
+    mi_hostname = socket_lib.gethostname()
     puerto = 10000 + id
     vecinos = [i for i in range(N_NODOS) if i != id]
     puertos_vecinos = [10000 + i for i in vecinos]
