@@ -24,7 +24,7 @@ while True:
             if proceso:
                 proceso.kill()  # Asegurarse de que no hay otro proceso corriendo
             # Ignorar la salida estándar y el error estándar
-
+    
             archivo_salida = f"salida_nodo{n_nodos}.log"
 
             with open(archivo_salida, 'wb') as f:
