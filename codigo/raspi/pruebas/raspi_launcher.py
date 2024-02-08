@@ -17,6 +17,7 @@ proceso = None  # Variable para almacenar el proceso lanzado
 while True:
     data, addr = sock.recvfrom(1024)  # Buffer size de 1024 bytes
     comando = data.decode('utf-8').strip()
+    print(f"Comando recibido: {comando}")
 
     if comando.startswith("start"):
         try:
@@ -24,7 +25,7 @@ while True:
             if proceso:
                 proceso.kill()  # Asegurarse de que no hay otro proceso corriendo
             # Ignorar la salida estándar y el error estándar
-    
+
             archivo_salida = f"salida_nodo{n_nodos}.log"
 
             with open(archivo_salida, 'wb') as f:
