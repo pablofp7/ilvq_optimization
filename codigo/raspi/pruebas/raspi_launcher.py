@@ -10,11 +10,11 @@ PORT = 15000  # Puerto arbitrario para escuchar comandos UDP
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST, PORT))
 
-print("Launcher esperando comandos...")
 
 proceso = None  # Variable para almacenar el proceso lanzado
 
 while True:
+    print("Launcher esperando comandos...")
     data, addr = sock.recvfrom(1024)  # Buffer size de 1024 bytes
     comando = data.decode('utf-8').strip()
     print(f"Comando recibido: {comando}")

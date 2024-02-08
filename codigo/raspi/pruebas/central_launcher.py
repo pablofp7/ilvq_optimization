@@ -16,6 +16,7 @@ def enviar_comando(comando, n_nodos):
                 print(f"Comando '{comando} {n_nodos}' enviado a {nodo_ip}:{PUERTO}")
                 
         elif comando == "stop":
+            print(f"Enviando comando '{comando}' a todos los nodos...")
             # Enviar comando fin a todos los nodos conocidos
             for i in range(n_nodos):
                 nodo_ip = f"nodo{i}.local"
