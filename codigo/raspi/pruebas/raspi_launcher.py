@@ -24,9 +24,12 @@ while True:
             if proceso:
                 proceso.kill()  # Asegurarse de que no hay otro proceso corriendo
             # Ignorar la salida estándar y el error estándar
-            with open(os.devnull, 'wb') as devnull:
+
+            archivo_salida = f"salida_nodo{n_nodos}.log"
+
+            with open(archivo_salida, 'wb') as f:
                 proceso = subprocess.Popen(['python3', 'ejemplo_zmq.py', n_nodos],
-                                           stdout=devnull,
+                                           stdout=f,
                                            stderr=subprocess.STDOUT)
             print(f"Proceso lanzado con N_NODOS={n_nodos}")
         except ValueError:
