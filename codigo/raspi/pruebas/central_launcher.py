@@ -30,6 +30,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     comando = sys.argv[1]
-    n_nodos = int(sys.argv[2]) if len(sys.argv) > 2 and comando == "start" else 0
+    n_nodos = int(sys.argv[2])
 
     enviar_comando(comando, n_nodos)

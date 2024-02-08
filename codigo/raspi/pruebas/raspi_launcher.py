@@ -1,6 +1,7 @@
 import socket
 import subprocess
 import os
+import time
 
 # Configuración del socket UDP
 HOST = '0.0.0.0'  # Escucha en todas las interfaces
@@ -21,6 +22,7 @@ while True:
 
     if comando.startswith("start"):
         try:
+            time.sleep(2)  # Esperar a que los nodos se apaguen
             _, n_nodos = comando.split()
             if proceso:
                 proceso.kill()  # Asegurarse de que no hay otro proceso corriendo
