@@ -8,16 +8,15 @@ def main():
     socket = context.socket(zmq.ROUTER)
     id_cliente = "nodo0".encode()  # Identificador del cliente
     socket.setsockopt(zmq.IDENTITY, id_cliente)
-    ip_nodos = ["192.168.1.153", "192.168.1.129"]
-    nodos = ["nodo1", "nodo2"]
-    for ip_nodo in ip_nodos:
-        socket.connect(f"tcp://{ip_nodo}:5555")
+    nodos = ["nodo1"]
+    for nodo in nodos:
+        socket.connect(f"tcp://{nodo}.local:5555")
 
     while True:
         mensaje = "Hola desde nodo0"
         print(f"Enviando '{mensaje}' al servidor...")
         for nodo in nodos:
-            socket.send_multipart([nodo.encode(), mensaje.encode()])  # nodo1 es el identificador esperado del servidor
+            socket.send_multipart([nodo.encode(), b"",mensaje.encode()])  # nodo1 es el identificador esperado del servidor
 
         # Espera por una respuesta
         identidad, respuesta = socket.recv_multipart()
