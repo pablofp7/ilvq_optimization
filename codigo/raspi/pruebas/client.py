@@ -8,9 +8,10 @@ def main():
     socket = context.socket(zmq.ROUTER)
     id_cliente = "nodo0".encode()  # Identificador del cliente
     socket.setsockopt(zmq.IDENTITY, id_cliente)
+    ip_nodos = ["192.168.1.153", "192.168.1.129"]
     nodos = ["nodo1", "nodo2"]
-    for nodo in nodos:
-        socket.connect(f"tcp://{nodo}.local:5555")
+    for ip_nodo in ip_nodos:
+        socket.connect(f"tcp://{ip_nodo}:5555")
 
     while True:
         mensaje = "Hola desde nodo0"
