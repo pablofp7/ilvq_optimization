@@ -52,7 +52,7 @@ def send_messages(socket: zmq.Socket):
         mensaje = f"Mensaje de {id}, NUM:{random.randrange(0,100)} a nodo/s: {destinatarios}"
         to_write.put(f"[ENVIADO]: {mensaje}\n")
         
-        input("Enter para enviar mensaje")
+        # input("Enter para enviar mensaje")
         for dest in destinatarios:
             socket.send_multipart([bytes(f"{dest}", encoding="utf-8"), bytes(), mensaje.encode()])
             print(f"[ENVIADO]: {mensaje}\n")
