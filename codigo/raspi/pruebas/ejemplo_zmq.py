@@ -27,7 +27,7 @@ def start_server():
 
     while True:
         identidad, destinos, mensaje = socket.recv_multipart()  # Bloqueante
-        destinos = pickle.loads(destinos)
+        # destinos = pickle.loads(destinos)
         string_recep = f"[RECIBIDO] {id} recibió: {mensaje.decode()}, de {identidad.decode()}. Con destino/s: {destinos}"
         print(string_recep) 
         to_write.put(string_recep)
