@@ -1,45 +1,58 @@
 import zmq
-import sys
-import pickle  # Importar el módulo pickle
+import threading
+import pickle
 import socket as socket_lib
+
+# Definir la cantidad de nodos
+N_NODOS = 3
+
+# Obtener el ID del nodo basado en el hostname (asumiendo que el hostname es 'nodoX' donde X es el ID)
+hostname = socket_lib.gethostname()
+mi_id = int(hostname[-1])  # Extraer el último carácter del hostname y convertirlo a int
+
+# Función para actuar como servidor
+def servidor(context, mi_id):
+    socket = context.socket(zmq.ROUTER)
+    puerto = 10000 + mi_id
+    socket.setsockopt_string(zmq.IDENTITY, hostname)
+    socket.bind(f"tcp://*:{puerto}")
+    print(f"Servidor {hostname} escuchando en el puerto {puerto}")
+
+    while True:
+        try:
+            req = socket.recv_multipart()
+            print(f"[RECV] From: {req[0].decode()}. Message: {pickle.loads(req[2])}")
+        except KeyboardInterrupt:
+            break
+
+# Función para actuar como cliente
+def cliente(context, mi_id):
+    socket = context.socket(zmq.ROUTER)
+    socket.setsockopt_string(zmq.IDENTITY, hostname)
+
+    # Conectar a los vecinos
+    for i in range(N_NODOS):
+        if i != mi_id:  # No conectarse a sí mismo
+            vecino_puerto = 10000 + i
+            socket.connect(f"tcp://nodo{i}.local:{vecino_puerto}")
+            print(f"Conectado a nodo{i} en el puerto {vecino_puerto}")
+
+    while True:
+        input("Enter para enviar mensaje")
+        for i in range(N_NODOS):
+            if i != mi_id:
+                msg_serialized = pickle.dumps(f"hello nodo{i} desde {hostname}")
+                socket.send_multipart([bytes(f"nodo{i}", encoding="utf-8"), bytes(), msg_serialized])
 
 context = zmq.Context()
 
-socket = context.socket(zmq.ROUTER)
+# Crear hilos para servidor y cliente
+thread_servidor = threading.Thread(target=servidor, args=(context, mi_id))
+thread_cliente = threading.Thread(target=cliente, args=(context, mi_id))
 
-if sys.argv[1] == "s":
-    hostname = socket_lib.gethostname()
-    print(f"Hostname: {hostname}")
-    socket.setsockopt_string(zmq.IDENTITY, hostname)
-    socket.bind("tcp://*:10000")
+# Iniciar hilos
+thread_servidor.start()
+thread_cliente.start()
 
-    while True:
-        print("waiting for msg")
-        req = socket.recv_multipart()
-        print(f"[RECV] From: {req[0].decode()}. Message: {pickle.loads(req[2])}")
-        # Serializar el mensaje antes de enviarlo
-        # msg_serialized = pickle.dumps("whatup")  # Serializar con pickle
-        # #                      identity of receptionist   empty frame     serialized message content
-        # socket.send_multipart([req[0],                    bytes(),      msg_serialized])
-
-elif sys.argv[1] == "c":
-    hostname = socket_lib.gethostname()
-    socket.setsockopt_string(zmq.IDENTITY, hostname)
-    socket.connect("tcp://nodo1.local:10000")
-    socket.connect("tcp://nodo2.local:10000")
-
-    while True:
-        input("enter to send msg")
-        # Serializar el mensaje antes de enviarlo
-        msg_serialized1 = pickle.dumps("hello nodo1")  # Serializar con pickle
-        msg_serialized2 = pickle.dumps("hello nodo2")  # Serializar con pickle
-        #                       identity of receptionist          empty frame     serialized message content
-        socket.send_multipart([bytes("nodo1", encoding="utf-8"), bytes(),     msg_serialized1])
-        socket.send_multipart([bytes("nodo2", encoding="utf-8"), bytes(),     msg_serialized2])
-
-        # rep = socket.recv_multipart()
-        # # Deserializar el mensaje después de recibirlo
-        # msg_deserialized = pickle.loads(rep[2])  # Deserializar con pickle
-        # print(msg_deserialized)
-
-# In real applications do not forget to disconnect when the connection is not needed anymore
+thread_servidor.join()
+thread_cliente.join()
