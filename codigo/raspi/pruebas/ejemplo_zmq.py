@@ -20,7 +20,7 @@ def start_server():
     global to_write
     context = zmq.Context()
     socket = context.socket(zmq.ROUTER)
-    socket.setsockopt_string(zmq.IDENTITY, f"{id}".encode())
+    socket.setsockopt_string(zmq.IDENTITY, f"{id}")
     socket.bind(f"tcp://*:{mi_puerto}")
 
     print(f"Nodo {id} escuchando en el mi_puerto {mi_puerto}...")
@@ -35,7 +35,7 @@ def start_server():
 def start_sender():
     context = zmq.Context()
     socket = context.socket(zmq.ROUTER)
-    socket.setsockopt_string(zmq.IDENTITY, f"{id}".encode())
+    socket.setsockopt_string(zmq.IDENTITY, f"{id}")
 
     # Conectar con los demás nodos
     for dir, puerto in zip(dir_nodos_vecinos, puertos_vecinos):
