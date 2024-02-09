@@ -56,6 +56,7 @@ def send_messages(socket: zmq.Socket):
         for dest in destinatarios:
             socket.send_multipart([bytes(f"{dest}", encoding="utf-8"), bytes(), mensaje.encode()])
             print(f"[ENVIADO]: {mensaje}\n")
+            time.sleep(0.25)
         
     #Para esperar a que se reciban todos los mensajes
     time.sleep(3)
