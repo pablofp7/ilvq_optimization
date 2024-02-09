@@ -46,7 +46,7 @@ def start_sender():
 
 def send_messages(socket: zmq.Socket):
     global to_write
-    for i in range(50):
+    for i in range(10):
         destinatarios = random.sample(vecinos, k=random.randint(1, len(vecinos)))
         destinatarios_encoded = pickle.dumps(destinatarios)
         mensaje = f"Mensaje de {id}, NUM:{random.randrange(0,100)} a nodo/s: {destinatarios}"
