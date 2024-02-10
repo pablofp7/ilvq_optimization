@@ -21,6 +21,8 @@ class RaspiNodev1:
         self.matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
+        self.puertos_vecinos = [self.puerto_base + i for i in self.vecinos]
+        self.dir_vecinos = [f"nodo{i}.local" for i in self.vecinos]
         self.puerto_base = puerto_base
         self.cola_protos = [deque(maxlen=100000) for _ in range(self.nodos)]
         self.cola_index = 0
@@ -58,14 +60,12 @@ class RaspiNodev1:
     def run(self):
         
         self.hilo_receptor.start()
-        
-        puertos_vecinos = [self.puerto_base + i for i in self.vecinos]
         # Ahora los sockets para enviar
         client_context = zmq.Context()
         client_socket = client_context.socket(zmq.ROUTER)
         client_socket.setsockopt_string(zmq.IDENTITY, f"{self.id}")
-        for puerto in puertos_vecinos:
-            client_socket.connect(f"tcp://localhost:{puerto}")
+        for dir, puerto in zip(self.dir_vecinos, self.puertos_vecinos):
+            client_socket.connect(f"tcp://{dir}:{puerto}")
             
             
         print(f"Inicia ejecución del nodo {self.id}")
@@ -223,8 +223,7 @@ class RaspiNodev1:
             # Enviar los prototipos a los vecinos seleccionados
             for vecino in vecinos_seleccionados:
                 # Preparar el mensaje para enviar a través de ZeroMQ ROUTER
-                socket_enviar.send_multipart([f"{vecino}".encode(), proto_to_share])
-
+                socket_enviar.send_multipart([bytes(f"{vecino}", encoding="utf-8"), bytes(), proto_to_share])
                                 
             return
         
@@ -235,18 +234,18 @@ class RaspiNodev1:
 
         server_context = zmq.Context()
         server_socket = server_context.socket(zmq.ROUTER)
-        server_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
+        server_socket.setsockopt_string(zmq.IDENTITY, f"{self.id}")
         server_socket.bind(f"tcp://*:{self.puerto_base + self.id}")
         # El timeout depende de T, porque con T bajo, el nodo debe esperar más tiempo
         
-        timeout_s = 3
+        timeout_s = 1
         timeout = int(timeout_s * 1000)  # Convertir a milisegundos
         server_socket.setsockopt(zmq.RCVTIMEO, timeout)  # Establecer un tiempo de espera para el socket
         
         while not self.fin_hilo:
             try:
                 # Bloquear hasta que un mensaje esté disponible
-                identidad, mensaje = server_socket.recv_multipart()
+                identidad, _, mensaje = server_socket.recv_multipart()
                 # id_emisor = identidad.decode()  # Convertir la identidad del emisor de bytes a str si es necesario
                 
                 data = pickle.loads(mensaje)
