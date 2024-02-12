@@ -21,9 +21,9 @@ class RaspiNodev2:
         self.matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
+        self.puerto_base = puerto_base
         self.puertos_vecinos = [self.puerto_base + i for i in self.vecinos]
         self.dir_vecinos = [f"nodo{i}.local" for i in self.vecinos]
-        self.puerto_base = puerto_base
         self.cola_protos = [deque(maxlen=100000) for _ in range(self.nodos)]
         self.cola_index = 0
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()

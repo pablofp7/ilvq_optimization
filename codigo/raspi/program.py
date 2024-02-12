@@ -104,6 +104,8 @@ def sincronizar():
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for i in range(1, n_nodos):
                 s.sendto("COMENZAR".encode(), (dir_server, puerto + i))  # Asegúrate de que esta dirección sea alcanzable por todos los nodos
+            time.sleep(0.75)
+            
             
             print("Nodo 0: todos listos.")
     else:
