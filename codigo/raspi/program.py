@@ -84,11 +84,12 @@ def sincronizar():
     print("Comienza la sincronización...")
     puerto = 1111  # Puerto común para la sincronización
     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
+    dir_server = "nodo0.local"  # Dirección del nodo central
     
     if id == 0:
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.bind((hostname, puerto))
+            s.bind(("0.0.0.0", puerto))
             lista_confirmaciones = [False] * n_nodos
             lista_confirmaciones[id] = True
             
@@ -100,40 +101,43 @@ def sincronizar():
                     nodo_id = int(msg.split()[1])
                     lista_confirmaciones[nodo_id] = True
             
+            # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for i in range(1, n_nodos):
-                s.sendto("COMENZAR".encode(), (hostname, puerto + i))
+                s.sendto("COMENZAR".encode(), (dir_server, puerto + i))  # Asegúrate de que esta dirección sea alcanzable por todos los nodos
             
-            print(f"Nodo 0(todos) listos.")
+            print("Nodo 0: todos listos.")
     else:
         # Nodo no central
         enviado = False
         while not enviado:
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-                    s.sendto(f"LISTO {id}".encode(), (hostname, puerto))
+                    # Enviar "LISTO" al nodo central
+                    s.sendto(f"LISTO {id}".encode(), (dir_server, puerto))
                     print(f"LISTO enviado desde {id}")
                 
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
-                    s_recepcion.bind((hostname, puerto + id))
+                    # Escuchar en un puerto único derivado de su ID
+                    s_recepcion.bind(("0.0.0.0", puerto + id))
                     s_recepcion.settimeout(0.5)  # Establecer timeout
                     
                     while True:
                         try:
                             data, _ = s_recepcion.recvfrom(buffer_size)
                             msg = data.decode()
-                            print(f"{id}. Recibido COMENZAR desde nood0.")
                             if msg == "COMENZAR":
+                                print(f"{id}: Recibido COMENZAR desde nodo0.")
                                 enviado = True
                                 break
                         except socket.timeout:
-                            print(f"Esperando a recibir el OK del nodo 0.")
-                            break  # Salir del bucle interno para reintentar enviar "LISTO"
+                            print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
+                            # No es necesario romper el bucle; sigue esperando
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Error en nodo {id}: {e}")
                 time.sleep(0.5)  # Esperar un poco antes de reintentar
 
-        print(f"Nodos contestando a nodo0.")
-        
+        print(f"Nodo {id} contestando a nodo0.")
+                
 if __name__ == "__main__":
     
     try:
