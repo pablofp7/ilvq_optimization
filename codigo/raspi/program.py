@@ -80,7 +80,7 @@ def main(df: pd.DataFrame):
         f.writelines(to_write)
 
 
-def sincronizar(id, n_nodos, hostname):
+def sincronizar():
     puerto = 1111  # Puerto común para la sincronización
     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
     
