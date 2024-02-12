@@ -102,10 +102,11 @@ def sincronizar():
                     nodo_id = int(msg.split()[1])
                     lista_confirmaciones[nodo_id] = True
             
-            time.sleep(3)
+            time.sleep(1)
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for i, dir in enumerate(dir_nodos):
-                s.sendto("COMENZAR".encode(), (dir, puerto + i)) 
+                # print(f"Se va e enviar COMENZAR: dir:{dir}, puerto: {puerto}")
+                s.sendto("COMENZAR".encode(), (dir, puerto)) 
             print(f"Se le ha enviado COMENZAR a todos los slaves.")
             time.sleep(0.75)
             
