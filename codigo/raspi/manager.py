@@ -2,7 +2,7 @@ import socket
 
 # Lista de direcciones IP de las Raspberry Pi (o hostnames si están en el mismo DNS)
 N_NODOS= 5
-dir_raspis = [f"nodo{i}.local" for i in range(5)]
+dir_raspis = [f"nodo{i}.local" for i in range(N_NODOS + 1)]
 port = 12345  # El puerto que estás usando para tus sockets
 
 def send_command(command):
