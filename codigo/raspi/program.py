@@ -102,6 +102,7 @@ def sincronizar():
                     nodo_id = int(msg.split()[1])
                     lista_confirmaciones[nodo_id] = True
             
+            time.sleep(1)
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for i, dir in enumerate(dir_nodos):
                 s.sendto("COMENZAR".encode(), (dir, puerto + i))  # Asegúrate de que esta dirección sea alcanzable por todos los nodos
