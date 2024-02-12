@@ -82,7 +82,7 @@ def main(df: pd.DataFrame):
 
 def sincronizar():
     print("Comienza la sincronización...")
-    puerto = 1111  # Puerto común para la sincronización
+    puerto = 11111  # Puerto común para la sincronización
     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
     dir_server = "nodo0.local"  # Dirección del nodo central
     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
@@ -124,7 +124,7 @@ def sincronizar():
                 
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
                     # Escuchar en un puerto único derivado de su ID
-                    s_recepcion.bind(("0.0.0.0", puerto + id))
+                    s_recepcion.bind(("0.0.0.0", puerto))
                     s_recepcion.settimeout(0.5)  # Establecer timeout
                     
                     while True:
