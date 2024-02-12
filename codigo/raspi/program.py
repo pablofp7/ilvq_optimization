@@ -85,6 +85,7 @@ def sincronizar():
     puerto = 1111  # Puerto común para la sincronización
     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
     dir_server = "nodo0.local"  # Dirección del nodo central
+    dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
     
     if id == 0:
         # Nodo central
@@ -102,8 +103,8 @@ def sincronizar():
                     lista_confirmaciones[nodo_id] = True
             
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
-            for i in range(1, n_nodos):
-                s.sendto("COMENZAR".encode(), (dir_server, puerto + i))  # Asegúrate de que esta dirección sea alcanzable por todos los nodos
+            for i, dir in enumerate(dir_nodos):
+                s.sendto("COMENZAR".encode(), (dir, puerto + i))  # Asegúrate de que esta dirección sea alcanzable por todos los nodos
             time.sleep(0.75)
             
             
