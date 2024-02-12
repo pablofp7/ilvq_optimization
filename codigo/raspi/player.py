@@ -17,6 +17,7 @@ def handle_command(command):
             program_process.terminate()  # Finaliza el proceso
             program_process = None
             print("program.py stopped.")
+            exit()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((host, port))

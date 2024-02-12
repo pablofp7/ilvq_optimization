@@ -81,6 +81,7 @@ def main(df: pd.DataFrame):
 
 
 def sincronizar():
+    print("Comienza la sincronización...")
     puerto = 1111  # Puerto común para la sincronización
     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
     
@@ -100,6 +101,8 @@ def sincronizar():
             
             for i in range(1, n_nodos):
                 s.sendto("COMENZAR".encode(), (hostname, puerto + i))
+            
+            print(f"Nodo 0(todos) listos.")
     else:
         # Nodo no central
         enviado = False
@@ -126,6 +129,8 @@ def sincronizar():
                 print(f"Error: {e}")
                 time.sleep(0.5)  # Esperar un poco antes de reintentar
 
+        print(f"Nodos contestando a nodo0.")
+        
 if __name__ == "__main__":
     
     try:
