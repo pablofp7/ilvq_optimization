@@ -3,9 +3,9 @@ import time
 import threading
 
 def proceso_de_sincronizacion():
-    dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
-    puerto = 11111
     N_NODOS = 5
+    dir_nodos = [f"nodo{i}.local" for i in range(N_NODOS)]  # Direcciones de los nodos no centrales
+    puerto = 11111
     buffer_size = 1024
 
     while True:
@@ -22,7 +22,7 @@ def proceso_de_sincronizacion():
                     nodo_id = int(msg.split()[1])
                     lista_confirmaciones[nodo_id] = True
             
-            time.sleep(1)
+            time.sleep(5)
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for dir in dir_nodos:
                 s.sendto("COMENZAR".encode(), (dir, puerto)) 

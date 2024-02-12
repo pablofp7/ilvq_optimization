@@ -148,7 +148,6 @@ if __name__ == "__main__":
                 for s in S:
                     tiempo_s = time.time()
                     for t in T:
-                        sincronizar()
                         tiempo_inicio = time.time()
                         print(f"ITERACIÓN {i}, dataset: {dataset}, S: {s}, T:{t}")
                         
@@ -158,6 +157,7 @@ if __name__ == "__main__":
                             print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
                             continue  # Salta a la siguiente iteración si el archivo ya existe
                         
+                        sincronizar()
                         main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.time() - tiempo_inicio) / 60} minutos.\n")
         
