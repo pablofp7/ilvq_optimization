@@ -95,6 +95,7 @@ def sincronizar():
             while not all(lista_confirmaciones):
                 data, addr = s.recvfrom(buffer_size)
                 msg = data.decode()
+                print(f"Nodo 0. Recibido: {msg}")
                 if msg.startswith("LISTO"):
                     nodo_id = int(msg.split()[1])
                     lista_confirmaciones[nodo_id] = True
@@ -110,6 +111,7 @@ def sincronizar():
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                     s.sendto(f"LISTO {id}".encode(), (hostname, puerto))
+                    print(f"LISTO enviado desde {id}")
                 
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
                     s_recepcion.bind((hostname, puerto + id))
@@ -119,11 +121,12 @@ def sincronizar():
                         try:
                             data, _ = s_recepcion.recvfrom(buffer_size)
                             msg = data.decode()
+                            print(f"{id}. Recibido COMENZAR desde nood0.")
                             if msg == "COMENZAR":
                                 enviado = True
                                 break
                         except socket.timeout:
-                            # Timeout alcanzado, reintentar enviar el mensaje "LISTO"
+                            print(f"Esperando a recibir el OK del nodo 0.")
                             break  # Salir del bucle interno para reintentar enviar "LISTO"
             except Exception as e:
                 print(f"Error: {e}")
