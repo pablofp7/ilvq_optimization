@@ -10,7 +10,7 @@ def handle_command(command):
     if command == 'start':
         if program_process is None:
             # Lanza program.py como un proceso independiente
-            program_process = subprocess.Popen(['python', 'program.py'])
+            program_process = subprocess.Popen(['python3', 'program.py'])
             print("program.py started.")
     elif command == 'stop':
         if program_process:

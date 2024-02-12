@@ -141,7 +141,7 @@ if __name__ == "__main__":
         tasa_llegadas = 5
         media_llegadas = 1 / tasa_llegadas
         
-        iteraciones = 30
+        iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
