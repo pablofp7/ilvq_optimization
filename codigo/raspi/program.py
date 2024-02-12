@@ -1,7 +1,6 @@
-from raspi_node import RaspiNodev1
 from prototypes import XuILVQ
 import pandas as pd
-from raspi_node import RaspiNodev1
+from raspi_nodev2 import RaspiNodev2
 import os
 import time
 import threading
@@ -41,7 +40,7 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
     
     
-    nodo = RaspiNodev1(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = RaspiNodev2(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
     
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
