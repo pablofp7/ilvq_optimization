@@ -79,6 +79,12 @@ def main(df: pd.DataFrame):
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
 
+def vaciar_buffer(socket):
+    while True:
+        try:
+            socket.recv(1024)
+        except:
+            break    
 
 def sincronizar():
     
@@ -92,6 +98,7 @@ def sincronizar():
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
+            vaciar_buffer(s)
             lista_confirmaciones = [False] * n_nodos
             lista_confirmaciones[id] = True
 
@@ -120,6 +127,7 @@ def sincronizar():
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                     # Enviar "LISTO" al nodo central
+                    vaciar_buffer(s)
                     s.sendto(f"LISTO {id}".encode(), (dir_server, puerto))
                     print(f"LISTO enviado desde {id}")
 
