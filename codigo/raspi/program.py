@@ -81,7 +81,8 @@ def main(df: pd.DataFrame):
 
 def vaciar_buffer(socket):
     print("Vaciando buffer...")
-    while True:
+    ahora = time.time()
+    while time.time() - ahora < 1:
         try:
             socket.recv(1024)
         except:
