@@ -125,33 +125,31 @@ def sincronizar():
     else:
         # Nodo no central
         ready = False
-        while not ready:
-            try:
-                with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-                    # Enviar "LISTO" al nodo central
-                    s.sendto(f"LISTO {id}".encode(), (dir_server, puerto))
-                    print(f"LISTO enviado desde {id}")
-
-                with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
-                    # Escuchar en un puerto único derivado de su ID
-                    s_recepcion.bind(("0.0.0.0", puerto))
-                    s_recepcion.settimeout(0.5)  # Establecer timeout
-
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
+                s_recepcion.bind(("0.0.0.0", puerto))
+                s_recepcion.settimeout(0.5)  # Establecer timeout
+                while not ready:
                     try:
-                        data, _ = s_recepcion.recvfrom(buffer_size)
-                        msg = data.decode()
-                        if msg == "COMENZAR":
-                            print(f"{id}: Recibido COMENZAR desde nodo0.")
-                            ready = True
-                            break
-                    except socket.timeout:
-                        print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
-                        # No es necesario romper el bucle; sigue esperando
-            except Exception as e:
-                print(f"Error en nodo {id}: {e}")
-                time.sleep(0.5)  # Esperar un poco antes de reintentar
+                        # Enviar "LISTO" al nodo central
+                        s.sendto(f"LISTO {id}".encode(), (dir_server, puerto))
+                        print(f"LISTO enviado desde {id}")
 
-        print(f"Nodo {id} contestando a nodo0.")
+                        try:
+                            data, _ = s_recepcion.recvfrom(buffer_size)
+                            msg = data.decode()
+                            if msg == "COMENZAR":
+                                print(f"{id}: Recibido COMENZAR desde nodo0.")
+                                ready = True
+                                break
+                        except socket.timeout:
+                            print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
+                            # No es necesario romper el bucle; sigue esperando
+                    except Exception as e:
+                        print(f"Error en nodo {id}: {e}")
+                        time.sleep(0.5)  # Esperar un poco antes de reintentar
+
+                print(f"Nodo {id} contestando a nodo0.")
         
 if __name__ == "__main__":
     
