@@ -101,7 +101,8 @@ def sincronizar():
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
-            vaciar_buffer(s)
+            # vaciar_buffer(s)
+
             lista_confirmaciones = [False] * n_nodos
             lista_confirmaciones[id] = True
 
@@ -109,7 +110,7 @@ def sincronizar():
                 data, addr = s.recvfrom(buffer_size)
                 msg = data.decode()
                 print(f"Nodo 0. Recibido: {msg}")
-                if msg.startswith("LISTO"):
+                if msg.startswith("LISTO") and parametros in msg:
                     nodo_id = int(msg.split()[1])
                     lista_confirmaciones[nodo_id] = True
 
@@ -132,7 +133,7 @@ def sincronizar():
                 while not ready:
                     try:
                         # Enviar "LISTO" al nodo central
-                        s.sendto(f"LISTO {id}".encode(), (dir_server, puerto))
+                        s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
                         print(f"LISTO enviado desde {id}")
 
                         try:
@@ -150,6 +151,40 @@ def sincronizar():
                         time.sleep(0.5)  # Esperar un poco antes de reintentar
 
                 print(f"Nodo {id} contestando a nodo0.")
+                
+                
+def check_mensaje(mensaje):
+    """
+    Evalúa si el mensaje comienza con 'LISTO', contiene los parámetros esperados
+    (sin considerar el sufijo '_nodoX'), y extrae el id del nodo. Devuelve True si
+    cumple las condiciones, o False en caso contrario, junto con el id del nodo.
+    """
+    # Verificar si el mensaje comienza con "LISTO"
+    if mensaje.startswith("LISTO"):
+        try:
+            # Extraer la parte después de "LISTO"
+            _, resto_mensaje = mensaje.split(' ', 1)
+            
+            # Dividir el resto del mensaje en partes para separar los parámetros del id del nodo
+            partes = resto_mensaje.split('_')
+            nodo_id_str = partes[-1].replace("nodo", "")  # Extraer el ID del nodo, que está al final
+            parametros_recibidos = "_".join(partes[:-1])  # Unir todas las partes excepto la última
+            
+            # Convertir nodo_id_str a int para obtener el ID del nodo
+            nodo_id = int(nodo_id_str)
+            
+            # Eliminar la parte '_nodoX' de los parámetros esperados para la comparación
+            parametros_esperados_sin_nodo = "_".join(parametros.split('_')[:-1])
+            
+            # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
+            if parametros_recibidos == parametros_esperados_sin_nodo:
+                return True, nodo_id
+        except ValueError as e:
+            # Manejar errores de conversión o de formato incorrecto
+            print(f"Error al procesar el mensaje: {e}")
+    
+    # Si el mensaje no cumple las condiciones, devolver False y None
+    return False, None                
         
 if __name__ == "__main__":
     
