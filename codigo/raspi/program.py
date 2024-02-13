@@ -80,10 +80,12 @@ def main(df: pd.DataFrame):
         f.writelines(to_write)
 
 def vaciar_buffer(socket):
+    print("Vaciando buffer...")
     while True:
         try:
             socket.recv(1024)
         except:
+            print("Buffer vaciado.")
             break    
 
 def sincronizar():
@@ -110,7 +112,6 @@ def sincronizar():
                     nodo_id = int(msg.split()[1])
                     lista_confirmaciones[nodo_id] = True
 
-            time.sleep(1)
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for i, dir in enumerate(dir_nodos):
                 # print(f"Se va e enviar COMENZAR: dir:{dir}, puerto: {puerto}")
@@ -127,7 +128,6 @@ def sincronizar():
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                     # Enviar "LISTO" al nodo central
-                    vaciar_buffer(s)
                     s.sendto(f"LISTO {id}".encode(), (dir_server, puerto))
                     print(f"LISTO enviado desde {id}")
 
