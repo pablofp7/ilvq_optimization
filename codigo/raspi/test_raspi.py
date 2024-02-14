@@ -95,12 +95,12 @@ if __name__ == "__main__":
         n_muestras = 1000
         
         S = [i for i in range(1, 5)]
-        T = np.array([i for i in range(0, 1001, 100)])
+        T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
         tasa_llegadas = 4
         media_llegadas = 1 / tasa_llegadas
         
-        iteraciones = 10
+        iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
