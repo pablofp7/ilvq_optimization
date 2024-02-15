@@ -72,7 +72,10 @@ def main(df: pd.DataFrame):
                     f"Tiempo compartiendo prototipos: {nodo.tiempo_share}\n"
                     f"Tiempo total: {nodo.tiempo_final_total}\n"
                     f"Capacidad de ejecución: {cap_ejec}\n"
-                    f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n\n")
+                    f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n"
+                    f"Tamaño conjunto de prototipos: {nodo.tam_conj_prot}\n"
+                    f"\n")
+
 
     print("Se ha terminado de ejecutar todo.")
 

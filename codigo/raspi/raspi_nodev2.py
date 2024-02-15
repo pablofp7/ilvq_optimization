@@ -86,6 +86,7 @@ class RaspiNodev2:
                 inicio_procesamiento = time.perf_counter_ns()  # Iniciar el temporizador para el procesamiento.
                 self.learn_from_queue()  # método hipotético para procesar el prototipo
                 self.tiempo_learn_queue += time.perf_counter_ns() - inicio_procesamiento  # Acumular tiempo.
+                self.save_tam_conj()  # Guardar el tamaño del conjunto de prototipos.
 
             self.tiempo_espera = time.time() - inicio_wait
             self.tiempo_espera_total += self.tiempo_espera  # Acumular el tiempo real de espera.
@@ -94,6 +95,7 @@ class RaspiNodev2:
             inicio_learn_data = time.time()
             self.learn_from_data() 
             self.tiempo_learn_data += time.time() - inicio_learn_data
+            self.save_tam_conj()  # Guardar el tamaño del conjunto de prototipos.
 
             # Temporizador para "share" después de procesar la muestra.
             inicio_share = time.time()
@@ -232,6 +234,11 @@ class RaspiNodev2:
                                 
             return
         
+    def save_tam_conj(self):
+        if (self.muestras_train + self.protos_train) % 10 == 0:
+            #Añadir tupla a la lista de tamaños de conjunto de prototipos. (Muestras train + protos train, tamaño del conjunto de prototipos)
+            self.tam_conj_prot.append((self.muestras_train + self.protos_train, len(list(self.modelo_proto.buffer.prototypes.values()))))
+
 
     def recibir(self):
         if self.nodos == 1 or self.s == 0 or self.T == 0:
