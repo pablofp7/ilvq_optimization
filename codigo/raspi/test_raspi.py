@@ -80,7 +80,9 @@ def main(df: pd.DataFrame):
                         f"Tiempo compartiendo prototipos: {nodo.tiempo_share}\n"
                         f"Tiempo total: {nodo.tiempo_final_total}\n"
                         f"Capacidad de ejecución: {cap_ejec}\n"
-                        f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n\n")
+                        f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n"
+                        f"Tamaño conjunto de prototipos: {nodo.tam_conj_prot}\n"
+                        f"\n")
 
     print("Se ha terminado de ejecutar todo.")    
 
@@ -97,7 +99,7 @@ if __name__ == "__main__":
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
-        tasa_llegadas = 4
+        tasa_llegadas = 10
         media_llegadas = 1 / tasa_llegadas
         
         iteraciones = 50

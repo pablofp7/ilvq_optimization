@@ -45,6 +45,7 @@ class RaspiNodev2:
         self.compartidos = 0
         self.shared_times = 0
         self.tam_lotes_recibidos = []
+        self.tam_conj_prot = []
         
         #Medidores de tiempo
         self.tiempo_learn_data = 0
@@ -75,6 +76,10 @@ class RaspiNodev2:
         # Iterar sobre cada muestra y su tiempo de espera correspondiente.
         for t_espera in self.t_llegadas:
             inicio_wait = time.time()
+            
+            if (self.muestras_train + self.protos_train) % 10 == 0:
+                #Añadir tupla a la lista de tamaños de conjunto de prototipos. (Muestras train + protos train, tamaño del conjunto de prototipos)
+                self.tam_conj_prot.append((self.muestras_train + self.protos_train, len(list(self.modelo_proto.buffer.prototypes.values()))))
 
             # Esperamos el tiempo designado, pero mientras esperamos, continuamos procesando la cola.
             while time.time() - inicio_wait < t_espera:
