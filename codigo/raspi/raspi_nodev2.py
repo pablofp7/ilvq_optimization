@@ -118,6 +118,7 @@ class RaspiNodev2:
         client_context.term()
         
 
+        self.tam_conj_prot = self.diezmar(self.tam_conj_prot)  # Diezmar la lista de tamaños de conjuntos de prototipos.
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
         print(f" - El nodo {self.id} ha terminado de ejecutar TODO.\n"
             f"El tiempo total de espera calculado por muestras ha sido de {sum(self.t_llegadas) / 60} minutos.\n"
@@ -126,6 +127,7 @@ class RaspiNodev2:
             f"Ha tardado {self.tiempo_learn_data / 60} minutos en learn from data.\n"
             f"Ha tardado {self.tiempo_learn_queue / 60} minutos en learn from queue.\n"
             f"Ha tardado {self.tiempo_share / 60} minutos en share.\n")  # <-- Añadir tiempo de "share".
+        
         
        
         return
@@ -235,9 +237,36 @@ class RaspiNodev2:
             return
         
     def save_tam_conj(self):
+        # Guardar el tamaño cada 10 muestras siempre
         if (self.muestras_train + self.protos_train) % 10 == 0:
-            #Añadir tupla a la lista de tamaños de conjunto de prototipos. (Muestras train + protos train, tamaño del conjunto de prototipos)
-            self.tam_conj_prot.append((self.muestras_train + self.protos_train, len(list(self.modelo_proto.buffer.prototypes.values()))))
+            # Calcular el valor actual
+            valor_actual = self.muestras_train + self.protos_train
+            num_prototipos = len(list(self.modelo_proto.buffer.prototypes.values()))
+
+            # Comprobar si tam_conj_prot no está vacío y el primer elemento de la última tupla es igual a valor_actual
+            if not self.tam_conj_prot:
+                self.tam_conj_prot.append((valor_actual, num_prototipos))
+            
+            elif self.tam_conj_prot[-1][0] != valor_actual:
+                # Si la lista está vacía o el valor actual es diferente, añadir la nueva tupla
+                self.tam_conj_prot.append((valor_actual, num_prototipos))
+
+
+    def diezmar(datos):
+        total_muestras = len(datos)
+        max_tuplas = 1000  # Número máximo de tuplas deseadas
+        
+        # Calcular el factor de diezmado necesario. El "+ (total_muestras % max_tuplas > 0)" ajusta para arriba si es necesario
+        factor_diezmado = max(total_muestras // max_tuplas, 1) + (total_muestras % max_tuplas > 0)
+        
+        # Seleccionar datos aplicando el factor de diezmado
+        datos_diezmados = [datos[i] for i in range(0, total_muestras, factor_diezmado)]
+        
+        # Ajustar el resultado para asegurar exactamente 1000 muestras, si el total es mayor que 1000
+        if len(datos_diezmados) > max_tuplas:
+            datos_diezmados = datos_diezmados[:max_tuplas]
+        
+        return datos_diezmados
 
 
     def recibir(self):
