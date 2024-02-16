@@ -250,6 +250,7 @@ class RaspiNodev1:
             
             
     def diezmar(datos):
+        datos  = self.tam_conj_prot
         total_muestras = len(datos)
         max_tuplas = 1000  # Número máximo de tuplas deseadas
         
