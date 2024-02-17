@@ -118,7 +118,8 @@ class RaspiNodev2:
         client_context.term()
         
 
-        self.diezmar()  # Diezmar la lista de tamaños de conjuntos de prototipos.
+        self.tam_conj_prot = self.diezmar()  # Diezmar la lista de tamaños de conjuntos de prototipos.
+
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
         print(f" - El nodo {self.id} ha terminado de ejecutar TODO.\n"
             f"El tiempo total de espera calculado por muestras ha sido de {sum(self.t_llegadas) / 60} minutos.\n"
