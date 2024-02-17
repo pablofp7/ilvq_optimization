@@ -99,7 +99,7 @@ if __name__ == "__main__":
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
-        tasa_llegadas = 10
+        tasa_llegadas = 20
         media_llegadas = 1 / tasa_llegadas
         
         iteraciones = 50
