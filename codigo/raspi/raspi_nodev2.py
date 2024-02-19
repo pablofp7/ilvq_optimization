@@ -64,6 +64,7 @@ class RaspiNodev2:
         # Ahora los sockets para enviar
         client_context = zmq.Context()
         client_socket = client_context.socket(zmq.ROUTER)
+        client_socket.setsockopt(zmq.SNDBUF, 5 * 1024 * 1024)  # 5 MB
         client_socket.setsockopt_string(zmq.IDENTITY, f"{self.id}")
         for dir, puerto in zip(self.dir_vecinos, self.puertos_vecinos):
             client_socket.connect(f"tcp://{dir}:{puerto}")
@@ -277,6 +278,7 @@ class RaspiNodev2:
 
         server_context = zmq.Context()
         server_socket = server_context.socket(zmq.ROUTER)
+        server_socket.setsockopt(zmq.RCVBUF, 2000 * 1024 * 1024)  # 2000 MB
         server_socket.setsockopt_string(zmq.IDENTITY, f"{self.id}")
         server_socket.bind(f"tcp://*:{self.puerto_base + self.id}")
         # El timeout depende de T, porque con T bajo, el nodo debe esperar más tiempo
