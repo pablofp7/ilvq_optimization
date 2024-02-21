@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import re
 import os
+import sys
 
 def leer_datos(directorio_resultados, dataset_especifico, s_especifico, T_especifico):
     datos_filtrados = []
@@ -42,7 +43,14 @@ def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico):
     plt.show()
 
 def main():
-    directorio_resultados = "resultados_raspi"
+    try:
+        if "replica"in sys.argv[1]:
+            directorio_resultados = "resultados_replica1_test_raspi"
+        else:
+            directorio_resultados = "resultados_test_raspi"
+    except:
+        directorio_resultados = "resultados_test_raspi"
+        
     print("Valores posibles para el conjunto de datos: elec, phis, elec2")
     dataset_especifico = input("Ingrese el conjunto de datos específico (por ejemplo, 'elec'): ")
     print("Valores posibles para s: 1, 2, 3, 4")
