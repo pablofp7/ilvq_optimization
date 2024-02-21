@@ -1,6 +1,9 @@
-from scipy.stats import entropy as scipy_entropy  # Renaming the scipy.stats entropy function
+from scipy.stats import entropy as scipy_entropy
 import numpy as np
-from sklearn.neighbors import KernelDensity 
+from sklearn.neighbors import KernelDensity
+import matplotlib.pyplot as plt
+from scipy.spatial.distance import jensenshannon
+
 
 def kl_divergence(p, q):
     return scipy_entropy(p, qk=q)
@@ -9,71 +12,71 @@ def jensen_shannon_distance(p, q):
     m = 0.5 * (p + q)
     return np.sqrt(0.5 * (kl_divergence(p, m) + kl_divergence(q, m)))
 
-def multivariate_kde_estimation(data, bandwidth='scott'):
+def fit_kde(data, bandwidth='scott'):
     kde = KernelDensity(kernel='epanechnikov', bandwidth=bandwidth).fit(data)
-    def density(points):
-        return np.exp(kde.score_samples(points))
-    return kde, density
+    return kde
 
-def compute_js_distance_between_datasets(data1, data2):
-    # Estimate KDEs for each dataset
-    kde1, density1 = multivariate_kde_estimation(data1)
-    kde2, density2 = multivariate_kde_estimation(data2)
+def calculate_density(kde, points):
+    return np.exp(kde.score_samples(points))
 
-    # Define the domain range for each dimension based on the data
-    x_min, x_max = -5, 10  # Adjust these ranges as needed
-    y_min, y_max = 0, 1    # Adjust these ranges as needed
-    num_points = 100  # Number of points in each dimension
+def compute_js_distance_multidimensional(data1, data2, num_points=10):  # Usar un num_points más pequeño para alta dimensión
+    # Determinar los rangos comunes para cada dimensión
+    min_ranges = np.min(np.vstack([data1, data2]), axis=0)
+    max_ranges = np.max(np.vstack([data1, data2]), axis=0)
+    
+    # Crear una malla de puntos para evaluar las densidades
+    axis_ranges = [np.linspace(min_ranges[dim], max_ranges[dim], num_points) for dim in range(data1.shape[1])]
+    meshgrid = np.meshgrid(*axis_ranges)
+    flat_grid = np.array([axis.ravel() for axis in meshgrid]).T
+    
+    # Ajustar KDEs y calcular las densidades en la malla de puntos
+    kde1 = fit_kde(data1)
+    kde2 = fit_kde(data2)
+    prob_density_estimate1 = calculate_density(kde1, flat_grid)
+    prob_density_estimate2 = calculate_density(kde2, flat_grid)
+    
+    # Normalizar las densidades
+    prob_density_estimate1_normalized = prob_density_estimate1 / sum(prob_density_estimate1)
+    prob_density_estimate2_normalized = prob_density_estimate2 / sum(prob_density_estimate2)
+    
+    # Calcular la distancia de Jensen-Shannon
+    js_distance = jensenshannon(prob_density_estimate1_normalized, prob_density_estimate2_normalized, base=2)
+    
+    return js_distance
 
-    # Generate equally spaced points in each dimension
-    x = np.linspace(x_min, x_max, num_points)
-    y = np.linspace(y_min, y_max, num_points)
 
-    # Create a meshgrid for the bivariate domain
-    X, Y = np.meshgrid(x, y)
-    points_to_evaluate = np.column_stack([X.ravel(), Y.ravel()])
 
-    # Compute the probability densities for the two datasets
-    prob_density_estimate1 = density1(points_to_evaluate)
-    prob_density_estimate2 = density2(points_to_evaluate)
+# Ejemplo de uso
+size = 1000
 
-    sum_density1 = np.sum(prob_density_estimate1)
-    sum_density2 = np.sum(prob_density_estimate2)
+mean1 = 0
+std_dev1 = 1  
+dimension1 = np.random.normal(loc=mean1, scale=std_dev1, size=size)
+dimension1 = np.random.uniform(low=0, high=1, size=size)
+dimension2 = np.random.uniform(low=0, high=0.25, size=size)
+data1 = np.column_stack((dimension1, dimension2))
 
-    prob_density_estimate1_normalized = prob_density_estimate1 / sum_density1
-    prob_density_estimate2_normalized = prob_density_estimate2 / sum_density2
+mean2 = 0
+std_dev2 = 1  
+dimension1 = np.random.normal(loc=mean2, scale=std_dev2, size=size)
+dimension1 = np.random.uniform(low=0, high=1, size=size)
+dimension2 = np.random.uniform(low=0.75, high=1, size=size)
+data2 = np.column_stack((dimension1, dimension2))
 
-    # Compute the Jensen-Shannon distance
-    js_distance = jensen_shannon_distance(prob_density_estimate1_normalized, prob_density_estimate2_normalized)
+# n_samples = 10000
+# data1 = np.random.uniform(low=0, high=0.75, size=n_samples).reshape(-1, 1)
+# data2 = np.random.uniform(low=0.25, high=1, size=n_samples).reshape(-1, 1)
 
-    print("Jensen-Shannon Distance:", js_distance)
+js_distance = compute_js_distance_multidimensional(data1, data2)
+print("Jensen-Shannon Distance:", js_distance)
 
-    # Optional: Sum of probability density estimates, if needed for further analysis
-    sum_density1 = np.sum(prob_density_estimate1_normalized)
-    sum_density2 = np.sum(prob_density_estimate2_normalized)
-
-    print(f"Sum of densities for dataset 1: {sum_density1}")
-    print(f"Sum of densities for dataset 2: {sum_density2}")
-
-# Example usage:
-# mean1 = 0
-# std_dev1 = 1  
-# size1 = 1000  
-
-# dimension1 = np.random.normal(loc=mean1, scale=std_dev1, size=size1)
-# dimension2 = np.random.uniform(low=0, high=0.25, size=size1)
-# data1 = np.column_stack((dimension1, dimension2))
-
-# # Generate data2
-# mean2 = 0
-# std_dev2 = 1  
-# size2 = 1000  
-
-# dimension1 = np.random.normal(loc=mean2, scale=std_dev2, size=size2)
-# dimension2 = np.random.uniform(low=0.75, high=1, size=size2)
-# data2 = np.column_stack((dimension1, dimension2))
-
-data1 = np.random.rand(0, 1, 1000)
-data2 = np.random.rand(0, 1, 1000)  
-
-compute_js_distance_between_datasets(data1, data2)
+# # Plot histograms
+# plt.figure(figsize=(10, 6))
+# plt.hist(data1, bins=50, alpha=0.5, label='Data1: U[0, 0.75]')
+# plt.hist(data2, bins=50, alpha=0.5, label='Data2: U[0.25, 1]')
+# plt.legend(loc='upper right')
+# plt.xlabel('Value')
+# plt.ylabel('Frequency')
+# plt.title('Histograms of Two Uniform Distributions')
+# plt.grid(True)
+# plt.show()
