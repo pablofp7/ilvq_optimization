@@ -22,7 +22,7 @@ class RaspiNodev1:
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
         self.puerto_base = puerto_base
-        self.cola_protos = [deque(maxlen=100000) for _ in range(self.nodos)]
+        self.cola_protos = [deque(maxlen=10000000) for _ in range(self.nodos)]
         self.cola_index = 0
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         

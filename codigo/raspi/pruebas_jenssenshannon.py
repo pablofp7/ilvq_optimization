@@ -20,8 +20,8 @@ import time
 
 
 # Configuración de los datos
-size = 10000  # Número de muestras para cada dimensión
-n_dim = 8  # Número de dimensiones
+size = 1000  # Número de muestras para cada dimensión
+n_dim = 1 # Número de dimensiones
 n_iterations = 1  # Número de iteraciones para la comparación
 
 # Listas para almacenar los resultados de JSD y los tiempos de ejecución
