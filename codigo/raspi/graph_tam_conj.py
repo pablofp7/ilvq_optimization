@@ -35,12 +35,27 @@ def calcular_promedios(datos_filtrados):
 
 def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico):
     plt.figure(figsize=(10, 6))
-    plt.plot(x_vals, y_proms, linestyle='-', color='b')
+    
+    # Plotear los datos originales
+    plt.scatter(x_vals, y_proms, color='b', label='Datos Originales')
+    
+    # Ajuste polinomial de grado 3 (puedes cambiar el grado para experimentar)
+    coeficientes = np.polyfit(x_vals, y_proms, 3)
+    polinomio = np.poly1d(coeficientes)
+    x_linea = np.linspace(min(x_vals), max(x_vals), 100)  # Generar puntos x para la línea ajustada
+    y_linea = polinomio(x_linea)
+    
+    # Plotear la curva ajustada
+    plt.plot(x_linea, y_linea, color='r', label='Ajuste Polinomial')
+    
+    # Configuración del gráfico
     plt.title(f'Tamaño del conjunto de prototipos para {dataset_especifico}, s={s_especifico} y T={T_especifico}')
     plt.xlabel('X')
     plt.ylabel('Promedio de Y')
+    plt.legend()
     plt.grid(True)
     plt.show()
+    
 
 def main():
     try:
