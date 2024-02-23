@@ -170,8 +170,8 @@ class RaspiNodev1:
         
         self.update_cola_index()
         #Si la cola está vacía, se salta el nodo
-        if not self.cola_protos[self.cola_index]:
-            return        
+        # if not self.cola_protos[self.cola_index]:
+        #     return        
         
         # print(f"El nodo {self.id} está procesando la cola {self.cola_index}, que tiene {len(self.cola_protos[self.cola_index])} prototipos.")
         colas_revisadas = 0
