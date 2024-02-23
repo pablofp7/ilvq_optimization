@@ -301,7 +301,7 @@ class RaspiNodev4:
                             
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
-                self.cola_protos[id_recibido].extend(protos)
+                self.cola_protos[id_recibido].extendleft(protos)
                 self.tam_lotes_recibidos.append((id_recibido, len(protos)))
 
     

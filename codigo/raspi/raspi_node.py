@@ -275,7 +275,7 @@ class RaspiNodev1:
 
         server_context = zmq.Context()
         server_socket = server_context.socket(zmq.ROUTER)
-        server_socket.setsockopt(zmq.RCVBUF, 2000 * 1024 * 1024)  # 2000 MB
+        server_socket.setsockopt(zmq.RCVBUF, 2000 * 1024 * 1024)  # 2 GB
         server_socket.setsockopt(zmq.IDENTITY, f"{self.id}".encode())
         server_socket.bind(f"tcp://*:{self.puerto_base + self.id}")
         # El timeout depende de T, porque con T bajo, el nodo debe esperar más tiempo
@@ -298,7 +298,7 @@ class RaspiNodev1:
                             
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
-                self.cola_protos[id_recibido].extend(protos)
+                self.cola_protos[id_recibido].extendleft(protos)
                 self.tam_lotes_recibidos.append((id_recibido, len(protos)))
 
     
