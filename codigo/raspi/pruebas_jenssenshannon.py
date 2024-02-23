@@ -29,6 +29,7 @@ def prueba2():
     data1 = np.random.uniform(low=0, high=0.25, size=n_samples).reshape(-1, 1)
     data2 = np.random.uniform(low=0.75, high=1, size=n_samples).reshape(-1, 1)
     distancia = jsd.monte_carlo_jsd(data1, data2)
+    print(f"Distancia de Jensen-Shannon: {distancia}")
     
     
 def prueba3():
