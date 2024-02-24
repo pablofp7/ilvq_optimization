@@ -5,5 +5,6 @@ codigo/new_exp/prototypes/__pycache__
 *.pyc
 codigo/new_exp/tiempos.txt
 
+**/*.log
 **/__pycache__/
 **/nohup.out
