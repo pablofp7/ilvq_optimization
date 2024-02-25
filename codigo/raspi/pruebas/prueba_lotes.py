@@ -1,7 +1,3 @@
-# Este programa se va a entrenar el modelo XuILVQ como en los otros
-# programas, guardar el tamaño del conjunto de prototipos en número de prototipos
-# convertirlo a pickle como se hace en nodev3.py y luego se calcula el numero de bytes que es mensaje ocupa
-
 import sys
 import os
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -12,6 +8,9 @@ import numpy as np
 import pandas as pd     
 from prototypes import XuILVQ
 import pickle
+from matplotlib import pyplot as plt
+from scipy.interpolate import UnivariateSpline
+
 
 
 def read_dataset():
@@ -34,24 +33,48 @@ def main():
     df = read_dataset()
     #        datalist = [(fila[:-1], fila[-1]) for fila in dataset.values] 
     df_list = [(fila[:-1], fila[-1]) for fila in df.values]
+    df_list = df_list[:25000]
     
     
     modelo = XuILVQ()
     lista_tam_bytes = []
+    lista_tam_conj = []
     for i in range(len(df_list)):
         x, y = df_list.pop(0)            
         x = {k: v for k, v in enumerate(x)}    
         modelo.learn_one(x, y)
+        protos = list(modelo.buffer.prototypes.values())
+        tam_num = len(protos)
+        lista_tam_conj.append((i, tam_num))
         if i % 100 == 0:
             print(f"Iteracion {i}")
-            protos = list(modelo.buffer.prototypes.values())
-            tam_num = len(protos)
             proto_to_share = pickle.dumps({"id": id, "protos": [{'x': proto['x'], 'y': proto['y']} for proto in protos]})
             tam_bytes = sys.getsizeof(proto_to_share)
             
             lista_tam_bytes.append((i, tam_num, tam_bytes))
 
     print(f"Lista de tamaños de prototipos y bytes: {lista_tam_bytes}")
+    
+    val_x, val_y = zip(*lista_tam_conj)
+    
+    num_muestras = np.array(val_x)
+    tam_protos = np.array(val_y)
+    
+    # Crear el modelo de regresión por splines
+    spline = UnivariateSpline(num_muestras, tam_protos, s=1)  # Ajusta el parámetro de suavizado `s` según sea necesario
+
+    # Generar puntos para la evaluación del modelo
+    muestras_eval = np.linspace(min(num_muestras), max(num_muestras), 200)
+    prototipos_pred = spline(muestras_eval)
+    
+    plt.figure(figsize=(10, 6))
+    plt.plot(num_muestras, tam_protos, 'o', label='Datos reales')
+    plt.plot(muestras_eval, prototipos_pred, '-', label='Ajuste por splines')
+    plt.title("Regresión por Splines: Tamaño del Conjunto de Prototipos vs. Número de Muestras")
+    plt.xlabel("Número de Muestras")
+    plt.ylabel("Tamaño del Conjunto de Prototipos")
+    plt.legend()
+    plt.show()
     
     
 main()
