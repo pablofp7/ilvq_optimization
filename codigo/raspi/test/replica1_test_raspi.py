@@ -1,15 +1,19 @@
+import sys
+import os
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 from prototypes import XuILVQ
 import pandas as pd
-from raspi_nodev4_1_local import RaspiNodev4_1local
-import os
+from node_class.raspi_node import RaspiNodev1
 import time
 import threading
 import numpy as np
 
-
 def read_dataset(name: str):
     filename = data_name[name]
-    dataset = pd.read_csv(f"dataset/{filename}")
+    dataset = pd.read_csv(f"../dataset/{filename}")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True) 
@@ -38,7 +42,7 @@ def main(df: pd.DataFrame):
     
     nodos = []
     for id in range(n_nodos):
-        nodo = RaspiNodev4_1local(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+        nodo = RaspiNodev1(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
         nodos.append(nodo)    
     
     hilos = []
@@ -94,23 +98,21 @@ if __name__ == "__main__":
     
     try:
         n_nodos = 5
-        n_muestras = 250
+        n_muestras = 5000
         
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
-        tasa_llegadas = 20
+        tasa_llegadas = 30
         media_llegadas = 1 / tasa_llegadas
         
-        iteraciones = 50
-        datasets = ["elec", "phis", "elec2"]
-        
-        iteraciones = 20
-        datasets = ["elec", "phis", "elec2"]
+        iteraciones = 30
+        datasets = ["elec"]
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
-        directorio_resultados = "resultados_raspiv4"
+        nombre_script = sys.argv[0].split(".")[0]
+        directorio_resultados = f"../resultados_{nombre_script}"
         
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)

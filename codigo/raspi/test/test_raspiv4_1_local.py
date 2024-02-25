@@ -1,7 +1,12 @@
+import sys
+import os
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 from prototypes import XuILVQ
 import pandas as pd
-from raspi_node import RaspiNodev1
-import os
+from node_class.raspi_nodev4_1_local import RaspiNodev4_1local
 import time
 import threading
 import numpy as np
@@ -9,7 +14,7 @@ import numpy as np
 
 def read_dataset(name: str):
     filename = data_name[name]
-    dataset = pd.read_csv(f"dataset/{filename}")
+    dataset = pd.read_csv(f"../dataset/{filename}")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True) 
@@ -38,7 +43,7 @@ def main(df: pd.DataFrame):
     
     nodos = []
     for id in range(n_nodos):
-        nodo = RaspiNodev1(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+        nodo = RaspiNodev4_1local(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
         nodos.append(nodo)    
     
     hilos = []
@@ -94,7 +99,7 @@ if __name__ == "__main__":
     
     try:
         n_nodos = 5
-        n_muestras = 1000
+        n_muestras = 250
         
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
@@ -110,7 +115,7 @@ if __name__ == "__main__":
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
-        directorio_resultados = "resultados_raspi"
+        directorio_resultados = "../resultados_raspiv4"
         
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)

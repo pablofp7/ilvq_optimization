@@ -1,15 +1,20 @@
+import sys
+import os
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 from prototypes import XuILVQ
 import pandas as pd
-from raspi_node import RaspiNodev1
-import os
+from node_class.raspi_node import RaspiNodev1
 import time
 import threading
 import numpy as np
-import sys
+
 
 def read_dataset(name: str):
     filename = data_name[name]
-    dataset = pd.read_csv(f"dataset/{filename}")
+    dataset = pd.read_csv(f"../dataset/{filename}")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True) 
@@ -94,21 +99,23 @@ if __name__ == "__main__":
     
     try:
         n_nodos = 5
-        n_muestras = 5000
+        n_muestras = 1000
         
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
-        tasa_llegadas = 30
+        tasa_llegadas = 20
         media_llegadas = 1 / tasa_llegadas
         
-        iteraciones = 30
-        datasets = ["elec"]
+        iteraciones = 50
+        datasets = ["elec", "phis", "elec2"]
+        
+        iteraciones = 20
+        datasets = ["elec", "phis", "elec2"]
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
-        nombre_script = sys.argv[0].split(".")[0]
-        directorio_resultados = f"resultados_{nombre_script}"
+        directorio_resultados = "../resultados_raspi"
         
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)

@@ -1,12 +1,17 @@
+import sys
+import os
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 from entropia import jsd
 import numpy as np
 import time
 import pandas as pd
 from prototypes import XuILVQ
-import sys
 
 def read_dataset():
-    dataset = pd.read_csv(f"dataset/electricity.csv")
+    dataset = pd.read_csv(f"../dataset/electricity.csv")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True) 
@@ -235,6 +240,63 @@ def prueba4(mode: int = 0):
         print(f"Distancia de Jensen-Shannon entre modelo1 y modelo2: {distancia12}. Modo: {mode}")
         print(f"Distancia de Jensen-Shannon entre modelo1 y modelo3: {distancia13}. Modo: {mode}")
         print(f"Distancia de Jensen-Shannon entre modelo2 y modelo3: {distancia23}. Modo: {mode}")
+        
+
+    elif mode == 4:
+        modelo3 = XuILVQ()  # Inicializa el tercer modelo
+        modelo4 = XuILVQ()  # Inicializa el cuarto modelo
+        
+        num_muestras = len(df_list)
+        medio_dataset = num_muestras // 2
+        
+        # Entrena el primer modelo con las primeras 1000 muestras
+        for i in range(1000):
+            x, y = df_list[i]
+            x = {k: v for k, v in enumerate(x)}
+            modelo1.learn_one(x, y)
+            
+        # Entrena el segundo modelo con las segundas 1000 muestras
+        for i in range(1000, 2000):
+            x, y = df_list[i]
+            x = {k: v for k, v in enumerate(x)}
+            modelo2.learn_one(x, y)
+            
+        # Entrena el tercer modelo con 1000 muestras a partir de la mitad del dataset
+        for i in range(medio_dataset, medio_dataset + 1000):
+            x, y = df_list[i]
+            x = {k: v for k, v in enumerate(x)}
+            modelo3.learn_one(x, y)
+            
+        # Entrena el cuarto modelo con las últimas 1000 muestras
+        for i in range(num_muestras - 1000, num_muestras):
+            x, y = df_list[i]
+            x = {k: v for k, v in enumerate(x)}
+            modelo4.learn_one(x, y)
+            
+        # Genera los arrays de numpy para cada modelo
+        data1 = np.array([np.append(proto['x'], proto['y']) for proto in list(modelo1.buffer.prototypes.values())])
+        data2 = np.array([np.append(proto['x'], proto['y']) for proto in list(modelo2.buffer.prototypes.values())])
+        data3 = np.array([np.append(proto['x'], proto['y']) for proto in list(modelo3.buffer.prototypes.values())])
+        data4 = np.array([np.append(proto['x'], proto['y']) for proto in list(modelo4.buffer.prototypes.values())])
+        
+        # Calcula y muestra la distancia de Jensen-Shannon entre cada par de modelos
+        distancia12 = jsd.monte_carlo_jsd(data1, data2)
+        print(f"Distancia de Jensen-Shannon entre modelo1 y modelo2: {distancia12}. Modo: {mode}")
+        
+        distancia13 = jsd.monte_carlo_jsd(data1, data3)
+        print(f"Distancia de Jensen-Shannon entre modelo1 y modelo3: {distancia13}. Modo: {mode}")
+        
+        distancia14 = jsd.monte_carlo_jsd(data1, data4)
+        print(f"Distancia de Jensen-Shannon entre modelo1 y modelo4: {distancia14}. Modo: {mode}")
+        
+        distancia23 = jsd.monte_carlo_jsd(data2, data3)
+        print(f"Distancia de Jensen-Shannon entre modelo2 y modelo3: {distancia23}. Modo: {mode}")
+        
+        distancia24 = jsd.monte_carlo_jsd(data2, data4)
+        print(f"Distancia de Jensen-Shannon entre modelo2 y modelo4: {distancia24}. Modo: {mode}")
+        
+        distancia34 = jsd.monte_carlo_jsd(data3, data4)
+        print(f"Distancia de Jensen-Shannon entre modelo3 y modelo4: {distancia34}. Modo: {mode}")
 
                 
 

@@ -2,15 +2,20 @@
 # programas, guardar el tamaño del conjunto de prototipos en número de prototipos
 # convertirlo a pickle como se hace en nodev3.py y luego se calcula el numero de bytes que es mensaje ocupa
 
+import sys
+import os
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 import numpy as np
 import pandas as pd     
 from prototypes import XuILVQ
 import pickle
-import sys
 
 
 def read_dataset():
-    dataset = pd.read_csv(f"dataset/electricity.csv")
+    dataset = pd.read_csv(f"../dataset/electricity.csv")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True) 

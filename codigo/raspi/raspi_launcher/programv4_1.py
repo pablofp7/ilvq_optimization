@@ -1,7 +1,12 @@
+import sys
+import os
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 from prototypes import XuILVQ
 import pandas as pd
-from raspi_nodev2 import RaspiNodev2
-import os
+from node_class.raspi_nodev4_1 import RaspiNodev4_1
 import time
 import threading
 import numpy as np
@@ -13,7 +18,7 @@ import socket
 
 def read_dataset(name: str):
     filename = data_name[name]
-    dataset = pd.read_csv(f"dataset/{filename}")
+    dataset = pd.read_csv(f"../dataset/{filename}")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True)
@@ -40,7 +45,7 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
 
-    nodo = RaspiNodev2(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = RaspiNodev4_1(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
@@ -210,7 +215,7 @@ if __name__ == "__main__":
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
 
-        directorio_resultados = "resultados_raspi_indiv"
+        directorio_resultados = "../resultados_raspi_indiv"
 
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)

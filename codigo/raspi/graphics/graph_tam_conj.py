@@ -60,11 +60,11 @@ def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico):
 def main():
     try:
         if "replica"in sys.argv[1]:
-            directorio_resultados = "resultados_replica1_test_raspi"
+            directorio_resultados = "../resultados_replica1_test_raspi"
         else:
-            directorio_resultados = "resultados_raspi"
+            directorio_resultados = "../resultados_raspi"
     except:
-        directorio_resultados = "resultados_raspi"
+        directorio_resultados = "../resultados_raspi"
         
     print("Valores posibles para el conjunto de datos: elec, phis, elec2")
     dataset_especifico = input("Ingrese el conjunto de datos específico (por ejemplo, 'elec'): ")
