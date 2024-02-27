@@ -98,7 +98,7 @@ if __name__ == "__main__":
     
     try:
         n_nodos = 5
-        n_muestras = 1000
+        n_muestras = 10000
         
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
@@ -106,8 +106,9 @@ if __name__ == "__main__":
         tasa_llegadas = 10
         media_llegadas = 1 / tasa_llegadas
         
-        iteraciones = 30
+        iteraciones = 10
         datasets = ["elec"]
+        T = np.array([1.0])
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
