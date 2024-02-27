@@ -109,6 +109,7 @@ if __name__ == "__main__":
         iteraciones = 10
         datasets = ["elec"]
         T = np.array([1.0])
+        s = [4]
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
