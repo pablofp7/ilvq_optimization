@@ -19,7 +19,7 @@ def fit_kde(data, bandwidth='scott'):
 def calculate_density(kde, points):
     return np.exp(kde.score_samples(points))
 
-def compute_js_distance_multidimensional(data1, data2, num_points=10):  # Usar un num_points más pequeño para alta dimensión
+def compute_js_distance_multidimensional(data1, data2, num_points=1000):  # Usar un num_points más pequeño para alta dimensión
     # Determinar los rangos comunes para cada dimensión
     min_ranges = np.min(np.vstack([data1, data2]), axis=0)
     max_ranges = np.max(np.vstack([data1, data2]), axis=0)
