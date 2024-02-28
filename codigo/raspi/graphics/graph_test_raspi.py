@@ -32,7 +32,7 @@ def ajustar_tamaño_ventana():
 
 def get_results():
         
-    directorio_resultados = '/home/pablo/trabajo/codigo/raspi/resultados_raspi/'
+    directorio_resultados = '/home/pablo/trabajo/codigo/raspi/resultados_servidor/resultados_raspi/'
 
     datos_elec = []
     datos_elec2 = []

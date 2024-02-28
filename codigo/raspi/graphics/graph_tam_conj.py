@@ -60,7 +60,7 @@ def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico):
 def main():
     try:
         if "replica"in sys.argv[1]:
-            directorio_resultados = "../resultados_replica1_test_raspi"
+            directorio_resultados = "../resultados_servidor/resultados_replica1_test_raspi"
         else:
             directorio_resultados = "../resultados_raspi"
     except:
