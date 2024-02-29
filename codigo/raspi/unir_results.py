@@ -1,9 +1,15 @@
 import os
 import re
+import sys
 
 # Directorios de origen y destino
 results_dir = 'resultados_raspi_indiv'
-target_dir = 'test1_resultados'
+try:
+    test = sys.argv[1]     
+except:
+    test = "test1"
+
+target_dir = f'{test}_resultados'
 if not os.path.exists(target_dir):
     os.makedirs(target_dir)
 

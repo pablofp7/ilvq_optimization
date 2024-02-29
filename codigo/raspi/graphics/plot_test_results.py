@@ -31,8 +31,8 @@ def ajustar_tamaño_ventana():
     return ancho, alto
 
 def get_results():
-        
-    directorio_resultados = '/home/pablo/trabajo/codigo/raspi/test1_resultados/'
+    
+    directorio_resultados = f'/home/pablo/trabajo/codigo/raspi/{test}_resultados/'
 
     datos_elec = []
     datos_elec2 = []
@@ -229,6 +229,7 @@ def get_metric_and_plot(metrica: str = None):
 def close_window():
     ventana_principal.destroy()
     
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Analizador de métricas")
     parser.add_argument(
@@ -239,6 +240,26 @@ def parse_args():
         help="Especifica la métrica para trazar. Si no se especifica, se iniciará la interfaz gráfica. \
               Opciones válidas son: precision, recall, f1, mensajes, entrenados, compartidos."
     )
+    
+    # Define a custom type for checking the format "testX" where X is 1 to 10
+    def test_type(value):
+        if not value.startswith("test"):
+            raise argparse.ArgumentTypeError(f"Value must start with 'test'. You entered: {value}")
+        try:
+            num = int(value[4:])  # Extract the number part
+            if num < 1 or num > 10:
+                raise argparse.ArgumentTypeError("The number must be between 1 and 10.")
+        except ValueError:
+            raise argparse.ArgumentTypeError("The format must be 'testX' where X is 1 to 10.")
+        return value
+
+    parser.add_argument(
+        '-t',
+        type=test_type,
+        default='test1',  # Set 'test1' as the default value
+        help="Specify the test case to run. Acceptable values are from 'test1' to 'test10'. If not specified, 'test1' is used as the default."
+    )
+
     return parser.parse_args()
 
 def find_matching_metric(input_metric):
@@ -264,8 +285,10 @@ def find_matching_metric(input_metric):
 
 if __name__ == '__main__':
     
-    datos_elec, datos_phis, datos_elec2 = get_results()
     args = parse_args()
+    test = args.t
+    datos_elec, datos_phis, datos_elec2 = get_results()
+    
     
     if args.metrica:
         metricas = {
