@@ -236,7 +236,7 @@ class RaspiNodev1:
         
     def save_tam_conj(self):
         # Guardar el tamaño cada 10 muestras siempre
-        if (self.muestras_train + self.protos_train) % 10 == 0:
+        if (self.muestras_train + self.protos_train) % 50 == 0:
             # Calcular el valor actual
             valor_actual = self.muestras_train + self.protos_train
             num_prototipos = len(list(self.modelo_proto.buffer.prototypes.values()))
@@ -248,7 +248,13 @@ class RaspiNodev1:
             elif self.tam_conj_prot[-1][0] != valor_actual:
                 # Si la lista está vacía o el valor actual es diferente, añadir la nueva tupla
                 self.tam_conj_prot.append((valor_actual, num_prototipos))
-            
+        
+        # Guardar info de la distribución de las ["m"] del conjunto de prototipos cada 75 muestras
+        # Se calcula y guarda la media de "m", la mediana, rango intercuartilico (parar¡ ver cuantos primer cuartil cuantos segundo...)
+        # Coeficiente de asimetría
+        
+        if (self.muestras_train + self.protos_train) % 75 == 0:
+            pass
             
     def diezmar(self):
         datos  = self.tam_conj_prot
