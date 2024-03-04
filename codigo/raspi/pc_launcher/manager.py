@@ -12,7 +12,7 @@ def send_command(command):
                 s.connect((pi, port))
                 s.sendall(command.encode())
                 print(f"Command {command} sent to {pi}")
-        except ConnectionRefusedError:
+        except:
             print(f"Failed to connect to {pi}")
 
 if __name__ == "__main__":
