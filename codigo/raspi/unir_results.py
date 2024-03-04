@@ -22,6 +22,7 @@ T_values = T_values[::-1]
 nodos = [i for i in range(N_NODOS)]
 it_range = range(50)  # Desde 0 hasta 49
 all_files = os.listdir(results_dir)
+all_combined = os.listdir(target_dir)
 
 
 
@@ -77,7 +78,7 @@ def check_latest():
     for it in it_range:
         pattern = f"_it{it}_"
         compiled_pattern = re.compile(pattern)
-        files = [f for f in all_files if compiled_pattern.search(f)]
+        files = [f for f in all_combined if compiled_pattern.search(f)]
         if files:
             last_it = it
         else:
@@ -90,7 +91,7 @@ def check_latest():
     for data in datasets:
         pattern = f"_{data}_s"
         compiled_pattern = re.compile(pattern)
-        files = [f for f in all_files if compiled_pattern.search(f) and f"it{last_it}" in f]
+        files = [f for f in all_combined if compiled_pattern.search(f) and f"it{last_it}" in f]
         if files:
             last_data = data
         else:
@@ -100,7 +101,7 @@ def check_latest():
     for s in s_values:
         pattern = f"_s{s}_T"
         compiled_pattern = re.compile(pattern)
-        files = [f for f in all_files if compiled_pattern.search(f) and f"it{last_it}" in f and last_data in f]
+        files = [f for f in all_combined if compiled_pattern.search(f) and f"it{last_it}" in f and last_data in f]
         if files:
             last_s = s
         else:
@@ -110,7 +111,7 @@ def check_latest():
     for i, T in enumerate(T_values):
         pattern = f"_T{T}_"
         compiled_pattern = re.compile(pattern)
-        files = [f for f in all_files if compiled_pattern.search(f) and f"it{last_it}" in f and last_data in f and f"_s{last_s}_" in f]
+        files = [f for f in all_combined if compiled_pattern.search(f) and f"it{last_it}" in f and last_data in f and f"_s{last_s}_" in f]
         if files:
             last_T_index = i  # Actualizamos el índice de T_values al último T válido encontrado
 
