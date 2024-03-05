@@ -1,45 +1,45 @@
 import os
 import re
 import sys
-from itertools import cycle, islice
 
 
 class ParameterCombinations:
-    def __init__(self, datasets, s_values, T_values, start_dataset, start_s, start_T):
+    def __init__(self, it_range, datasets, s_values, T_values, start_it=0, start_dataset=0, start_s=0, start_T=0):
+        self.it_range = it_range
         self.datasets = datasets
         self.s_values = s_values
         self.T_values = T_values
-        self.current_dataset_index = datasets.index(start_dataset) if start_dataset in datasets else 0
-        self.current_s_index = s_values.index(start_s) if start_s in s_values else 0
-        self.current_T_index = T_values.index(start_T) if start_T in T_values else 0
-
-    def reset(self, start_dataset=None, start_s=None, start_T=None):
-        # Restablecer o inicializar los índices basados en los parámetros dados o al principio si no se especifican
-        self.current_dataset_index = self.datasets.index(start_dataset) if start_dataset in self.datasets else 0
-        self.current_s_index = self.s_values.index(start_s) if start_s in self.s_values else 0
-        self.current_T_index = self.T_values.index(start_T) if start_T in self.T_values else 0
-
+        self.current_it_index = start_it
+        self.current_dataset_index = start_dataset
+        self.current_s_index = start_s
+        self.current_T_index = start_T
 
     def next(self):
-        # Incrementa el parámetro más interno y maneja el acarreo
-        self.current_T_index += 1
-        if self.current_T_index >= len(self.T_values):
-            self.current_T_index = 0
-            self.current_s_index += 1
-            if self.current_s_index >= len(self.s_values):
-                self.current_s_index = 0
-                self.current_dataset_index += 1
-                if self.current_dataset_index >= len(self.datasets):
-                    self.current_dataset_index = 0  # Reinicio para la siguiente iteración de 'it'
-        
-        return self.get_current_parameters()
+        # Incrementa el parámetro más interno y maneja el acarreo usando el operador %
+        self.current_T_index = (self.current_T_index + 1) % len(self.T_values)
+        if self.current_T_index == 0:  # Acarreo para s
+            self.current_s_index = (self.current_s_index + 1) % len(self.s_values)
+            if self.current_s_index == 0:  # Acarreo para datasets
+                self.current_dataset_index = (self.current_dataset_index + 1) % len(self.datasets)
+                if self.current_dataset_index == 0:  # Acarreo para iteraciones
+                    self.current_it_index = (self.current_it_index + 1) % len(self.it_range)
+                    if self.current_it_index == 0:  # Ha completado un ciclo completo
+                        return False
+        return True
 
     def get_current_parameters(self):
-        # Obtiene los parámetros actuales
+        it = self.it_range[self.current_it_index]
         dataset = self.datasets[self.current_dataset_index]
         s = self.s_values[self.current_s_index]
         T = self.T_values[self.current_T_index]
-        return dataset, s, T
+        return it, dataset, s, T
+
+    def reset(self, start_it=0, start_dataset=0, start_s=0, start_T=0):
+        self.current_it_index = start_it
+        self.current_dataset_index = start_dataset
+        self.current_s_index = start_s
+        self.current_T_index = start_T
+
 
 
 
@@ -65,48 +65,6 @@ nodos = [i for i in range(N_NODOS)]
 all_files = os.listdir(results_dir)
 all_combined = os.listdir(target_dir)
 
-
-
-    
-def process_combinations():
-    for it in it_range:
-        for dataset in datasets:
-            for s in s_values:
-                for T in T_values:
-                    pattern = f"result_{dataset}_s{s}_T{T}_it{it}_nodo(\\d+)\\.txt"
-                    compiled_pattern = re.compile(pattern)
-                    files = [f for f in all_files if compiled_pattern.match(f)]
-
-                    if not files:
-                        if it > 19:  # Si `it` es mayor a 19 y no se encuentran archivos, se detiene la búsqueda
-                            break
-                        continue  # Si aún no se encuentran archivos, continúa buscando
-                    
-                    # Identificar nodos faltantes
-                    nodes_found = [int(compiled_pattern.search(f).group(1)) for f in files]
-                    missing_nodes = [n for n in range(max(nodes_found)+1) if n not in nodes_found]
-                    
-                    if missing_nodes:
-                        print(f"Faltan archivos para dataset={dataset}, s={s}, T={T}, it={it} en los nodos: {missing_nodes}")
-                        continue  # Pasa al siguiente conjunto de parámetros
-
-                    # Ordenar archivos para mantener el orden de los nodos
-                    files.sort(key=lambda x: int(re.search(r'nodo(\d+)', x).group(1)))
-
-                    contents = []
-                    for file_name in files:
-                        file_path = os.path.join(results_dir, file_name)
-                        with open(file_path, 'r') as file:
-                            contents.append(file.read().strip())
-
-                    final_content = "\n\n".join(contents) + "\n"
-
-                    new_file_name = f"result_{dataset}_s{s}_T{T}_it{it}.txt"
-                    new_file_path = os.path.join(target_dir, new_file_name)
-
-                    with open(new_file_path, 'w') as new_file:
-                        new_file.write(final_content)
-                    print(f"Archivo combinado creado: {new_file_path}")
 
 
 def check_latest():
@@ -174,68 +132,136 @@ def check_latest():
 
     return last_it, last_data, last_s, T_values[last_T_index] if last_T_index >= 0 else None
 
+
+
 def process_combinations_from_latest():
     
     last_it, last_data, last_s, last_T = check_latest()  # Obtiene los últimos valores procesados
-    param_combinations = ParameterCombinations(datasets, s_values, T_values, last_data, last_s, last_T)
-    param_combinations.next()
 
-    dataset, s, T = param_combinations.get_current_parameters()
-
-    if dataset == datasets[0] and s == s_values[0] and T == T_values[0]:
-        start_it = last_it + 1
+    if last_it is not None:
+        # Convertir los valores a índices
+        start_it_index = it_range.index(last_it)
+        start_dataset_index = datasets.index(last_data)
+        start_s_index = s_values.index(last_s)
+        start_T_index = T_values.index(last_T)
     else:
-        start_it = last_it
+        # Si no hay archivos previos, empezar desde el principio
+        start_it_index = 0
+        start_dataset_index = 0
+        start_s_index = 0
+        start_T_index = 0
+    
+    print(f"Indices: it={start_it_index}, dataset={start_dataset_index}, s={start_s_index}, T={start_T_index}")
+    print(f"Valores: it={it_range[start_it_index]}, dataset={datasets[start_dataset_index]}, s={s_values[start_s_index]}, T={T_values[start_T_index]}")
+    
+    param_combinations = ParameterCombinations(it_range, datasets, s_values, T_values, start_it_index, start_dataset_index, start_s_index, start_T_index)
+    param_combinations.next()
+    
+    more_combinations = True
+    while more_combinations:
+        it, dataset, s, T = param_combinations.get_current_parameters()
+        
+        pattern = f"result_{dataset}_s{s}_T{T}_it{it}_nodo(\\d+)\\.txt"
+        compiled_pattern = re.compile(pattern)
+        files = [f for f in all_files if compiled_pattern.match(f)]
+        
+        # Si no hay archivos, saltar a la siguiente combinación
+        if not files and it > 19:
+            more_combinations = param_combinations.next()
+            continue
+        
+        # Identificar nodos faltantes
+        nodes_found = [int(compiled_pattern.search(f).group(1)) for f in files]
+        missing_nodes = [n for n in range(N_NODOS) if n not in nodes_found]
+        
+        if missing_nodes:
+            print(f"Faltan archivos para it={it}, dataset={dataset}, s={s}, T={T} en los nodos: {missing_nodes}")
+            more_combinations = param_combinations.next()
+            break
+        
+        # Ordenar archivos para mantener el orden de los nodos
+        files.sort(key=lambda x: int(re.search(r'nodo(\d+)', x).group(1)))
 
-    for it in range(start_it, 50):  # Asumiendo que it_range va de 0 a 49
-        while True:
+        contents = []
+        for file_name in files:
+            file_path = os.path.join(results_dir, file_name)
+            with open(file_path, 'r') as file:
+                contents.append(file.read().strip())
+
+        final_content = "\n\n".join(contents) + "\n"
+
+        new_file_name = f"result_{dataset}_s{s}_T{T}_it{it}.txt"
+        new_file_path = os.path.join(target_dir, new_file_name)
+
+        with open(new_file_path, 'w') as new_file:
+            new_file.write(final_content)
+        print(f"Archivo combinado creado: {new_file_path}")
+        
+        more_combinations = param_combinations.next()
+
+
+# def process_combinations_from_latest():
+    
+#     last_it, last_data, last_s, last_T = check_latest()  # Obtiene los últimos valores procesados
+#     param_combinations = ParameterCombinations(datasets, s_values, T_values, last_data, last_s, last_T)
+#     param_combinations.next()
+
+#     dataset, s, T = param_combinations.get_current_parameters()
+
+#     if dataset == datasets[0] and s == s_values[0] and T == T_values[0]:
+#         start_it = last_it + 1
+#     else:
+#         start_it = last_it
+
+#     for it in range(start_it, 50):  # Asumiendo que it_range va de 0 a 49
+#         while True:
             
-            dataset, s, T = param_combinations.get_current_parameters()
+#             dataset, s, T = param_combinations.get_current_parameters()
 
-            pattern = f"result_{dataset}_s{s}_T{T}_it{it}_nodo(\\d+)\\.txt"
-            compiled_pattern = re.compile(pattern)
-            files = [f for f in all_files if compiled_pattern.match(f)]
+#             pattern = f"result_{dataset}_s{s}_T{T}_it{it}_nodo(\\d+)\\.txt"
+#             compiled_pattern = re.compile(pattern)
+#             files = [f for f in all_files if compiled_pattern.match(f)]
             
-            if not files:
-                if it > 19:  # Si `it` es mayor a 19 y no se encuentran archivos, se detiene la búsqueda
-                    break
-                continue  # Si aún no se encuentran archivos, continúa buscando
+#             if not files:
+#                 if it > 19:  # Si `it` es mayor a 19 y no se encuentran archivos, se detiene la búsqueda
+#                     break
+#                 continue  # Si aún no se encuentran archivos, continúa buscando
             
-            # Identificar nodos faltantes
-            nodes_found = [int(compiled_pattern.search(f).group(1)) for f in files]
-            missing_nodes = [n for n in range(max(nodes_found)+1) if n not in nodes_found]
+#             # Identificar nodos faltantes
+#             nodes_found = [int(compiled_pattern.search(f).group(1)) for f in files]
+#             missing_nodes = [n for n in range(max(nodes_found)+1) if n not in nodes_found]
             
-            if missing_nodes:
-                print(f"Faltan archivos para dataset={dataset}, s={s}, T={T}, it={it} en los nodos: {missing_nodes}")
-                exit()  # Pasa al siguiente conjunto de parámetros
+#             if missing_nodes:
+#                 print(f"Faltan archivos para dataset={dataset}, s={s}, T={T}, it={it} en los nodos: {missing_nodes}")
+#                 exit()  # Pasa al siguiente conjunto de parámetros
 
-            # Ordenar archivos para mantener el orden de los nodos
-            files.sort(key=lambda x: int(re.search(r'nodo(\d+)', x).group(1)))
+#             # Ordenar archivos para mantener el orden de los nodos
+#             files.sort(key=lambda x: int(re.search(r'nodo(\d+)', x).group(1)))
 
-            contents = []
-            for file_name in files:
-                file_path = os.path.join(results_dir, file_name)
-                with open(file_path, 'r') as file:
-                    contents.append(file.read().strip())
+#             contents = []
+#             for file_name in files:
+#                 file_path = os.path.join(results_dir, file_name)
+#                 with open(file_path, 'r') as file:
+#                     contents.append(file.read().strip())
 
-            final_content = "\n\n".join(contents) + "\n"
+#             final_content = "\n\n".join(contents) + "\n"
 
-            new_file_name = f"result_{dataset}_s{s}_T{T}_it{it}.txt"
-            new_file_path = os.path.join(target_dir, new_file_name)
+#             new_file_name = f"result_{dataset}_s{s}_T{T}_it{it}.txt"
+#             new_file_path = os.path.join(target_dir, new_file_name)
 
-            with open(new_file_path, 'w') as new_file:
-                new_file.write(final_content)
-            print(f"Archivo combinado creado: {new_file_path}")
+#             with open(new_file_path, 'w') as new_file:
+#                 new_file.write(final_content)
+#             print(f"Archivo combinado creado: {new_file_path}")
 
-            if dataset == datasets[0] and s == s_values[0] and T == T_values[0]:
-                # Si después de un 'next()' volvemos al inicio, significa que hemos procesado todas las combinaciones para este 'it'
-                break
+#             if dataset == datasets[0] and s == s_values[0] and T == T_values[0]:
+#                 # Si después de un 'next()' volvemos al inicio, significa que hemos procesado todas las combinaciones para este 'it'
+#                 break
             
-            param_combinations.next()  # Avanza a la siguiente combinación de parámetros
+#             param_combinations.next()  # Avanza a la siguiente combinación de parámetros
             
-        param_combinations.reset()  # Restablece los parámetros para la siguiente iteración de 'it' 
+#         param_combinations.reset()  # Restablece los parámetros para la siguiente iteración de 'it' 
     
 
-# process_combinations()
+
 process_combinations_from_latest()
 
