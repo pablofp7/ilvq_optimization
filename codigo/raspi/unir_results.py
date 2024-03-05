@@ -199,67 +199,6 @@ def process_combinations_from_latest():
         
         more_combinations = param_combinations.next()
 
-
-# def process_combinations_from_latest():
-    
-#     last_it, last_data, last_s, last_T = check_latest()  # Obtiene los últimos valores procesados
-#     param_combinations = ParameterCombinations(datasets, s_values, T_values, last_data, last_s, last_T)
-#     param_combinations.next()
-
-#     dataset, s, T = param_combinations.get_current_parameters()
-
-#     if dataset == datasets[0] and s == s_values[0] and T == T_values[0]:
-#         start_it = last_it + 1
-#     else:
-#         start_it = last_it
-
-#     for it in range(start_it, 50):  # Asumiendo que it_range va de 0 a 49
-#         while True:
-            
-#             dataset, s, T = param_combinations.get_current_parameters()
-
-#             pattern = f"result_{dataset}_s{s}_T{T}_it{it}_nodo(\\d+)\\.txt"
-#             compiled_pattern = re.compile(pattern)
-#             files = [f for f in all_files if compiled_pattern.match(f)]
-            
-#             if not files:
-#                 if it > 19:  # Si `it` es mayor a 19 y no se encuentran archivos, se detiene la búsqueda
-#                     break
-#                 continue  # Si aún no se encuentran archivos, continúa buscando
-            
-#             # Identificar nodos faltantes
-#             nodes_found = [int(compiled_pattern.search(f).group(1)) for f in files]
-#             missing_nodes = [n for n in range(max(nodes_found)+1) if n not in nodes_found]
-            
-#             if missing_nodes:
-#                 print(f"Faltan archivos para dataset={dataset}, s={s}, T={T}, it={it} en los nodos: {missing_nodes}")
-#                 exit()  # Pasa al siguiente conjunto de parámetros
-
-#             # Ordenar archivos para mantener el orden de los nodos
-#             files.sort(key=lambda x: int(re.search(r'nodo(\d+)', x).group(1)))
-
-#             contents = []
-#             for file_name in files:
-#                 file_path = os.path.join(results_dir, file_name)
-#                 with open(file_path, 'r') as file:
-#                     contents.append(file.read().strip())
-
-#             final_content = "\n\n".join(contents) + "\n"
-
-#             new_file_name = f"result_{dataset}_s{s}_T{T}_it{it}.txt"
-#             new_file_path = os.path.join(target_dir, new_file_name)
-
-#             with open(new_file_path, 'w') as new_file:
-#                 new_file.write(final_content)
-#             print(f"Archivo combinado creado: {new_file_path}")
-
-#             if dataset == datasets[0] and s == s_values[0] and T == T_values[0]:
-#                 # Si después de un 'next()' volvemos al inicio, significa que hemos procesado todas las combinaciones para este 'it'
-#                 break
-            
-#             param_combinations.next()  # Avanza a la siguiente combinación de parámetros
-            
-#         param_combinations.reset()  # Restablece los parámetros para la siguiente iteración de 'it' 
     
 
 
