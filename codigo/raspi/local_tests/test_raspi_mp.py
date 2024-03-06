@@ -6,10 +6,12 @@ if ruta_directorio_main not in sys.path:
 
 from prototypes import XuILVQ
 import pandas as pd
-from node_class.raspi_nodev4_1_local import RaspiNodev4_1local
+from node_class.raspi_node_mp import RaspiNodev1MP
+from node_class.deques_proxy import DequeManager
 import time
 import threading
 import numpy as np
+import subprocess
 
 
 def read_dataset(name: str):
@@ -43,8 +45,9 @@ def main(df: pd.DataFrame):
     
     nodos = []
     for id in range(n_nodos):
-        nodo = RaspiNodev4_1local(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
-        nodos.append(nodo)    
+        manager = DequeManager().start_manager()
+        nodo = RaspiNodev1MP(manager = manager,id = id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+        nodos.append(nodo)
     
     hilos = []
     for nodo in nodos:
@@ -55,8 +58,6 @@ def main(df: pd.DataFrame):
     for hilo in hilos:
         hilo.join()
         
-        
-
         
     to_write = []
     # to_write.append(f" - TIEMPO EJECUCION: {(time.time() - tiempo_inicio) / 60} minutos.\n\n")
@@ -96,10 +97,10 @@ def main(df: pd.DataFrame):
 
 
 if __name__ == "__main__":
-    
+    nombre_programa = sys.argv[0]
     try:
         n_nodos = 5
-        n_muestras = 250
+        n_muestras = 50
         
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
@@ -112,12 +113,12 @@ if __name__ == "__main__":
         
         iteraciones = 20
         datasets = ["phis"]
-        S = [1, 4]
-        T = [0.1, 0.5, 1.0] 
-
+        S = [1, 2, 4]
+        T = [0.1, 0.5, 1.0]
+        
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
-        directorio_resultados = "../resultados_raspiv4"
+        directorio_resultados = "../resultados_raspi"
         
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
@@ -130,6 +131,7 @@ if __name__ == "__main__":
                     for t in T:
                         # if t == 0 and i > 0 and s > 1:
                         #     continue
+                        # time.sleep(10)
                         tiempo_inicio = time.time()
                         print(f"ITERACIÓN {i}, dataset: {dataset}, S: {s}, T:{t}")
                         
@@ -141,6 +143,11 @@ if __name__ == "__main__":
                         
                         main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.time() - tiempo_inicio) / 60} minutos.\n")
+        
+        print(f"FINALIZADA LA EJECUCIÓN DE TODAS LAS ITERACIONES.")
+        comando = f"pkill -f \"python3 {nombre_programa}\""
+        print(f"Se va a ejecutar el comando: {comando}")
+        os.system(comando)
         
     except KeyboardInterrupt as e:
         os.system("ipcrm --all=msg")

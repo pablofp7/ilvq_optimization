@@ -66,6 +66,9 @@ def monte_carlo_jsd(data1, data2, num_samples=5000):
     # Normalize densities
     if density1.sum() == 0 or density2.sum() == 0:
         print(f"Warning: One of the densities is zero. Densities: {density1.sum()}, {density2.sum()}")
+        print(f"Data1: {data1}")
+        print(f"Data2: {data2}")
+        
     density1 /= density1.sum()
     density2 /= density2.sum()
     
