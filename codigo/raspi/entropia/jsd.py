@@ -64,19 +64,42 @@ def monte_carlo_jsd(data1, data2, num_samples=5000):
     density2 = np.exp(log_density2)
     
     # Normalize densities
-    if density1.sum() == 0 or density2.sum() == 0:
-        print(f"Warning: One of the densities is zero. Densities: {density1.sum()}, {density2.sum()}")
-        print(f"Data1: {data1}")
-        print(f"Data2: {data2}")
-        
-    density1 /= density1.sum()
-    density2 /= density2.sum()
-    
-    # Compute Jensen-Shannon distance
-    js_distance = jensenshannon(density1, density2, base = 2)
-    
-    return js_distance
+    if density1.sum() > 0 and density2.sum() > 0:
 
+        density1 /= density1.sum()
+        density2 /= density2.sum()
+        
+        # Compute Jensen-Shannon distance
+        js_distance = jensenshannon(density1, density2, base = 2)
+        
+        return js_distance
+
+    else:
+        print(f"[WARNING] : One of the densities is zero. Densities: {density1.sum()}, {density2.sum()}")
+
+        # Sample points uniformly within the range
+        samples = np.random.uniform(min_ranges, max_ranges, (2* num_samples, data1.shape[1]))
+        
+        # Fit KDEs to data
+        kde1 = KernelDensity(kernel='epanechnikov', bandwidth='scott').fit(data1)
+        kde2 = KernelDensity(kernel='epanechnikov', bandwidth='scott').fit(data2)
+        
+        # Evaluate densities at sampled points
+        log_density1 = kde1.score_samples(samples)
+        log_density2 = kde2.score_samples(samples)
+        density1 = np.exp(log_density1)
+        density2 = np.exp(log_density2)
+        
+        if density1.sum() > 0 and density2.sum() > 0:
+            density1 /= density1.sum()
+            density2 /= density2.sum()
+            js_distance = jensenshannon(density1, density2, base = 2)
+            return js_distance
+        
+        else: 
+            print(f"[WARNING] : Second TRY. One of the densities is zero. Densities: {density1.sum()}, {density2.sum()}")
+            print(f"[WARNING] : Data1: {data1.head()}, Data2: {data2.head()}")
+            return 1
 
 def adaptive_sampling_jsd(data1, data2, num_samples=1000, num_iterations=5):
     # Combine data for range

@@ -86,6 +86,8 @@ def prueba3():
     low2 = 0
     high2 = 1
 
+    n_samples = 10000
+    
     # Generar datos para data1 y data2
     dim = np.random.uniform(low=low1, high=high1, size=size)
     data1 = np.column_stack([dim for _ in range(n_dim)])
@@ -96,23 +98,23 @@ def prueba3():
 
         # Método 1: compute_js_distance_multidimensional (condicionalmente basado en n_dim)
         if n_dim < 6:
-            inicio = time.time()
-            js_distance1 = jsd.compute_js_distance_multidimensional(data1, data2)
-            fin = time.time() - inicio
+            inicio = time.perf_counter()
+            js_distance1 = jsd.compute_js_distance_multidimensional(data1, data2, n_samples)
+            fin = time.perf_counter() - inicio
             jsd_values_method1.append(js_distance1)
             time_method1 += fin
 
         # Método 2: monte_carlo_jsd
-        inicio = time.time()
-        js_distance2 = jsd.monte_carlo_jsd(data1, data2)
-        fin = time.time() - inicio
+        inicio = time.perf_counter()
+        js_distance2 = jsd.monte_carlo_jsd(data1, data2, n_samples)
+        fin = time.perf_counter() - inicio
         jsd_values_method2.append(js_distance2)
         time_method2 += fin
 
         # Método 3: adaptive_sampling_jsd
-        inicio = time.time()
-        js_distance3 = jsd.adaptive_sampling_jsd(data1, data2)
-        fin = time.time() - inicio
+        inicio = time.perf_counter()
+        js_distance3 = jsd.adaptive_sampling_jsd(data1, data2, n_samples)
+        fin = time.perf_counter() - inicio
         jsd_values_method3.append(js_distance3)
         time_method3 += fin
 
@@ -224,17 +226,17 @@ def prueba4(mode: int = 0):
         
         # Calcula la distancia de Jensen-Shannon entre cada par de modelos
         # Calcular el tiempo que se tarda en calcular cada distancia
-        tic = time.time()
+        tic = time.perf_counter()
         distancia12 = jsd.monte_carlo_jsd(data1, data2)
-        toc = time.time()
+        toc = time.perf_counter()
         print(f"Tiempo para calcular la distancia 12: {toc-tic}")
-        tic = time.time()
+        tic = time.perf_counter()
         distancia13 = jsd.monte_carlo_jsd(data1, data3)
-        toc = time.time()
+        toc = time.perf_counter()
         print(f"Tiempo para calcular la distancia 13: {toc-tic}")
-        tic = time.time()
+        tic = time.perf_counter()
         distancia23 = jsd.monte_carlo_jsd(data2, data3)
-        toc = time.time()
+        toc = time.perf_counter()
         print(f"Tiempo para calcular la distancia 23: {toc-tic}")
         
         print(f"Distancia de Jensen-Shannon entre modelo1 y modelo2: {distancia12}. Modo: {mode}")

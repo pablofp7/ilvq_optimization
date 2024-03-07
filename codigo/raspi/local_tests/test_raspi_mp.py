@@ -60,7 +60,7 @@ def main(df: pd.DataFrame):
         
         
     to_write = []
-    # to_write.append(f" - TIEMPO EJECUCION: {(time.time() - tiempo_inicio) / 60} minutos.\n\n")
+    # to_write.append(f" - TIEMPO EJECUCION: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n\n")
     #Vamos a guardar en una string lo que se va a escribir en el archivo
     for nodo in nodos:
         
@@ -127,12 +127,12 @@ if __name__ == "__main__":
             for dataset in datasets:
                 data_frame = read_dataset(dataset)
                 for s in S:
-                    tiempo_s = time.time()
+                    tiempo_s = time.perf_counter()
                     for t in T:
                         # if t == 0 and i > 0 and s > 1:
                         #     continue
                         # time.sleep(10)
-                        tiempo_inicio = time.time()
+                        tiempo_inicio = time.perf_counter()
                         print(f"ITERACIÓN {i}, dataset: {dataset}, S: {s}, T:{t}")
                         
                         parametros = f"{dataset}_s{s}_T{t}_it{i}"
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                             continue  # Salta a la siguiente iteración si el archivo ya existe
                         
                         main(data_frame)
-                        print(f"- Tiempo de ejecución: {(time.time() - tiempo_inicio) / 60} minutos.\n")
+                        print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
         
         print(f"FINALIZADA LA EJECUCIÓN DE TODAS LAS ITERACIONES.")
         comando = f"pkill -f \"python3 {nombre_programa}\""

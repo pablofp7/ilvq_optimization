@@ -71,34 +71,34 @@ class RaspiNodev4_1local:
         self.hilo_emisor.start()            
             
         print(f"Inicia ejecución del nodo {self.id}")
-        tiempo_inicio_total = time.time()  # Iniciar el temporizador para toda la ejecución.
+        tiempo_inicio_total = time.perf_counter()  # Iniciar el temporizador para toda la ejecución.
 
 
         # Iterar sobre cada muestra y su tiempo de espera correspondiente.
         for t_espera in self.t_llegadas:
-            inicio_wait = time.time()
+            inicio_wait = time.perf_counter()
             
             # Esperamos el tiempo designado, pero mientras esperamos, continuamos procesando la cola.
-            while time.time() - inicio_wait < t_espera:
+            while time.perf_counter() - inicio_wait < t_espera:
                 inicio_procesamiento = time.perf_counter_ns()  # Iniciar el temporizador para el procesamiento.
                 self.learn_from_queue()  # método hipotético para procesar el prototipo
                 self.tiempo_learn_queue += time.perf_counter_ns() - inicio_procesamiento  # Acumular tiempo.
                 self.save_tam_conj()
 
-            self.tiempo_espera = time.time() - inicio_wait
+            self.tiempo_espera = time.perf_counter() - inicio_wait
             self.tiempo_espera_total += self.tiempo_espera  # Acumular el tiempo real de espera.
 
             # Después de esperar, procesamos la muestra actual del dataset.
-            inicio_learn_data = time.time()
+            inicio_learn_data = time.perf_counter()
             self.learn_from_data() 
-            self.tiempo_learn_data += time.time() - inicio_learn_data
+            self.tiempo_learn_data += time.perf_counter() - inicio_learn_data
             self.save_tam_conj()
 
             self.cola_signals.put("SHARE")
         
         self.tiempo_learn_queue = self.tiempo_learn_queue / 1e9  # Convertir a segundos.
 
-        self.tiempo_final_total = time.time() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
+        self.tiempo_final_total = time.perf_counter() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
         
         
         self.vaciar_cola_y_detener()
@@ -124,7 +124,7 @@ class RaspiNodev4_1local:
         
     def learn_from_data(self):
         
-        temp = time.time()
+        temp = time.perf_counter()
         
         self.muestras_train += 1
         
@@ -155,7 +155,7 @@ class RaspiNodev4_1local:
         if not (self.modelo_pred is self.modelo_proto):
             self.modelo_pred.learn_one(x, y)
             
-        self.tiempo_learn_data += (time.time() - temp)
+        self.tiempo_learn_data += (time.perf_counter() - temp)
                         
             
     def learn_from_queue(self):
@@ -181,13 +181,13 @@ class RaspiNodev4_1local:
                 x = {str(indice): valor for indice, valor in enumerate(proto['x'])}
                 y = proto['y']
                 
-                temp = time.time()
+                temp = time.perf_counter()
                 #TRAIN
                 self.modelo_proto.learn_one(x, y)
                 if not (self.modelo_pred is self.modelo_proto):
                     self.modelo_pred.learn_one(x, y)
 
-                self.tiempo_learn_queue += (time.time() - temp)
+                self.tiempo_learn_queue += (time.perf_counter() - temp)
                 
                 return
             
@@ -219,7 +219,7 @@ class RaspiNodev4_1local:
         while True:
             instruccion = self.cola_signals.get()
             if instruccion == "SHARE":
-                inicio_share = time.time()
+                inicio_share = time.perf_counter()
 
                 if random.random() < self.T:
                     self.shared_times += 1
@@ -241,7 +241,7 @@ class RaspiNodev4_1local:
                         # Preparar el mensaje para enviar a través de ZeroMQ ROUTER
                         client_socket.send_multipart([f"{vecino}".encode(), proto_to_share])
 
-                self.tiempo_share += time.time() - inicio_share  # Acumular tiempo en "share".
+                self.tiempo_share += time.perf_counter() - inicio_share  # Acumular tiempo en "share".
          
             elif instruccion == "STOP": 
                 print(f"El hilo emisor ha recibido: {instruccion}. Nodo: {self.id}.")

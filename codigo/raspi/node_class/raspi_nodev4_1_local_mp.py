@@ -75,27 +75,27 @@ class RaspiNodev4_1local_mp:
         self.proceso_emisor.start()            
             
         print(f"Inicia ejecución del nodo {self.id}")
-        tiempo_inicio_total = time.time()  # Iniciar el temporizador para toda la ejecución.
+        tiempo_inicio_total = time.perf_counter()  # Iniciar el temporizador para toda la ejecución.
 
 
         # Iterar sobre cada muestra y su tiempo de espera correspondiente.
         for t_espera in self.t_llegadas:
-            inicio_wait = time.time()
+            inicio_wait = time.perf_counter()
             
             # Esperamos el tiempo designado, pero mientras esperamos, continuamos procesando la cola.
-            while time.time() - inicio_wait < t_espera:
+            while time.perf_counter() - inicio_wait < t_espera:
                 inicio_procesamiento = time.perf_counter_ns()  # Iniciar el temporizador para el procesamiento.
                 self.learn_from_queue()  # método hipotético para procesar el prototipo
                 self.tiempo_learn_queue += time.perf_counter_ns() - inicio_procesamiento  # Acumular tiempo.
                 self.save_tam_conj()
 
-            self.tiempo_espera = time.time() - inicio_wait
+            self.tiempo_espera = time.perf_counter() - inicio_wait
             self.tiempo_espera_total += self.tiempo_espera  # Acumular el tiempo real de espera.
 
             # Después de esperar, procesamos la muestra actual del dataset.
-            inicio_learn_data = time.time()
+            inicio_learn_data = time.perf_counter()
             self.learn_from_data() 
-            self.tiempo_learn_data += time.time() - inicio_learn_data
+            self.tiempo_learn_data += time.perf_counter() - inicio_learn_data
             self.save_tam_conj()
 
             self.conjuntos_prototipos.append(self.id, list(self.modelo_proto.buffer.prototypes.values()))
@@ -104,9 +104,10 @@ class RaspiNodev4_1local_mp:
         
         self.tiempo_learn_queue = self.tiempo_learn_queue / 1e9  # Convertir a segundos.
 
-        self.tiempo_final_total = time.time() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
+        self.tiempo_final_total = time.perf_counter() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
         
         
+        # PROBLEMA CON TERMINATE -> NO SE CIERRAN LOS SOCKETS
         self.fin_proceso.set()
         self.fin_proceso_emisor.set()
         self.proceso_receptor.join(timeout=5)
@@ -154,7 +155,7 @@ class RaspiNodev4_1local_mp:
         
     def learn_from_data(self):
         
-        temp = time.time()
+        temp = time.perf_counter()
         
         self.muestras_train += 1
         
@@ -185,7 +186,7 @@ class RaspiNodev4_1local_mp:
         if not (self.modelo_pred is self.modelo_proto):
             self.modelo_pred.learn_one(x, y)
             
-        self.tiempo_learn_data += (time.time() - temp)
+        self.tiempo_learn_data += (time.perf_counter() - temp)
                         
             
     def learn_from_queue(self):
@@ -208,13 +209,13 @@ class RaspiNodev4_1local_mp:
                 x = {str(indice): valor for indice, valor in enumerate(proto['x'])}
                 y = proto['y']
                 
-                temp = time.time()
+                temp = time.perf_counter()
                 #TRAIN
                 self.modelo_proto.learn_one(x, y)
                 if not (self.modelo_pred is self.modelo_proto):
                     self.modelo_pred.learn_one(x, y)
 
-                self.tiempo_learn_queue += (time.time() - temp)
+                self.tiempo_learn_queue += (time.perf_counter() - temp)
                 
                 return
             
@@ -255,7 +256,7 @@ class RaspiNodev4_1local_mp:
             if send_emisor.is_set():
                 
                 send_emisor.clear()
-                inicio_share = time.time()
+                inicio_share = time.perf_counter()
 
                 if random.random() < T:
                     
@@ -264,6 +265,7 @@ class RaspiNodev4_1local_mp:
                     else:
                         shar_prev = 0
                         
+                    print(f"El nodo {id} ha compartido {shar_prev + 1} veces.") if id == 0 else None
                     shared_times.append(0, shar_prev + 1)
                     # Obtener los prototipos del modelo
                     protos = colas_conj.getleft(id)
@@ -282,6 +284,7 @@ class RaspiNodev4_1local_mp:
                     else: 
                         comp_previo = 0
                         
+                    print(f"El nodo {id} ha compartido {comp_previo + sumando} prototipos.") if id == 0 else None
                     compartidos.append(0, comp_previo + sumando)
                     
                     # Enviar los prototipos a los vecinos seleccionados
@@ -290,11 +293,13 @@ class RaspiNodev4_1local_mp:
                         client_socket.send_multipart([f"{vecino}".encode(), proto_to_share])
 
                 
-                t_share = time.time() - inicio_share  # Acumular tiempo en "share".
+                t_share = time.perf_counter() - inicio_share  # Acumular tiempo en "share".
                 if tiempo_share.get_length(0) > 0:
                     previo = tiempo_share.pop(0)
                 else:
                     previo = 0
+                
+                print(f"Tiempo Acumulado en Share: {previo + t_share}.") if id == 0 else None
                 tiempo_share.append(0, previo + t_share)
 
                 
