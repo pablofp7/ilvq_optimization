@@ -4,13 +4,14 @@ ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
 
-from prototypes import XuILVQ
 import pandas as pd
 from node_class.raspi_nodev4_1_local_mp import RaspiNodev4_1local_mp
-from node_class.deques_proxy import DequeManager
 import time
-import threading
 import numpy as np
+import multiprocessing
+import socket
+import json
+
 
 
 def read_dataset(name: str):
@@ -26,7 +27,53 @@ def read_dataset(name: str):
 
     return dataset
 
+def nodo_run_wrapper(args: list, cola_resultados: multiprocessing.Queue):
 
+    id, df, n_nodos, s, t, media_llegadas = args
+    nodo = RaspiNodev4_1local_mp(id=id, dataset=df, nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+
+    nodo.run()
+    
+    try:
+        precision = nodo.matriz_conf["TP"] / (nodo.matriz_conf["TP"] + nodo.matriz_conf["FP"])
+    except:
+        precision = 0
+    try:
+        recall = nodo.matriz_conf["TP"] / (nodo.matriz_conf["TP"] + nodo.matriz_conf["FN"])
+    except:
+        recall = 0
+    try:
+        f1 = 2 * precision * recall / (precision + recall)
+    except:
+        f1 = 0
+        
+    try:
+        cap_ejec = (nodo.muestras_train + nodo.protos_train )/ nodo.tiempo_final_total
+    except:
+        cap_ejec = 0
+        
+    estadisticas = {
+        'id': nodo.id,
+        'precision': precision,
+        'recall': recall,
+        'f1': f1,
+        'muestras_train': nodo.muestras_train,
+        'protos_train': nodo.protos_train,
+        'tiempo_learn_data': nodo.tiempo_learn_data,
+        'tiempo_learn_queue': nodo.tiempo_learn_queue,
+        'tiempo_final_total': nodo.tiempo_final_total,
+        'cap_ejec': cap_ejec,
+        'tam_conj_prot': nodo.tam_conj_prot,
+        'tiempo_share': nodo.tiempo_share,
+        'tam_lotes_recibidos': nodo.tam_lotes_recibidos,
+        'shared_times': nodo.shared_times,
+        'compartidos': nodo.compartidos,
+    }
+    
+    cola_resultados.put(estadisticas)   
+    
+    return 
+    
 def main(df: pd.DataFrame): 
 
     #Se adapta para darle a cada nodo su parte
@@ -40,61 +87,61 @@ def main(df: pd.DataFrame):
     
     df_short = df[init_index : init_index + tam_muestra]
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
-    
-    
-    nodos = []
+
+   
+    nodos_args = []
     for id in range(n_nodos):
-        manager = DequeManager().start_manager()
-        nodo = RaspiNodev4_1local_mp(manager=manager, id = id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
-        nodos.append(nodo)    
+        args = [id, df_nodos[id], n_nodos, s, t, media_llegadas]
+        nodos_args.append(args)
+
     
-    hilos = []
-    for nodo in nodos:
-        hilo = threading.Thread(target=nodo.run)
-        hilos.append(hilo)
-        hilo.start()
-
-    for hilo in hilos:
-        hilo.join()
-        
-        
-
-        
+    cola_resultados = multiprocessing.Queue()
+    # Crear una lista para mantener un seguimiento de los procesos hijos
+    procesos = []
+    # Crear y empezar un nuevo proceso para cada conjunto de argumentos
+    for args in nodos_args:
+        p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados))
+        p.start()
+        procesos.append(p)
+    
+    
+    # Esperar a que cada proceso hijo termine
+    for p in procesos:
+        p.join()
+    
+    resultados = []
+    while not cola_resultados.empty():
+        resultados.append(cola_resultados.get())
+    
+    resultados = sorted(resultados, key=lambda x: x['id'])
+    
+    for resultado in resultados:
+        print(f"ID: {resultado['id']}, Precision: {resultado['precision']}, Recall: {resultado['recall']},"
+                f"F1: {resultado['f1']}, Muestras entrenadas: {resultado['muestras_train']}, Prototipos entrenados: {resultado['protos_train']},"
+                f"Capacidad de ejecución: {resultado['cap_ejec']}, Tiempo total: {resultado['tiempo_final_total']},"
+                f"Tiempo de aprendizaje (prototipos): {resultado['tiempo_learn_queue']}, Tiempo compartiendo prototipos: {resultado['tiempo_share']}, Tam. conjunto prototipos: {resultado['tam_conj_prot']},")
+    
     to_write = []
-    # to_write.append(f" - TIEMPO EJECUCION: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n\n")
-    #Vamos a guardar en una string lo que se va a escribir en el archivo
-    for nodo in nodos:
-        
-        tp = nodo.matriz_conf["TP"]
-        fp = nodo.matriz_conf["FP"]
-        fn = nodo.matriz_conf["FN"]        
-        precision = round(tp / (tp + fp), 3) if tp + fp != 0 else 0
-        recall = round(tp / (tp + fn), 3) if tp + fn != 0 else 0
-        f1 = round(2 * (precision * recall) / (precision + recall), 3) if precision + recall != 0 else 0 
-
-
-        if nodo.tiempo_learn_queue == 0:
-            cap_ejec = 0
-        else:    
-            cap_ejec = round(nodo.protos_train / nodo.tiempo_learn_queue, 3)
-
-        to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
-                        f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
-                        f"Ha compartido {nodo.shared_times} veces.\n"
-                        f"Ha compartido {nodo.compartidos} prototipos a cada uno de los {s} vecino/s.\n"
-                        f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
-                        f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
-                        f"Tiempo compartiendo prototipos: {nodo.tiempo_share}\n"
-                        f"Tiempo total: {nodo.tiempo_final_total}\n"
-                        f"Capacidad de ejecución: {cap_ejec}\n"
-                        f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n"
-                        f"Tamaño conjunto de prototipos: {nodo.tam_conj_prot}\n"
-                        f"\n")
+    for stats in resultados:
+              
+        to_write.append(f" - NODO {stats['id']}.\nPrecision: {stats['precision']}\nRecall: {stats['recall']}\nF1: {stats['f1']}\n"
+                            f"Se ha entrenado con {stats['muestras_train']} muestras.\nSe ha entrenado con {stats['protos_train']} prototipos.\n"
+                            f"Ha compartido {stats['shared_times']} veces.\n"
+                            f"Ha compartido {stats['compartidos']} prototipos a cada uno de los {s} vecino/s.\n"
+                            f"Tiempo de aprendizaje (muestras): {stats['tiempo_learn_data']}\n"
+                            f"Tiempo de aprendizaje (prototipos): {stats['tiempo_learn_queue']}\n"
+                            f"Tiempo compartiendo prototipos: {stats['tiempo_share']}\n"
+                            f"Tiempo total: {stats['tiempo_final_total']}\n"
+                            f"Capacidad de ejecución: {stats['cap_ejec']}\n"
+                            f"ID, Tamaño de lotes recibidos: {stats['tam_lotes_recibidos']}\n"
+                            f"Tamaño conjunto de prototipos: {stats['tam_conj_prot']}\n"
+                            f"\n")
 
     print("Se ha terminado de ejecutar todo.")    
 
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
+        
 
 
 if __name__ == "__main__":
@@ -103,7 +150,7 @@ if __name__ == "__main__":
     
     try:
         n_nodos = 5
-        n_muestras = 50
+        n_muestras = 1000
         
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])

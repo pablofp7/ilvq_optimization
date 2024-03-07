@@ -130,7 +130,7 @@ def sincronizar():
                 # print(f"Se va e enviar COMENZAR: dir:{dir}, puerto: {puerto}")
                 s.sendto("COMENZAR".encode(), (dir, puerto))
             print(f"Se le ha enviado COMENZAR a todos los slaves.")
-            time.sleep(0.25)
+            time.sleep(0.1)
 
 
             print("Nodo 0: todos listos.")

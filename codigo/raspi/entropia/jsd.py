@@ -98,7 +98,7 @@ def monte_carlo_jsd(data1, data2, num_samples=5000):
         
         else: 
             print(f"[WARNING] : Second TRY. One of the densities is zero. Densities: {density1.sum()}, {density2.sum()}")
-            print(f"[WARNING] : Data1: {data1.head()}, Data2: {data2.head()}")
+            print(f"[WARNING] : Data1: {data1[:20]}, Data2: {data2[:20]}")
             return 1
 
 def adaptive_sampling_jsd(data1, data2, num_samples=1000, num_iterations=5):
