@@ -50,6 +50,9 @@ def nodo_run_wrapper(args: list, cola_resultados: multiprocessing.Queue):
     except:
         cap_ejec = 0
         
+    precision = round(precision, 3)
+    recall = round(recall, 3)
+    f1 = round(f1, 3)
     estadisticas = {
         'id': nodo.id,
         'precision': precision,
@@ -158,10 +161,10 @@ if __name__ == "__main__":
         datasets = ["elec", "phis", "elec2"]
         
         n_muestras = 1000
-        iteraciones = 5
-        datasets = ["phis"]
-        S = [1, 4]
-        T = [0.1, 0.5, 1.0] 
+        # iteraciones = 20
+        # datasets = ["phis"]
+        # S = [1, 4]
+        # T = [0.1, 0.5, 1.0] 
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
