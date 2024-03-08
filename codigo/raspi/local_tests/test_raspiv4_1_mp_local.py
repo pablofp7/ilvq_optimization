@@ -142,6 +142,8 @@ def main(df: pd.DataFrame):
 
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
+    
+    exit()
             
 
 if __name__ == "__main__":
@@ -160,7 +162,7 @@ if __name__ == "__main__":
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        n_muestras = 1000
+        # n_muestras = 1000
         # iteraciones = 20
         # datasets = ["phis"]
         # S = [1, 4]

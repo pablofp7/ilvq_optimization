@@ -142,6 +142,7 @@ class RaspiNodev4_1local_mp:
         self.tiempo_share = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
             
+        self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
         print(f"[NODO {self.id}. FIN!!].\n"
             f"El tiempo total de espera calculado por muestras ha sido de {sum(self.t_llegadas) / 60} minutos.\n"
@@ -153,7 +154,6 @@ class RaspiNodev4_1local_mp:
             f"Ha tardado {self.tiempo_no_share / 60} minutos en share (No compartiendo).\n")
         
        
-        self.manager.shutdown()
         
         return
 

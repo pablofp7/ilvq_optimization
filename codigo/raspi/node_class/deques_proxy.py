@@ -1,185 +1,153 @@
+import logging
+import traceback
 from collections import deque
 import multiprocessing
 from multiprocessing.managers import BaseManager
-from multiprocessing import Manager
+
+# Configura el logging para que escriba en un archivo
+log_filename = 'test_log.txt'
+logging.basicConfig(filename=log_filename, level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(processName)s - %(message)s')
 
 class DequesProxy:
     def __init__(self, num_deques, maxlen=None):
         self.deques = [(deque(maxlen=maxlen), multiprocessing.Lock()) for _ in range(num_deques)]
+        self.log("DequesProxy initialized with num_deques: {} and maxlen: {}".format(num_deques, maxlen))
 
     def append(self, deque_index, item):
         deque, lock = self.deques[deque_index]
         with lock:
             deque.append(item)
+            self.log(f"Appended item to deque at index {deque_index}")
 
     def appendleft(self, deque_index, item):
         deque, lock = self.deques[deque_index]
         with lock:
             deque.appendleft(item)
+            self.log(f"Appended item to left of deque at index {deque_index}")
 
     def pop(self, deque_index):
         deque, lock = self.deques[deque_index]
         with lock:
             if deque:
-                return deque.pop()
-            else:
-                pass
-                # raise IndexError("pop from an empty deque")
+                item = deque.pop()
+                self.log(f"Popped item from deque at index {deque_index}")
+                return item
 
     def popleft(self, deque_index):
         deque, lock = self.deques[deque_index]
         with lock:
             if deque:
-                return deque.popleft()
-            else:
-                pass
-                # raise IndexError("popleft from an empty deque")
-    
+                item = deque.popleft()
+                self.log(f"Popped item from left of deque at index {deque_index}")
+                return item
+
     def getleft(self, deque_index):
         deque, lock = self.deques[deque_index]
         with lock:
             if deque:
-                return deque[0]
-            else:
-                pass
-                # raise IndexError("popleft from an empty deque")
+                item = deque[0]
+                self.log(f"Got leftmost item from deque at index {deque_index}")
+                return item
 
     def get_length(self, deque_index):
         deque, lock = self.deques[deque_index]
         with lock:
-            return len(deque)
-
+            length = len(deque)
+            self.log(f"Got length of deque at index {deque_index}")
+            return length
 
     def extendleft(self, deque_index, item_list):
         deque, lock = self.deques[deque_index]
-        for item in item_list:
-            with lock:
-                deque.appendleft(item)
-                
+        with lock:
+            deque.extendleft(item_list)
+            self.log(f"Extended left of deque at index {deque_index} with items")
+
+    def log(self, message):
+        process_name = multiprocessing.current_process().name
+        stack = traceback.format_stack()
+        formatted_stack = ''.join(stack[:-2])  # Excluye las últimas dos llamadas relacionadas con la función log
+        logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{formatted_stack}")
+
 class ListsProxy:
     def __init__(self, num_lists):
         self.lists = [([], multiprocessing.Lock()) for _ in range(num_lists)]
+        self.log("ListsProxy initialized with num_lists: {}".format(num_lists))
 
     def append(self, list_index, item):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
+        with lock:
             lst.append(item)
-        finally:
-            lock.release()
+            self.log(f"Appended item to list at index {list_index}")
 
     def remove(self, list_index, item):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
+        with lock:
             lst.remove(item)
-        finally:
-            lock.release()
+            self.log(f"Removed item from list at index {list_index}")
 
     def pop(self, list_index, index=-1):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
-            return lst.pop(index)
-        finally:
-            lock.release()
+        with lock:
+            item = lst.pop(index)
+            self.log(f"Popped item from list at index {list_index}")
+            return item
 
     def get_length(self, list_index):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
-            return len(lst)
-        finally:
-            lock.release()
+        with lock:
+            length = len(lst)
+            self.log(f"Got length of list at index {list_index}")
+            return length
 
     def get_item(self, list_index, index):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
-            return lst[index]
-        finally:
-            lock.release()
+        with lock:
+            item = lst[index]
+            self.log(f"Got item from list at index {list_index} at position {index}")
+            return item
 
     def set_item(self, list_index, index, item):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
+        with lock:
             lst[index] = item
-        finally:
-            lock.release()
+            self.log(f"Set item in list at index {list_index} at position {index}")
 
     def get_slice(self, list_index, start=None, stop=None, step=None):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
-            return lst[start:stop:step]
-        finally:
-            lock.release()
+        with lock:
+            slice_ = lst[start:stop:step]
+            self.log(f"Got slice from list at index {list_index}")
+            return slice_
 
     def clear(self, list_index):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
+        with lock:
             lst.clear()
-        finally:
-            lock.release()
+            self.log(f"Cleared list at index {list_index}")
 
     def get_list(self, list_index):
         lst, lock = self.lists[list_index]
-        lock.acquire()
-        try:
-            return list(lst)
-        finally:
-            lock.release()
+        with lock:
+            list_copy = list(lst)
+            self.log(f"Got copy of list at index {list_index}")
+            return list_copy
 
-        
-# class ListsProxy:
-#     def __init__(self, num_lists):
-#         self.lists = [[] for _ in range(num_lists)]
+    def log(self, message):
+        process_name = multiprocessing.current_process().name
+        stack = traceback.format_stack()
+        formatted_stack = ''.join(stack[:-2])  # Excluye las últimas dos llamadas relacionadas con la función log
+        logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{formatted_stack}")
 
-#     def append(self, list_index, item):
-#         self.lists[list_index].append(item)
-
-#     def remove(self, list_index, item):
-#         self.lists[list_index].remove(item)
-
-#     def pop(self, list_index, index=-1):
-#         return self.lists[list_index].pop(index)
-
-#     def get_length(self, list_index):
-#         return len(self.lists[list_index])
-
-#     def get_item(self, list_index, index):
-#         return self.lists[list_index][index]
-
-#     def set_item(self, list_index, index, item):
-#         self.lists[list_index][index] = item
-
-#     def get_slice(self, list_index, start=None, stop=None, step=None):
-#         return self.lists[list_index][start:stop:step]
-
-#     def clear(self, list_index):
-#         self.lists[list_index].clear()
-
-#     def get_list(self, list_index):
-#         # Retorna una copia de la lista
-#         return list(self.lists[list_index])
-
-        
-        
-        
 class DequeManager(BaseManager):
-    pass   
+    pass
 
 DequeManager.register('DequesProxy', DequesProxy, exposed=['append', 'appendleft', 'pop', 'popleft', 'get_length', 'extendleft', 'getleft'])
 DequeManager.register('ListsProxy', ListsProxy, exposed=['append', 'remove', 'pop', 'get_length', 'get_item', 'set_item', 'get_slice', 'clear', 'get_list'])
 
-# Añadir el método start_manager como método de clase
 @classmethod
 def start_manager(cls):
     m = cls()
     m.start()
     return m
 
-# Asegúrate de añadir el método al DequeManager después de su definición
 DequeManager.start_manager = start_manager
