@@ -33,7 +33,7 @@ class RaspiNodev4_1local_mp:
         manager = DequeManager().start_manager()
         tam_colas = 500000
         self.manager = manager
-        self.proxy_deques = manager.DequesProxy(num_deques = self.nodos, maxlen = tam_colas)        
+        self.cola_protos = manager.DequesProxy(num_deques = self.nodos, maxlen = tam_colas)        
         self.cola_index = 0
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         
@@ -64,17 +64,17 @@ class RaspiNodev4_1local_mp:
         self.tiempo_espera_total = 0
         
         #Atributos para gestionar hilos
-        self.conjuntos_prototipos = manager.DequesProxy(num_deques = self.nodos, maxlen = 1)
+        self.last_set = manager.DequesProxy(num_deques = self.nodos, maxlen = 1)
         self.tam_lotes_recibidos = manager.ListsProxy(num_lists = 1)
         self.compartidos = manager.ListsProxy(num_lists = 1)
         self.shared_times = manager.ListsProxy(num_lists = 1)
         self.tiempo_share = manager.ListsProxy(num_lists = 1)
         self.fin_proceso = multiprocessing.Event()
-        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.proxy_deques, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos, self.conjuntos_prototipos), name=f"Receptor_{self.id}")
+        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos, self.last_set), name=f"Receptor_{self.id}")
         self.fin_proceso_emisor = multiprocessing.Event()
         self.send_emisor = multiprocessing.Event()
         self.proceso_emisor = multiprocessing.Process(target=self.share, name = f"Emisor_{self.id}", args=(self.id, self.puerto_base, self.vecinos, self.send_emisor,
-                                                    self.fin_proceso_emisor, self.conjuntos_prototipos, self.s, self.T, self.shared_times, self.compartidos, self.tiempo_share))
+                                                    self.fin_proceso_emisor, self.last_set, self.s, self.T, self.shared_times, self.compartidos, self.tiempo_share))
             
         
     def run(self):
@@ -203,8 +203,8 @@ class RaspiNodev4_1local_mp:
         
         while colas_revisadas < colas_a_revisar:
             
-            if self.proxy_deques.get_length(self.cola_index) > 0:
-                proto = self.proxy_deques.popleft(self.cola_index)
+            if self.cola_protos.get_length(self.cola_index) > 0:
+                proto = self.cola_protos.popleft(self.cola_index)
                 
                 self.protos_train += 1
                 print(f"PROTO {self.protos_train}, NODO {self.id}\n") if self.protos_train % 10000 == 0 else None
@@ -235,7 +235,7 @@ class RaspiNodev4_1local_mp:
             self.cola_index = (self.cola_index + 1) % self.nodos
             
         
-    def share(self, id, puerto_base, vecinos, send_emisor, fin_proceso_emisor, colas_conj, s, T, shared_times, compartidos, tiempo_share):
+    def share(self, id, puerto_base, vecinos, send_emisor, fin_proceso_emisor, last_set, s, T, shared_times, compartidos, tiempo_share):
         
         try:
             puertos_vecinos = [puerto_base + i for i in vecinos]
@@ -273,7 +273,7 @@ class RaspiNodev4_1local_mp:
                         shared_times_local += 1                         
                         # print(f"El nodo {id} ha compartido {shar_prev + 1} veces.") if id == 0 else None
                         # Obtener los prototipos del modelo
-                        protos = colas_conj.getleft(id)
+                        protos = last_set.getleft(id)
 
                         # Serializar los datos a compartir
                         proto_to_share = pickle.dumps({"id": id, "protos": [{'x': proto['x'], 'y': proto['y']} for proto in protos]})
@@ -281,7 +281,7 @@ class RaspiNodev4_1local_mp:
                         # Seleccionar aleatoriamente 's' vecinos
                         vecinos_seleccionados = random.sample(vecinos, s)
                         
-                        vecinos_eficientes = self.check_sharing(vecinos_seleccionados, colas_conj, id)
+                        vecinos_eficientes = self.check_sharing(vecinos_seleccionados, last_set, id)
                         
                         sumando = len(protos) if vecinos_eficientes else 0
                         compartidos_local += sumando
@@ -309,22 +309,22 @@ class RaspiNodev4_1local_mp:
 
                 
     
-    def check_sharing(self, destinos, colas_conj, id):
+    def check_sharing(self, destinos, last_set, id):
         
-        mi_conj = colas_conj.getleft(id)
+        mi_conj = last_set.getleft(id)
         mi_conj = np.array([np.append(proto['x'], proto['y']) for proto in mi_conj])
         # conj_prot[id].append(mis_protos)
 
         
         destinos_eficiente = []
         for destino in destinos:
-            if colas_conj.get_length(destino) < 1:
+            if last_set.get_length(destino) < 1:
                 destinos_eficiente.append(destino)
                 print(f"[NODO {id}] comparte con el nodo {destino} porque no tiene prototipos.") 
                 continue
             
             #Vamos a printear los conjuntos de prototipos a evaluar
-            dest_conj = colas_conj.getleft(destino)
+            dest_conj = last_set.getleft(destino)
             # print(f"Mi conjunto: {mi_conj}.")
             # print(f"Conjunto del nodo {destino}: {dest_conj}.")
             distancia = jsd.monte_carlo_jsd(mi_conj, dest_conj)
@@ -373,7 +373,7 @@ class RaspiNodev4_1local_mp:
 
    
 
-    def recibir(self, proxy_deques, nodos, puerto_base, id, s, T, fin_proceso, tam_lotes_recibidos, colas_conj):
+    def recibir(self, cola_protos, nodos, puerto_base, id, s, T, fin_proceso, tam_lotes_recibidos, last_set):
         
         print(f"[NODO {id}] ha iniciado el hilo receptor.")
         if nodos == 1 or s == 0 or T == 0:
@@ -407,9 +407,9 @@ class RaspiNodev4_1local_mp:
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
                 # print(f"[NODO {id}] Va a añadir conjunto a la cola tocha de protos.") 
-                proxy_deques.extendleft(id_recibido, protos)
+                cola_protos.extendleft(id_recibido, protos)
                 # print(f"[NODO {id}] Ha añadido. Procede a actualizar la lista de conjunto reciente.")
-                self.update_conj_proto(id_recibido, protos, colas_conj)
+                self.update_conj_proto(id_recibido, protos, last_set)
                 # print(f"[NODO {id}] Ha actualizado la lista de conjunto reciente.")
                 lista_tam_lotes_recibidos.append((id_recibido, len(protos)))
 
@@ -437,9 +437,9 @@ class RaspiNodev4_1local_mp:
         
 
         
-    def update_conj_proto(self, id, protos, colas_conj):
+    def update_conj_proto(self, id, protos, last_set):
         protos_transformed = np.array([np.append(proto['x'], proto['y']) for proto in protos])
-        colas_conj.append(id, protos_transformed)
+        last_set.append(id, protos_transformed)
         
         
         

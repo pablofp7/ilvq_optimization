@@ -161,7 +161,8 @@ if __name__ == "__main__":
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        iteraciones = 20
+        n_muestras = 20
+        iteraciones = 1
         datasets = ["phis"]
         S = [1, 4]
         T = [0.1, 0.5, 1.0] 
