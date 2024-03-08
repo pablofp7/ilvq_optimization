@@ -117,13 +117,14 @@ def sincronizar():
             while not all(lista_confirmaciones):
                 data, addr = s.recvfrom(buffer_size)
                 msg = data.decode()
-                print(f"Nodo 0. Recibido: {msg}")
-                option, nodo_id = check_mensaje(msg)
-                if option:
-                    lista_confirmaciones[nodo_id] = True
-                # if msg.startswith("LISTO") and parametros in msg:
-                #     nodo_id = int(msg.split()[1])
+                check_mensaje(msg, lista_confirmaciones)
+                # option, nodo_id = check_mensaje(msg, lista_confirmaciones)
+                # if option:
                 #     lista_confirmaciones[nodo_id] = True
+                
+                # # if msg.startswith("LISTO") and parametros in msg:
+                # #     nodo_id = int(msg.split()[1])
+                # #     lista_confirmaciones[nodo_id] = True
 
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for i, dir in enumerate(dir_nodos):
@@ -137,6 +138,7 @@ def sincronizar():
     else:
         # Nodo no central
         ready = False
+        contador_prints = 0
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
                 s_recepcion.bind(("0.0.0.0", puerto))
@@ -145,7 +147,10 @@ def sincronizar():
                     try:
                         # Enviar "LISTO" al nodo central
                         s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
-                        print(f"LISTO enviado desde {id}")
+                        
+                        if contador_prints % 5:
+                            print(f"LISTO enviado desde {id}")
+                        contador_prints += 1
 
                         try:
                             data, _ = s_recepcion.recvfrom(buffer_size)
@@ -159,12 +164,12 @@ def sincronizar():
                             # No es necesario romper el bucle; sigue esperando
                     except Exception as e:
                         print(f"Error en nodo {id}: {e}")
-                        time.sleep(0.5)  # Esperar un poco antes de reintentar
+                        time.sleep(2)  # Esperar un poco antes de reintentar
 
                 print(f"Nodo {id} contestando a nodo0.")
 
 
-def check_mensaje(mensaje):
+def check_mensaje(mensaje, lista_confirmaciones):
     """
     Evalúa si el mensaje comienza con 'LISTO', contiene los parámetros esperados
     (sin considerar el sufijo '_nodoX'), y extrae el id del nodo. Devuelve True si
@@ -182,6 +187,12 @@ def check_mensaje(mensaje):
 
             nodo_id = int(nodo_id_str)
             parametros_esperados_sin_nodo = "_".join(parametros.split('_')[:-1])
+            
+            if lista_confirmaciones[nodo_id]:
+                return
+            
+            print(f"Nodo 0. Recibido: {mensaje}")
+
 
             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
             if parametros_recibidos == parametros_esperados_sin_nodo:

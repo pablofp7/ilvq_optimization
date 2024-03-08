@@ -9,8 +9,6 @@ from node_class.raspi_nodev4_1_local_mp import RaspiNodev4_1local_mp
 import time
 import numpy as np
 import multiprocessing
-import socket
-import json
 
 
 
@@ -141,12 +139,10 @@ def main(df: pd.DataFrame):
 
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
-        
-
+            
 
 if __name__ == "__main__":
     nombre_programa = sys.argv[0]
-
     
     try:
         n_nodos = 5
@@ -161,8 +157,8 @@ if __name__ == "__main__":
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        n_muestras = 20
-        iteraciones = 1
+        n_muestras = 1000
+        iteraciones = 5
         datasets = ["phis"]
         S = [1, 4]
         T = [0.1, 0.5, 1.0] 
