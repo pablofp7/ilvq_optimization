@@ -74,7 +74,7 @@ for num_samples in num_samples_values:
     for _ in range(n_iterations):
         start_time = time.perf_counter_ns()
         distance = jsd.monte_carlo_jsd(data1_array, data2_array, num_samples=num_samples)
-        iteration_time = time.perf_counter() - start_time
+        iteration_time = time.perf_counter_ns() - start_time
         
         iteration_times.append(iteration_time / 1e9)
         distances.append(distance)
