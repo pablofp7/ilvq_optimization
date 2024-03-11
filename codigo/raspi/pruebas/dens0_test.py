@@ -72,11 +72,11 @@ for num_samples in num_samples_values:
     print(f"Calculating for num_samples = {num_samples} ...")
     # Run the Monte Carlo simulation n_iterations times for each num_samples
     for _ in range(n_iterations):
-        start_time = time.perf_counter()
+        start_time = time.perf_counter_ns()
         distance = jsd.monte_carlo_jsd(data1_array, data2_array, num_samples=num_samples)
-        iteration_time = time.perf_counter() - start_time
+        iteration_time = time.perf_counter() - time.perf_counter_ns()
         
-        iteration_times.append(iteration_time)
+        iteration_times.append(iteration_time / 1e9)
         distances.append(distance)
     
     # Calculate the mean of the metrics for the current num_samples
@@ -90,10 +90,10 @@ for num_samples in num_samples_values:
     std_devs.append(std_dev_distance)
 
 # Plotting
-plt.figure(figsize=(12, 8))
+plt.figure(figsize=(10, 15))
 
 # Plot for average time per calculation
-plt.subplot(2, 2, 1)
+plt.subplot(3, 1, 1)
 plt.plot(num_samples_values, times, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Average Time per Calculation (s)')
@@ -101,7 +101,7 @@ plt.xscale('log')
 plt.title('Time vs. Number of Samples')
 
 # Plot for mean distance
-plt.subplot(2, 2, 2)
+plt.subplot(3, 1, 2)
 plt.plot(num_samples_values, means, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Mean Distance')
@@ -109,7 +109,7 @@ plt.xscale('log')
 plt.title('Mean Distance vs. Number of Samples')
 
 # Plot for standard deviation of distance
-plt.subplot(2, 2, 3)
+plt.subplot(3, 1, 3)
 plt.plot(num_samples_values, std_devs, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Standard Deviation of Distance')
