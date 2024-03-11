@@ -187,18 +187,17 @@ def check_mensaje(mensaje, lista_confirmaciones):
             if lista_confirmaciones[nodo_id] is True:
                 return
 
-            lista_confirmaciones[nodo_id] = True
             print(f"Nodo 0. Recibido: {mensaje}")
 
             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
             if parametros_recibidos == parametros_esperados_sin_nodo:
-                return True, nodo_id
+                lista_confirmaciones[nodo_id] = True
         except ValueError as e:
             # Manejar errores de conversión o de formato incorrecto
             print(f"Error al procesar el mensaje: {e}")
 
     # Si el mensaje no cumple las condiciones, devolver False y None
-    return False, None
+    return 
 
 
 # def sincronizar():
