@@ -117,4 +117,5 @@ plt.xscale('log')
 plt.title('Std Dev vs. Number of Samples')
 
 plt.tight_layout()
-plt.show()
+plt.savefig("./dens0_test.png")
+# plt.show()
