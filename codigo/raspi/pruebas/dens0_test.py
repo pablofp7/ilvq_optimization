@@ -57,57 +57,64 @@ data2_array = np.array(data2_list)
 
 # print(len(data1_list))
 
-num_samples_values = [500, 1000, 1500, 2000, 2500, 4000, 10000, 25000, 50000]  # Example range of num_samples values
+num_samples_values = [500, 1000, 1500, 2000, 2500, 4000, 10000, 25000, 50000]
 n_iterations = 50  # Number of iterations per num_samples value for averaging
 
+# Initialize lists to store the metrics
 times = []
 means = []
 std_devs = []
-coeff_vars = []
 
+# Loop over each num_samples value
 for num_samples in num_samples_values:
+    iteration_times = []
     distances = []
-    start_time = time.perf_counter()
-    
+    print(f"Calculating for num_samples = {num_samples} ...")
+    # Run the Monte Carlo simulation n_iterations times for each num_samples
     for _ in range(n_iterations):
-        distancia = jsd.monte_carlo_jsd(data1_array, data2_array, num_samples=num_samples)
-        distances.append(distancia)
+        start_time = time.perf_counter()
+        distance = jsd.monte_carlo_jsd(data1_array, data2_array, num_samples=num_samples)
+        iteration_time = time.perf_counter() - start_time
+        
+        iteration_times.append(iteration_time)
+        distances.append(distance)
     
-    elapsed_time = time.perf_counter() - start_time
-    avg_time_per_calc = elapsed_time / n_iterations
-    
+    # Calculate the mean of the metrics for the current num_samples
+    avg_time = np.mean(iteration_times)
     mean_distance = np.mean(distances)
     std_dev_distance = np.std(distances)
     
-    times.append(avg_time_per_calc)
+    # Append the calculated metrics to their respective lists
+    times.append(avg_time)
     means.append(mean_distance)
     std_devs.append(std_dev_distance)
 
-# Plotting the results
-plt.figure(figsize=(10, 6))
+# Plotting
+plt.figure(figsize=(12, 8))
 
+# Plot for average time per calculation
 plt.subplot(2, 2, 1)
 plt.plot(num_samples_values, times, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Average Time per Calculation (s)')
-plt.title('Time vs. Number of Samples')
 plt.xscale('log')
+plt.title('Time vs. Number of Samples')
 
+# Plot for mean distance
 plt.subplot(2, 2, 2)
 plt.plot(num_samples_values, means, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Mean Distance')
-plt.title('Mean Distance vs. Number of Samples')
 plt.xscale('log')
+plt.title('Mean Distance vs. Number of Samples')
 
-
+# Plot for standard deviation of distance
 plt.subplot(2, 2, 3)
 plt.plot(num_samples_values, std_devs, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Standard Deviation of Distance')
-plt.title('Std Dev vs. Number of Samples')
 plt.xscale('log')
-
+plt.title('Std Dev vs. Number of Samples')
 
 plt.tight_layout()
 plt.show()
