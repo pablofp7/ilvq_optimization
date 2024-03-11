@@ -57,8 +57,8 @@ data2_array = np.array(data2_list)
 
 # print(len(data1_list))
 
-num_samples_values = [1000, 2000, 4000, 8000, 16000, 50000]  # Example range of num_samples values
-n_iterations = 10  # Number of iterations per num_samples value for averaging
+num_samples_values = [500, 1000, 1500, 2000, 2500, 4000, 10000, 25000, 50000]  # Example range of num_samples values
+n_iterations = 50  # Number of iterations per num_samples value for averaging
 
 times = []
 means = []

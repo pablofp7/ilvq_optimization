@@ -58,7 +58,7 @@ def monte_carlo_jsd(data1, data2, num_samples=1000):
     # This formula is heuristic; feel free to adjust it based on your needs or empirical testing
     num_samples = int(num_samples * 2**(dimensions / 2) * (total_range / (2 * dimensions)))
     
-    print(f"Using {num_samples} samples for Monte Carlo estimation")
+    # print(f"Using {num_samples} samples for Monte Carlo estimation")
 
     
     # Sample points uniformly within the range
