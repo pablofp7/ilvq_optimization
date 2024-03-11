@@ -143,7 +143,7 @@ def main(df: pd.DataFrame):
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
     
-    exit()
+    # exit()
             
 
 if __name__ == "__main__":
