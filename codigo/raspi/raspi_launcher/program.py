@@ -107,6 +107,7 @@ def sincronizar():
     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
 
     if id == 0:
+        contador_prints = 0
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
@@ -118,7 +119,7 @@ def sincronizar():
             while not all(lista_confirmaciones):
                 data, addr = s.recvfrom(buffer_size)
                 mensaje = data.decode()
-                check_mensaje(mensaje, lista_confirmaciones)
+                check_mensaje(mensaje, lista_confirmaciones, contador_prints=contador_prints)
 
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
             for i, dir in enumerate(dir_nodos):
@@ -165,7 +166,7 @@ def sincronizar():
                 else:
                     print(f"Nodo {id} no está listo para comenzar las simulaciones.")
 
-def check_mensaje(mensaje, lista_confirmaciones):
+def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
     """
     Evalúa si el mensaje comienza con 'LISTO', contiene los parámetros esperados
     (sin considerar el sufijo '_nodoX'), y extrae el id del nodo. Devuelve True si
@@ -187,7 +188,9 @@ def check_mensaje(mensaje, lista_confirmaciones):
             if lista_confirmaciones[nodo_id] is True:
                 return
 
-            print(f"Nodo 0. Recibido: {mensaje}")
+            if contador_prints % 50:
+                print(f"Nodo 0. Recibido: {mensaje}")
+            contador_prints += 1
 
             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
             if parametros_recibidos == parametros_esperados_sin_nodo:
