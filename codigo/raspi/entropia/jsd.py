@@ -44,11 +44,22 @@ def compute_js_distance_multidimensional(data1, data2, num_points=1000):  # Usar
     
     return js_distance
 
-def monte_carlo_jsd(data1, data2, num_samples=5000):
+def monte_carlo_jsd(data1, data2, num_samples=1000):
     # Combine data to find common range
     combined_data = np.vstack([data1, data2])
+    dimensions = data1.shape[1]
     min_ranges = np.min(combined_data, axis=0)
     max_ranges = np.max(combined_data, axis=0)
+    
+    # Calculate total range across all dimensions
+    total_range = np.sum(max_ranges - min_ranges)
+    
+    # Adjust the number of samples based on dimensions and total range
+    # This formula is heuristic; feel free to adjust it based on your needs or empirical testing
+    num_samples = int(num_samples * 2**(dimensions / 2) * (total_range / (2 * dimensions)))
+    
+    print(f"Using {num_samples} samples for Monte Carlo estimation")
+
     
     # Sample points uniformly within the range
     samples = np.random.uniform(min_ranges, max_ranges, (num_samples, data1.shape[1]))
@@ -99,9 +110,13 @@ def monte_carlo_jsd(data1, data2, num_samples=5000):
         else: 
             print(f"[WARNING] : Second TRY. One of the densities is zero. Densities: {density1.sum()}, {density2.sum()}")
             print(f"[WARNING] : Data1: {data1[:20]}, Data2: {data2[:20]}")
-            return 1
+            #Calcular con adaptative sampling
+            js_distance = adaptive_sampling_jsd(data1, data2, num_iterations=5)
+            
+            return js_distance
 
-def adaptive_sampling_jsd(data1, data2, num_samples=1000, num_iterations=5):
+
+def adaptive_sampling_jsd(data1, data2, num_samples=5000, num_iterations=5):
     # Combine data for range
     combined_data = np.vstack([data1, data2])
     min_ranges = np.min(combined_data, axis=0)
@@ -136,6 +151,12 @@ def adaptive_sampling_jsd(data1, data2, num_samples=1000, num_iterations=5):
     # Compute Jensen-Shannon distance
     dens1 = np.exp(log_dens1_final)
     dens2 = np.exp(log_dens2_final)
-    js_distance = jensenshannon(dens1 / dens1.sum(), dens2 / dens2.sum(), base=2)
+    if dens1.sum() == 0 or dens2.sum() == 0:
+        print(f"[WARNING] : Adpative Sampling. One of the densities is zero. Densities: {dens1.sum()}, {dens2.sum()}")
+        return 1
+    
+    dens1_norm = dens1 / dens1.sum()
+    dens2_norm = dens2 / dens2.sum()
+    js_distance = jensenshannon(dens1_norm, dens2_norm, base=2)
 
     return js_distance

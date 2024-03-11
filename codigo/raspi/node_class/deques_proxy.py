@@ -1,5 +1,6 @@
 import logging
 import traceback
+import inspect
 from collections import deque
 import multiprocessing
 from multiprocessing.managers import BaseManager
@@ -94,9 +95,34 @@ class DequesProxy:
 
     def log(self, message):
         process_name = multiprocessing.current_process().name
-        stack = traceback.format_stack()
-        formatted_stack = ''.join(stack[:-2])  # Excluye las últimas dos llamadas relacionadas con la función log
-        logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{formatted_stack}")
+        # Start with the current frame, then find the caller's frame and go back up to 3 levels.
+        frame = inspect.currentframe()
+        caller_frames = []
+
+        # Collect up to 3 levels of caller information.
+        for _ in range(4):  # Current frame + 3 callers
+            if frame is None:
+                break
+            caller_frames.append(frame)
+            frame = frame.f_back
+
+        # Format the collected caller information.
+        caller_info = ''
+        for f in caller_frames[1:]:  # Skip the first frame which is this log function itself.
+            filename = f.f_code.co_filename
+            lineno = f.f_lineno
+            func_name = f.f_code.co_name
+            caller_info += f"File \"{filename}\", line {lineno}, in {func_name}\n"
+
+        # Trim the last newline character for cleaner formatting.
+        if caller_info.endswith('\n'):
+            caller_info = caller_info[:-1]
+
+        # Log the message with caller information.
+        logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{caller_info}")
+
+        # Cleanup to prevent reference cycles.
+        del caller_frames
 
 class ListsProxy:
     def __init__(self, num_lists):
@@ -197,9 +223,34 @@ class ListsProxy:
 
     def log(self, message):
         process_name = multiprocessing.current_process().name
-        stack = traceback.format_stack()
-        formatted_stack = ''.join(stack[:-2])  # Excluye las últimas dos llamadas relacionadas con la función log
-        logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{formatted_stack}")
+        # Start with the current frame, then find the caller's frame and go back up to 3 levels.
+        frame = inspect.currentframe()
+        caller_frames = []
+
+        # Collect up to 3 levels of caller information.
+        for _ in range(4):  # Current frame + 3 callers
+            if frame is None:
+                break
+            caller_frames.append(frame)
+            frame = frame.f_back
+
+        # Format the collected caller information.
+        caller_info = ''
+        for f in caller_frames[1:]:  # Skip the first frame which is this log function itself.
+            filename = f.f_code.co_filename
+            lineno = f.f_lineno
+            func_name = f.f_code.co_name
+            caller_info += f"File \"{filename}\", line {lineno}, in {func_name}\n"
+
+        # Trim the last newline character for cleaner formatting.
+        if caller_info.endswith('\n'):
+            caller_info = caller_info[:-1]
+
+        # Log the message with caller information.
+        logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{caller_info}")
+
+        # Cleanup to prevent reference cycles.
+        del caller_frames
 
 class DequeManager(BaseManager):
     pass
