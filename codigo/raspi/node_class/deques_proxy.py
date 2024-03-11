@@ -119,7 +119,7 @@ class DequesProxy:
             caller_info = caller_info[:-1]
 
         # Log the message with caller information.
-        logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{caller_info}")
+        # logging.debug(f"{message}\nProcess: {process_name}\nStack trace:\n{caller_info}")
 
         # Cleanup to prevent reference cycles.
         del caller_frames
