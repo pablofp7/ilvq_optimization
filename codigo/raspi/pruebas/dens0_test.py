@@ -91,18 +91,22 @@ plt.plot(num_samples_values, times, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Average Time per Calculation (s)')
 plt.title('Time vs. Number of Samples')
+plt.xscale('log')
 
 plt.subplot(2, 2, 2)
 plt.plot(num_samples_values, means, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Mean Distance')
 plt.title('Mean Distance vs. Number of Samples')
+plt.xscale('log')
+
 
 plt.subplot(2, 2, 3)
 plt.plot(num_samples_values, std_devs, marker='o')
 plt.xlabel('Number of Samples')
 plt.ylabel('Standard Deviation of Distance')
 plt.title('Std Dev vs. Number of Samples')
+plt.xscale('log')
 
 
 plt.tight_layout()
