@@ -135,7 +135,7 @@ def sincronizar():
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
                 s_recepcion.bind(("0.0.0.0", puerto))
-                s_recepcion.settimeout(0.5)  # Establecer timeout
+                s_recepcion.settimeout(3)  # Establecer timeout
                 while not ready:
                     try:
                         # Enviar "LISTO" al nodo central
@@ -202,116 +202,6 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
     # Si el mensaje no cumple las condiciones, devolver False y None
     return 
 
-
-# def sincronizar():
-
-#     print("Comienza la sincronización...")
-#     puerto = 11111  # Puerto común para la sincronización
-#     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
-#     dir_server = "nodo0.local"  # Dirección del nodo central
-#     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
-
-#     if id == 0:
-#         # Nodo central
-#         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-#             s.bind(("0.0.0.0", puerto))
-#             # vaciar_buffer(s)
-
-#             lista_confirmaciones = [False] * n_nodos
-#             lista_confirmaciones[id] = True
-
-#             while not all(lista_confirmaciones):
-#                 data, addr = s.recvfrom(buffer_size)
-#                 msg = data.decode()
-#                 check_mensaje(msg, lista_confirmaciones)
-#                 # option, nodo_id = check_mensaje(msg, lista_confirmaciones)
-#                 # if option:
-#                 #     lista_confirmaciones[nodo_id] = True
-                
-#                 # # if msg.startswith("LISTO") and parametros in msg:
-#                 # #     nodo_id = int(msg.split()[1])
-#                 # #     lista_confirmaciones[nodo_id] = True
-
-#             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
-#             for i, dir in enumerate(dir_nodos):
-#                 # print(f"Se va e enviar COMENZAR: dir:{dir}, puerto: {puerto}")
-#                 s.sendto("COMENZAR".encode(), (dir, puerto))
-#             print(f"Se le ha enviado COMENZAR a todos los slaves.")
-#             time.sleep(0.25)
-
-
-#             print("Nodo 0: todos listos.")
-#     else:
-#         # Nodo no central
-#         ready = False
-#         contador_prints = 0
-#         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-#             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
-#                 s_recepcion.bind(("0.0.0.0", puerto))
-#                 s_recepcion.settimeout(0.5)  # Establecer timeout
-#                 while not ready:
-#                     try:
-#                         # Enviar "LISTO" al nodo central
-#                         s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
-                        
-#                         if contador_prints % 5:
-#                             print(f"LISTO enviado desde {id}")
-#                         contador_prints += 1
-
-#                         try:
-#                             data, _ = s_recepcion.recvfrom(buffer_size)
-#                             msg = data.decode()
-#                             if msg == "COMENZAR":
-#                                 print(f"{id}: Recibido COMENZAR desde nodo0.")
-#                                 ready = True
-#                                 break
-#                         except socket.timeout:
-#                             print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
-#                             # No es necesario romper el bucle; sigue esperando
-#                     except Exception as e:
-#                         print(f"Error en nodo {id}: {e}")
-#                         time.sleep(2)  # Esperar un poco antes de reintentar
-
-#                 print(f"Nodo {id} contestando a nodo0.")
-
-
-# def check_mensaje(mensaje, lista_confirmaciones):
-#     """
-#     Evalúa si el mensaje comienza con 'LISTO', contiene los parámetros esperados
-#     (sin considerar el sufijo '_nodoX'), y extrae el id del nodo. Devuelve True si
-#     cumple las condiciones, o False en caso contrario, junto con el id del nodo.
-#     """
-#     # Verificar si el mensaje comienza con "LISTO"
-#     if mensaje.startswith("LISTO"):
-#         try:
-#             # Extraer la parte después de "LISTO"
-#             _, resto_mensaje = mensaje.split(' ', 1)
-
-#             partes = resto_mensaje.split('_')
-#             nodo_id_str = partes[-1].replace("nodo", "")  # Extraer el ID del nodo, que está al final
-#             parametros_recibidos = "_".join(partes[:-1])  # Unir todas las partes excepto la última
-
-#             nodo_id = int(nodo_id_str)
-#             parametros_esperados_sin_nodo = "_".join(parametros.split('_')[:-1])
-            
-#             if lista_confirmaciones[nodo_id]:
-#                 return
-#             lista_confirmaciones[nodo_id] = True
-            
-#             print(f"Nodo 0. Recibido: {mensaje}")
-
-
-#             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
-#             if parametros_recibidos == parametros_esperados_sin_nodo:
-#                 # print(f"Mensaje recibido: {mensaje}")
-#                 # print(f"Parametros esperados vs recibidos: {parametros_esperados_sin_nodo} vs {parametros_recibidos}")
-#                 return True, nodo_id
-#         except ValueError as e:
-#             # Manejar errores de conversión o de formato incorrecto
-#             print(f"Error al procesar el mensaje: {e}")
-
-#     # Si el mensaje no cumple las condiciones, devolver False y None
-#     return False, None
 
 if __name__ == "__main__":
 

@@ -25,7 +25,7 @@ def read_dataset(name: str):
     return dataset
 
 
-def main(df: pd.DataFrame): 
+def main(df: pd.DataFrame, g: int): 
 
     #Se adapta para darle a cada nodo su parte
     init_index = 0
@@ -42,7 +42,7 @@ def main(df: pd.DataFrame):
     
     nodos = []
     for id in range(n_nodos):
-        nodo = RaspiNodev1(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+        nodo = RaspiNodev1(id, dataset=df_nodos[id], modelo_proto=XuILVQ(gamma=g), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
         nodos.append(nodo)    
     
     hilos = []
@@ -110,7 +110,8 @@ if __name__ == "__main__":
         datasets = ["elec"]
         T = np.array([1.0])
         s = [4]
-
+        gammas = [30, 50, 70, 90, 110, 130, 150]  # Valores de gamma a iterar
+        
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
         nombre_script = sys.argv[0].split(".")[0]
@@ -125,21 +126,22 @@ if __name__ == "__main__":
                 for s in S:
                     tiempo_s = time.perf_counter()
                     for t in T:
-                        # if t == 0 and i > 0 and s > 1:
-                        #     continue
-                        tiempo_inicio = time.perf_counter()
-                        print(f"ITERACIÓN {i}, dataset: {dataset}, S: {s}, T:{t}")
-                        
-                        parametros = f"{dataset}_s{s}_T{t}_it{i}"
-                        nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
-                        if os.path.isfile(nombre_archivo):
-                            print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
-                            continue  # Salta a la siguiente iteración si el archivo ya existe
-                        
-                        main(data_frame)
-                        print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
+                        for gamma in gammas:  # Iterar sobre los valores de gamma
+                            tiempo_inicio = time.perf_counter()
+                            print(f"ITERACIÓN {i}, dataset: {dataset}, S: {s}, T:{t}, Gamma: {gamma}")
+                            
+                            parametros = f"{dataset}_s{s}_T{t}_g{gamma}_it{i}"  # Incluir gamma en el nombre del archivo
+                            nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
+                            if os.path.isfile(nombre_archivo):
+                                print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
+                                continue  # Salta a la siguiente iteración si el archivo ya existe
+                            
+                            # Llamar a main con el dataframe y gamma como parámetros
+                            # Asegúrate de que main ahora acepte gamma como un argumento y lo use adecuadamente
+                            main(data_frame, gamma)  # Asegúrate de que main esté definido para aceptar y usar gamma
+                            print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
         
     except KeyboardInterrupt as e:
-        os.system("ipcrm --all=msg")
+        exit()
         
         
