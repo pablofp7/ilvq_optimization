@@ -33,7 +33,7 @@ class RaspiNodev4_1local_mp:
         manager = DequeManager().start_manager()
         tam_colas = 500000
         self.manager = manager
-        self.cola_protos = manager.DequesProxy(num_deques = self.nodos, maxlen = tam_colas)        
+        self.cola_protos = manager.DequesProxy(num_deques = self.nodos, maxlen = tam_colas, id = self.id)        
         self.cola_index = 0
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         
@@ -64,12 +64,12 @@ class RaspiNodev4_1local_mp:
         self.tiempo_espera_total = 0
         
         #Atributos para gestionar hilos
-        self.last_set = manager.DequesProxy(num_deques = self.nodos, maxlen = 1)
-        self.tam_lotes_recibidos = manager.ListsProxy(num_lists = 1)
-        self.compartidos = manager.ListsProxy(num_lists = 1)
-        self.shared_times = manager.ListsProxy(num_lists = 1)
-        self.tiempo_share = manager.ListsProxy(num_lists = 1)
-        self.tiempo_no_share = manager.ListsProxy(num_lists = 1)
+        self.last_set = manager.DequesProxy(num_deques = self.nodos, maxlen = 1, id = self.id)
+        self.tam_lotes_recibidos = manager.ListsProxy(num_lists = 1, id = self.id)
+        self.compartidos = manager.ListsProxy(num_lists = 1, id = self.id)
+        self.shared_times = manager.ListsProxy(num_lists = 1, id = self.id)
+        self.tiempo_share = manager.ListsProxy(num_lists = 1, id = self.id)
+        self.tiempo_no_share = manager.ListsProxy(num_lists = 1, id = self.id)
         self.fin_proceso = multiprocessing.Event()
         self.fin_proceso_emisor = multiprocessing.Event()
         self.send_emisor = multiprocessing.Event()
