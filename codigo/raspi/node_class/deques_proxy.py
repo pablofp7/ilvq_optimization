@@ -112,7 +112,8 @@ class DequesProxy:
         full_message = f"{message}\nProcess: {process_name}\n{stack_trace}"
         
         # Log del mensaje completo
-        logging.debug(full_message)
+        # logging.debug(full_message)
+        print(full_message)
         
         # Limpieza para evitar retener referencias a los frames más tiempo del necesario
         del stack
@@ -234,7 +235,8 @@ class ListsProxy:
         full_message = f"{message}\nProcess: {process_name}\n{stack_trace}"
         
         # Log del mensaje completo
-        logging.debug(full_message)
+        # logging.debug(full_message)
+        print(full_message)
         
         # Limpieza para evitar retener referencias a los frames más tiempo del necesario
         del stack
