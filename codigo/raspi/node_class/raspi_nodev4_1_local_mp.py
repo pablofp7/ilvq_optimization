@@ -109,7 +109,7 @@ class RaspiNodev4_1local_mp:
             self.tiempo_learn_data += time.perf_counter() - inicio_learn_data
             self.save_tam_conj()
 
-            self.last_set.append(self.id, list(self.modelo_proto.buffer.prototypes.values()))
+            self.last_set.append(self.id, list(self.modelo_proto.buffer.prototypes.values()), call_method = "RUN. Updating own set for sharing.")
             self.send_emisor.set()
             
         
@@ -205,8 +205,8 @@ class RaspiNodev4_1local_mp:
         
         while colas_revisadas < colas_a_revisar:
             
-            if self.cola_protos.get_length(self.cola_index) > 0:
-                proto = self.cola_protos.popleft(self.cola_index)
+            if self.cola_protos.get_length(self.cola_index, call_method = "LEARNING QUEUE. Getting number of protos of neighbour.") > 0:
+                proto = self.cola_protos.popleft(self.cola_index, call_method = "LEARNING QUEUE. Popping proto from neighbour.")
                 
                 self.protos_train += 1
                 print(f"PROTO {self.protos_train}, NODO {self.id}\n") if self.protos_train % 10000 == 0 else None
@@ -263,7 +263,9 @@ class RaspiNodev4_1local_mp:
                     client_context.term()
                     tiempo_share.append(0, tiempo_share_local)
                     shared_times.append(0, shared_times_local)
+                    print(f"[NODO {id}] . Va a añadir {compartidos_local} a la lista de compartidos.")
                     compartidos.append(0, compartidos_local)
+                    print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
                     tiempo_no_share.append(0, tiempo_no_share_local)
                     print(f"[NODO {id}] El hilo emisor ha terminado. ORDEN {fin_proceso_emisor} / {fin_proceso_emisor.is_set()}. Vuelve al join.")
                     return
@@ -278,7 +280,7 @@ class RaspiNodev4_1local_mp:
                         shared_times_local += 1                         
                         # print(f"El nodo {id} ha compartido {shar_prev + 1} veces.") if id == 0 else None
                         # Obtener los prototipos del modelo
-                        protos = last_set.getleft(id)
+                        protos = last_set.getleft(id, call_method = "SHARE. Getting own set for sharing.")
 
                         # Serializar los datos a compartir
                         proto_to_share = pickle.dumps({"id": id, "protos": [{'x': proto['x'], 'y': proto['y']} for proto in protos]})
@@ -317,21 +319,21 @@ class RaspiNodev4_1local_mp:
                 
     
     def check_sharing(self, destinos, last_set, id):
-        
-        mi_conj = last_set.getleft(id)
+    
+        mi_conj = last_set.getleft(id, call_method= "CHECKING SHARE. Getting own set for checking.")
         mi_conj = np.array([np.append(proto['x'], proto['y']) for proto in mi_conj])
         # conj_prot[id].append(mis_protos)
 
         
         destinos_eficiente = []
         for destino in destinos:
-            if last_set.get_length(destino) < 1:
+            if last_set.get_length(destino, call_method = "CHECKING SHARE. Getting number of sets of neighbour") < 1:
                 destinos_eficiente.append(destino)
                 print(f"[NODO {id}] comparte con el nodo {destino} porque no tiene última versión.") 
                 continue
             
             #Vamos a printear los conjuntos de prototipos a evaluar
-            dest_conj = last_set.getleft(destino)
+            dest_conj = last_set.getleft(destino, call_method = "CHECKING SHARE. Getting neighbour set for checking.")
             # Vamos a hacer un print mostrando ambos conjuntos:
             print(f"[NODO {id}] MI conjunto: {len(mi_conj)}.") if id == 0 else None
             print(f"[NODO {id}] Conjunto NODO {destino}: {len(dest_conj)}.") if id == 0 else None
@@ -414,7 +416,7 @@ class RaspiNodev4_1local_mp:
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
                 # print(f"[NODO {id}] Va a añadir conjunto a la cola tocha de protos.") 
-                cola_protos.extendleft(id_recibido, protos)
+                cola_protos.extendleft(id_recibido, protos, call_method = "RECEIVING. Extending left neighbour queue.")
                 # print(f"[NODO {id}] Ha añadido. Procede a actualizar la lista de conjunto reciente.")
                 self.update_conj_proto(id, id_recibido, protos, last_set)
                 # print(f"[NODO {id}] Ha actualizado la lista de conjunto reciente.")
@@ -447,7 +449,7 @@ class RaspiNodev4_1local_mp:
     def update_conj_proto(self, id, id_recibido, protos, last_set):
         protos_transformed = np.array([np.append(proto['x'], proto['y']) for proto in protos])
         # print(f"[NODO {id}] Actualiza last_set[{id_recibido}] con len={len(protos_transformed)}: {protos_transformed}.") 
-        last_set.append(id_recibido, protos_transformed)
+        last_set.append(id_recibido, protos_transformed, call_method = "UPDATING SET. Updating neighbour set.")
         
         
         

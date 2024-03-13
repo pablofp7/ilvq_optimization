@@ -162,11 +162,11 @@ if __name__ == "__main__":
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        # n_muestras = 1000
-        # iteraciones = 20
-        # datasets = ["phis"]
-        # S = [1, 4]
-        # T = [0.1, 0.5, 1.0] 
+        n_muestras = 20
+        iteraciones = 20
+        datasets = ["phis"]
+        S = [1, 4]
+        T = [0.1, 0.5, 1.0] 
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
