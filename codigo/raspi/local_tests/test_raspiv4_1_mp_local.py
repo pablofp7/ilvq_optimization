@@ -73,6 +73,8 @@ def nodo_run_wrapper(args: list, cola_resultados: multiprocessing.Queue):
     
     cola_resultados.put(estadisticas)   
     
+    print(f"[NODO {nodo.id}] - Ha vuelto del nodo.run() y se han obtenido las estadísticas, volviendo al join")
+    
     return 
     
 def main(df: pd.DataFrame): 
@@ -102,6 +104,7 @@ def main(df: pd.DataFrame):
     # Crear y empezar un nuevo proceso para cada conjunto de argumentos
     for args in nodos_args:
         p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados), name=f"Proceso_Nodo_{args[0]}")
+        # p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados))
         p.start()
         procesos.append(p)
     
@@ -162,9 +165,9 @@ if __name__ == "__main__":
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        # n_muestras = 100
+        n_muestras = 50
         # iteraciones = 20
-        # datasets = ["phis"]
+        datasets = ["phis"]
         # S = [1, 4]
         # T = [0.1, 0.5, 1.0] 
 

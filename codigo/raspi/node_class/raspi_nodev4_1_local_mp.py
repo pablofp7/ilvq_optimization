@@ -153,8 +153,6 @@ class RaspiNodev4_1local_mp:
             f"Ha tardado {self.tiempo_share / 60} minutos en share.\n"
             f"Ha tardado {self.tiempo_no_share / 60} minutos en share (No compartiendo).\n")
         
-       
-        
         return
 
         
