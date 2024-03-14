@@ -99,7 +99,7 @@ def vaciar_buffer(socket):
         
         
         
-def sincronizar(id):
+def sincronizar():
     print("Comienza la sincronización...")
     puerto = 11111  # Puerto común para la sincronización
     dir_server = "nodo0.local"  # Dirección del nodo central
