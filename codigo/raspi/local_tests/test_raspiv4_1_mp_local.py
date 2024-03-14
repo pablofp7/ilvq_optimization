@@ -65,10 +65,10 @@ def nodo_run_wrapper(args: list, cola_resultados: multiprocessing.Queue):
         'tiempo_final_total': nodo.tiempo_final_total,
         'cap_ejec': cap_ejec,
         'tam_conj_prot': nodo.tam_conj_prot,
-        'tiempo_share': nodo.tiempo_share,
+        'tiempo_share': nodo.tiempo_share_final,
         'tam_lotes_recibidos': nodo.tam_lotes_recibidos,
-        'shared_times': nodo.shared_times,
-        'compartidos': nodo.compartidos,
+        'shared_times': nodo.shared_times_final,
+        'compartidos': nodo.compartidos_final,
     }
     
     cola_resultados.put(estadisticas)   
