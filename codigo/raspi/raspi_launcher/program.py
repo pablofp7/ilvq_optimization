@@ -96,135 +96,78 @@ def vaciar_buffer(socket):
         except:
             print("Buffer vaciado.")
             break
-        
-        
+              
         
 def sincronizar():
+
     print("Comienza la sincronización...")
     puerto = 11111  # Puerto común para la sincronización
-    dir_server = "nodo0.local"  # Dirección del nodo central
     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
-    contador_prints = 0
+    dir_server = "nodo0.local"  # Dirección del nodo central
+    dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
 
     if id == 0:
+        contador_prints = 0
         # Nodo central
-        lista_confirmaciones = [False] * (n_nodos)
-        lista_confirmaciones[id] = True  # El nodo central se considera listo automáticamente
-
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
-            s.listen(n_nodos)
+            # vaciar_buffer(s)
+
+            lista_confirmaciones = [False] * n_nodos
+            lista_confirmaciones[id] = True
 
             while not all(lista_confirmaciones):
-                conn, addr = s.accept()
-                with conn:
-                    data = conn.recv(buffer_size)
-                    if data:
-                        mensaje = data.decode()
-                        check_mensaje(mensaje, lista_confirmaciones=lista_confirmaciones, contador_prints=contador_prints)
+                data, addr = s.recvfrom(buffer_size)
+                mensaje = data.decode()
+                check_mensaje(mensaje, lista_confirmaciones, contador_prints=contador_prints)
 
-            # Enviar "COMENZAR" a todos los nodos no centrales
-            for i in range(1, n_nodos):
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s_to_node:
-                    s_to_node.connect((f"nodo{i}.local", puerto))
-                    s_to_node.sendall("COMENZAR".encode())
+            # Enviar "COMENZAR" a todos los nodos excepto al nodo central
+            max_intentos = 5 
+            for _ in range(5):
+                for i, dir in enumerate(dir_nodos):
+                    s.sendto("COMENZAR".encode(), (dir, puerto))
+                print(f"Se le ha enviado COMENZAR a todos los slaves.")
+            time.sleep(0.1)
 
             print("Nodo 0: todos listos.")
-
     else:
-        mensaje = f"LISTO {parametros}".encode()
+        # Nodo no central
         ready = False
-        intentos = 0
-        max_intentos = 10 # Número máximo de intentos de reconexión
-        espera_entre_intentos = 2  # Tiempo de espera entre intentos (en segundos)
+        contador_prints = 0
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
+                s_recepcion.bind(("0.0.0.0", puerto))
+                s_recepcion.settimeout(3)  # Establecer timeout
+                while not ready:
+                    try:
+                        # Enviar "LISTO" al nodo central
+                        s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
+                        time.sleep(0.1)  # Esperar un poco después de enviar "LISTO"
 
-        while not ready and intentos < max_intentos:
-            try:
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    s.connect((dir_server, puerto))
-                    s.sendall(mensaje)
-                    data = s.recv(1024)
-                    if data:
-                        mensaje_recibido = data.decode()
-                        if mensaje_recibido == "COMENZAR":
-                            ready = True
-                            print(f"Nodo {id}: Recibido COMENZAR desde nodo0.")
-                            break
-            except ConnectionRefusedError:
-                print(f"Nodo {id}: Conexión rechazada por nodo0, reintentando...")
-                time.sleep(espera_entre_intentos)
-                intentos += 1
+                        if contador_prints % 50:
+                            print(f"LISTO enviado desde {id}")
+                        contador_prints += 1
 
-        if not ready:
-            print(f"Nodo {id}: No se pudo conectar con el nodo central después de {max_intentos} intentos.")        
-        
-# def sincronizar():
+                        try:
+                            data, _ = s_recepcion.recvfrom(buffer_size)
+                            mensaje = data.decode()
+                            if mensaje == "COMENZAR":
+                                print(f"{id}: Recibido COMENZAR desde nodo0.")
+                                ready = True
+                                time.sleep(0.1)  # Esperar un poco antes de continuar
+                                break
+                        except socket.timeout:
+                            print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
+                            # No es necesario romper el bucle; sigue esperando
+                    except Exception as e:
+                        print(f"Error en nodo {id}: {e}")
+                        time.sleep(2)  # Esperar un poco antes de reintentar
 
-#     print("Comienza la sincronización...")
-#     puerto = 11111  # Puerto común para la sincronización
-#     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
-#     dir_server = "nodo0.local"  # Dirección del nodo central
-#     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
+                if ready:
+                    print(f"Nodo {id} contestando a nodo0.")
+                else:
+                    print(f"Nodo {id} no está listo para comenzar las simulaciones.")
 
-#     if id == 0:
-#         contador_prints = 0
-#         # Nodo central
-#         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-#             s.bind(("0.0.0.0", puerto))
-#             # vaciar_buffer(s)
-
-#             lista_confirmaciones = [False] * n_nodos
-#             lista_confirmaciones[id] = True
-
-#             while not all(lista_confirmaciones):
-#                 data, addr = s.recvfrom(buffer_size)
-#                 mensaje = data.decode()
-#                 check_mensaje(mensaje, lista_confirmaciones, contador_prints=contador_prints)
-
-#             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
-#             for i, dir in enumerate(dir_nodos):
-#                 s.sendto("COMENZAR".encode(), (dir, puerto))
-#             print(f"Se le ha enviado COMENZAR a todos los slaves.")
-#             time.sleep(0.25)
-
-#             print("Nodo 0: todos listos.")
-#     else:
-#         # Nodo no central
-#         ready = False
-#         contador_prints = 0
-#         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-#             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
-#                 s_recepcion.bind(("0.0.0.0", puerto))
-#                 s_recepcion.settimeout(3)  # Establecer timeout
-#                 while not ready:
-#                     try:
-#                         # Enviar "LISTO" al nodo central
-#                         s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
-#                         time.sleep(0.1)  # Esperar un poco después de enviar "LISTO"
-
-#                         if contador_prints % 50:
-#                             print(f"LISTO enviado desde {id}")
-#                         contador_prints += 1
-
-#                         try:
-#                             data, _ = s_recepcion.recvfrom(buffer_size)
-#                             mensaje = data.decode()
-#                             if mensaje == "COMENZAR":
-#                                 print(f"{id}: Recibido COMENZAR desde nodo0.")
-#                                 ready = True
-#                                 time.sleep(0.1)  # Esperar un poco antes de continuar
-#                                 break
-#                         except socket.timeout:
-#                             print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
-#                             # No es necesario romper el bucle; sigue esperando
-#                     except Exception as e:
-#                         print(f"Error en nodo {id}: {e}")
-#                         time.sleep(2)  # Esperar un poco antes de reintentar
-
-#                 if ready:
-#                     print(f"Nodo {id} contestando a nodo0.")
-#                 else:
-#                     print(f"Nodo {id} no está listo para comenzar las simulaciones.")
 
 def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
     """
