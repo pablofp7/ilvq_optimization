@@ -104,6 +104,7 @@ def sincronizar():
     puerto = 11111  # Puerto común para la sincronización
     dir_server = "nodo0.local"  # Dirección del nodo central
     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
+    contador_prints = 0
 
     if id == 0:
         # Nodo central
@@ -120,12 +121,10 @@ def sincronizar():
                     data = conn.recv(buffer_size)
                     if data:
                         mensaje = data.decode()
-                        nodo_id = check_mensaje(mensaje)
-                        if nodo_id is not None:
-                            lista_confirmaciones[nodo_id] = True
+                        check_mensaje(mensaje, lista_confirmaciones=lista_confirmaciones, contador_prints=contador_prints)
 
             # Enviar "COMENZAR" a todos los nodos no centrales
-            for i in range(1, n_nodos + 1):
+            for i in range(1, n_nodos):
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s_to_node:
                     s_to_node.connect((f"nodo{i}.local", puerto))
                     s_to_node.sendall("COMENZAR".encode())
@@ -133,21 +132,31 @@ def sincronizar():
             print("Nodo 0: todos listos.")
 
     else:
-        # Nodo no central
+        mensaje = f"LISTO {parametros}".encode()
         ready = False
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((dir_server, puerto))
-            mensaje = f"LISTO {id}"
-            s.sendall(mensaje.encode())
+        intentos = 0
+        max_intentos = 10 # Número máximo de intentos de reconexión
+        espera_entre_intentos = 2  # Tiempo de espera entre intentos (en segundos)
 
-            while not ready:
-                data = s.recv(buffer_size)
-                if data:
-                    mensaje = data.decode()
-                    if mensaje == "COMENZAR":
-                        ready = True
-                        print(f"Nodo {id}: Recibido COMENZAR desde nodo0.")
-        
+        while not ready and intentos < max_intentos:
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.connect((dir_server, puerto))
+                    s.sendall(mensaje)
+                    data = s.recv(1024)
+                    if data:
+                        mensaje_recibido = data.decode()
+                        if mensaje_recibido == "COMENZAR":
+                            ready = True
+                            print(f"Nodo {id}: Recibido COMENZAR desde nodo0.")
+                            break
+            except ConnectionRefusedError:
+                print(f"Nodo {id}: Conexión rechazada por nodo0, reintentando...")
+                time.sleep(espera_entre_intentos)
+                intentos += 1
+
+        if not ready:
+            print(f"Nodo {id}: No se pudo conectar con el nodo central después de {max_intentos} intentos.")        
         
 # def sincronizar():
 
@@ -242,7 +251,8 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
 
             if contador_prints % 50:
                 print(f"Nodo 0. Recibido: {mensaje}")
-                print(f"Parámetros recibidos: {parametros_esperados_sin_nodo}")
+                print(f"Parámetros recibidos: {parametros_recibidos}")
+                print(f"Mis parametros sin nodo {parametros_esperados_sin_nodo}")
             contador_prints += 1
 
             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
