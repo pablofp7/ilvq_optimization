@@ -98,73 +98,124 @@ def vaciar_buffer(socket):
             break
         
         
-def sincronizar():
-
+        
+def sincronizar(id):
     print("Comienza la sincronización...")
     puerto = 11111  # Puerto común para la sincronización
-    buffer_size = 1024  # Tamaño del buffer para recibir mensajes
     dir_server = "nodo0.local"  # Dirección del nodo central
-    dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
+    buffer_size = 1024  # Tamaño del buffer para recibir mensajes
 
     if id == 0:
-        contador_prints = 0
         # Nodo central
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            s.bind(("0.0.0.0", puerto))
-            # vaciar_buffer(s)
+        lista_confirmaciones = [False] * (n_nodos)
+        lista_confirmaciones[id] = True  # El nodo central se considera listo automáticamente
 
-            lista_confirmaciones = [False] * n_nodos
-            lista_confirmaciones[id] = True
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(("0.0.0.0", puerto))
+            s.listen(n_nodos)
 
             while not all(lista_confirmaciones):
-                data, addr = s.recvfrom(buffer_size)
-                mensaje = data.decode()
-                check_mensaje(mensaje, lista_confirmaciones, contador_prints=contador_prints)
+                conn, addr = s.accept()
+                with conn:
+                    data = conn.recv(buffer_size)
+                    if data:
+                        mensaje = data.decode()
+                        nodo_id = check_mensaje(mensaje)
+                        if nodo_id is not None:
+                            lista_confirmaciones[nodo_id] = True
 
-            # Enviar "COMENZAR" a todos los nodos excepto al nodo central
-            for i, dir in enumerate(dir_nodos):
-                s.sendto("COMENZAR".encode(), (dir, puerto))
-            print(f"Se le ha enviado COMENZAR a todos los slaves.")
-            time.sleep(0.25)
+            # Enviar "COMENZAR" a todos los nodos no centrales
+            for i in range(1, n_nodos + 1):
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s_to_node:
+                    s_to_node.connect((f"nodo{i}.local", puerto))
+                    s_to_node.sendall("COMENZAR".encode())
 
             print("Nodo 0: todos listos.")
+
     else:
         # Nodo no central
         ready = False
-        contador_prints = 0
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
-                s_recepcion.bind(("0.0.0.0", puerto))
-                s_recepcion.settimeout(3)  # Establecer timeout
-                while not ready:
-                    try:
-                        # Enviar "LISTO" al nodo central
-                        s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
-                        time.sleep(0.1)  # Esperar un poco después de enviar "LISTO"
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((dir_server, puerto))
+            mensaje = f"LISTO {id}"
+            s.sendall(mensaje.encode())
 
-                        if contador_prints % 50:
-                            print(f"LISTO enviado desde {id}")
-                        contador_prints += 1
+            while not ready:
+                data = s.recv(buffer_size)
+                if data:
+                    mensaje = data.decode()
+                    if mensaje == "COMENZAR":
+                        ready = True
+                        print(f"Nodo {id}: Recibido COMENZAR desde nodo0.")
+        
+        
+# def sincronizar():
 
-                        try:
-                            data, _ = s_recepcion.recvfrom(buffer_size)
-                            mensaje = data.decode()
-                            if mensaje == "COMENZAR":
-                                print(f"{id}: Recibido COMENZAR desde nodo0.")
-                                ready = True
-                                time.sleep(0.1)  # Esperar un poco antes de continuar
-                                break
-                        except socket.timeout:
-                            print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
-                            # No es necesario romper el bucle; sigue esperando
-                    except Exception as e:
-                        print(f"Error en nodo {id}: {e}")
-                        time.sleep(2)  # Esperar un poco antes de reintentar
+#     print("Comienza la sincronización...")
+#     puerto = 11111  # Puerto común para la sincronización
+#     buffer_size = 1024  # Tamaño del buffer para recibir mensajes
+#     dir_server = "nodo0.local"  # Dirección del nodo central
+#     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
 
-                if ready:
-                    print(f"Nodo {id} contestando a nodo0.")
-                else:
-                    print(f"Nodo {id} no está listo para comenzar las simulaciones.")
+#     if id == 0:
+#         contador_prints = 0
+#         # Nodo central
+#         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+#             s.bind(("0.0.0.0", puerto))
+#             # vaciar_buffer(s)
+
+#             lista_confirmaciones = [False] * n_nodos
+#             lista_confirmaciones[id] = True
+
+#             while not all(lista_confirmaciones):
+#                 data, addr = s.recvfrom(buffer_size)
+#                 mensaje = data.decode()
+#                 check_mensaje(mensaje, lista_confirmaciones, contador_prints=contador_prints)
+
+#             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
+#             for i, dir in enumerate(dir_nodos):
+#                 s.sendto("COMENZAR".encode(), (dir, puerto))
+#             print(f"Se le ha enviado COMENZAR a todos los slaves.")
+#             time.sleep(0.25)
+
+#             print("Nodo 0: todos listos.")
+#     else:
+#         # Nodo no central
+#         ready = False
+#         contador_prints = 0
+#         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+#             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
+#                 s_recepcion.bind(("0.0.0.0", puerto))
+#                 s_recepcion.settimeout(3)  # Establecer timeout
+#                 while not ready:
+#                     try:
+#                         # Enviar "LISTO" al nodo central
+#                         s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
+#                         time.sleep(0.1)  # Esperar un poco después de enviar "LISTO"
+
+#                         if contador_prints % 50:
+#                             print(f"LISTO enviado desde {id}")
+#                         contador_prints += 1
+
+#                         try:
+#                             data, _ = s_recepcion.recvfrom(buffer_size)
+#                             mensaje = data.decode()
+#                             if mensaje == "COMENZAR":
+#                                 print(f"{id}: Recibido COMENZAR desde nodo0.")
+#                                 ready = True
+#                                 time.sleep(0.1)  # Esperar un poco antes de continuar
+#                                 break
+#                         except socket.timeout:
+#                             print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
+#                             # No es necesario romper el bucle; sigue esperando
+#                     except Exception as e:
+#                         print(f"Error en nodo {id}: {e}")
+#                         time.sleep(2)  # Esperar un poco antes de reintentar
+
+#                 if ready:
+#                     print(f"Nodo {id} contestando a nodo0.")
+#                 else:
+#                     print(f"Nodo {id} no está listo para comenzar las simulaciones.")
 
 def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
     """
@@ -184,12 +235,14 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
 
             nodo_id = int(nodo_id_str)
             parametros_esperados_sin_nodo = "_".join(parametros.split('_')[:-1])
+            
 
             if lista_confirmaciones[nodo_id] is True:
                 return
 
             if contador_prints % 50:
                 print(f"Nodo 0. Recibido: {mensaje}")
+                print(f"Parámetros recibidos: {parametros_esperados_sin_nodo}")
             contador_prints += 1
 
             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
@@ -199,7 +252,6 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
             # Manejar errores de conversión o de formato incorrecto
             print(f"Error al procesar el mensaje: {e}")
 
-    # Si el mensaje no cumple las condiciones, devolver False y None
     return 
 
 
