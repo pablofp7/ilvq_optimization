@@ -101,7 +101,7 @@ def main(df: pd.DataFrame):
     procesos = []
     # Crear y empezar un nuevo proceso para cada conjunto de argumentos
     for args in nodos_args:
-        p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados))
+        p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados), name=f"Proceso_Nodo_{args[0]}")
         p.start()
         procesos.append(p)
     
@@ -162,11 +162,11 @@ if __name__ == "__main__":
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        n_muestras = 20
-        iteraciones = 20
-        datasets = ["phis"]
-        S = [1, 4]
-        T = [0.1, 0.5, 1.0] 
+        # n_muestras = 100
+        # iteraciones = 20
+        # datasets = ["phis"]
+        # S = [1, 4]
+        # T = [0.1, 0.5, 1.0] 
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
         
