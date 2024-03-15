@@ -137,10 +137,10 @@ class RaspiNodev4_1local_mp:
         self.tam_conj_prot = self.diezmar()  # Diezmar la lista de tamaños de conjuntos de prototipos.
         self.tam_lotes_recibidos = self.tam_lotes_recibidos.get_list(0)  # Obtener la lista de tamaños de lotes recibidos.
         
-        self.compartidos = self.compartidos.pop(0) # Obtener prototipos compartidos.
-        self.shared_times = self.shared_times.pop(0)  # Obtener el número de veces que se compartió.
-        self.tiempo_share = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
-        self.tiempo_no_share = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
+        self.compartidos_final = self.compartidos.pop(0) # Obtener prototipos compartidos.
+        self.shared_times_final = self.shared_times.pop(0)  # Obtener el número de veces que se compartió.
+        self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
+        self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
             
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
@@ -150,8 +150,8 @@ class RaspiNodev4_1local_mp:
             f"Tiempo total de espera activa: {self.tiempo_espera_total / 60} minutos.\n"
             f"Ha tardado {self.tiempo_learn_data / 60} minutos en learn from data.\n"
             f"Ha tardado {self.tiempo_learn_queue / 60} minutos en learn from queue.\n"
-            f"Ha tardado {self.tiempo_share / 60} minutos en share.\n"
-            f"Ha tardado {self.tiempo_no_share / 60} minutos en share (No compartiendo).\n")
+            f"Ha tardado {self.tiempo_share_final / 60} minutos en share.\n"
+            f"Ha tardado {self.tiempo_no_share_final / 60} minutos en share (No compartiendo).\n")
         
         return
 

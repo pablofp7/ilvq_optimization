@@ -79,74 +79,105 @@ def nodo_run_wrapper(args: list, cola_resultados: multiprocessing.Queue):
     
 def main(df: pd.DataFrame): 
 
-    #Se adapta para darle a cada nodo su parte
-    init_index = 0
-    tam_muestra = n_muestras * n_nodos
-    if "phis" in dataset or "elec2" in dataset:
-        tam_muestra = min(tam_muestra, 1250)
-        max_init_index = len(df) - tam_muestra
-        print(f"max_init_index: {max_init_index}, tam_muestra: {tam_muestra}, len(df): {len(df)}")
-        init_index = np.random.randint(0, max_init_index) if max_init_index > 0 else 0
+    max_retries = 3
+    retries = 0
     
-    df_short = df[init_index : init_index + tam_muestra]
-    df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
+    while retries < max_retries:
+        
+        #Se adapta para darle a cada nodo su parte
+        init_index = 0
+        tam_muestra = n_muestras * n_nodos
+        if "phis" in dataset or "elec2" in dataset:
+            tam_muestra = min(tam_muestra, 1250)
+            max_init_index = len(df) - tam_muestra
+            print(f"max_init_index: {max_init_index}, tam_muestra: {tam_muestra}, len(df): {len(df)}")
+            init_index = np.random.randint(0, max_init_index) if max_init_index > 0 else 0
+        
+        df_short = df[init_index : init_index + tam_muestra]
+        df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
-   
-    nodos_args = []
-    for id in range(n_nodos):
-        args = [id, df_nodos[id], n_nodos, s, t, media_llegadas]
-        nodos_args.append(args)
+    
+        nodos_args = []
+        for id in range(n_nodos):
+            args = [id, df_nodos[id], n_nodos, s, t, media_llegadas]
+            nodos_args.append(args)
 
-    
-    cola_resultados = multiprocessing.Queue()
-    # Crear una lista para mantener un seguimiento de los procesos hijos
-    procesos = []
-    # Crear y empezar un nuevo proceso para cada conjunto de argumentos
-    for args in nodos_args:
-        p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados), name=f"Proceso_Nodo_{args[0]}")
-        # p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados))
-        p.start()
-        procesos.append(p)
-    
-    
-    # Esperar a que cada proceso hijo termine
-    for p in procesos:
-        p.join()
-    
-    resultados = []
-    while not cola_resultados.empty():
-        resultados.append(cola_resultados.get())
-    
-    resultados = sorted(resultados, key=lambda x: x['id'])
-    
-    for resultado in resultados:
-        print(f"ID: {resultado['id']}, Precision: {resultado['precision']}, Recall: {resultado['recall']},"
-                f"F1: {resultado['f1']}, Muestras entrenadas: {resultado['muestras_train']}, Prototipos entrenados: {resultado['protos_train']},"
-                f"Capacidad de ejecución: {resultado['cap_ejec']}, Tiempo total: {resultado['tiempo_final_total']},"
-                f"Tiempo de aprendizaje (prototipos): {resultado['tiempo_learn_queue']}, Tiempo compartiendo prototipos: {resultado['tiempo_share']}, Tam. conjunto prototipos: {resultado['tam_conj_prot']},")
-    
-    to_write = []
-    for stats in resultados:
-              
-        to_write.append(f" - NODO {stats['id']}.\nPrecision: {stats['precision']}\nRecall: {stats['recall']}\nF1: {stats['f1']}\n"
-                            f"Se ha entrenado con {stats['muestras_train']} muestras.\nSe ha entrenado con {stats['protos_train']} prototipos.\n"
-                            f"Ha compartido {stats['shared_times']} veces.\n"
-                            f"Ha compartido {stats['compartidos']} prototipos a cada uno de los {s} vecino/s.\n"
-                            f"Tiempo de aprendizaje (muestras): {stats['tiempo_learn_data']}\n"
-                            f"Tiempo de aprendizaje (prototipos): {stats['tiempo_learn_queue']}\n"
-                            f"Tiempo compartiendo prototipos: {stats['tiempo_share']}\n"
-                            f"Tiempo total: {stats['tiempo_final_total']}\n"
-                            f"Capacidad de ejecución: {stats['cap_ejec']}\n"
-                            f"ID, Tamaño de lotes recibidos: {stats['tam_lotes_recibidos']}\n"
-                            f"Tamaño conjunto de prototipos: {stats['tam_conj_prot']}\n"
-                            f"\n")
+        
+        cola_resultados = multiprocessing.Queue()
+        # Crear una lista para mantener un seguimiento de los procesos hijos
+        procesos = []
+        # Crear y empezar un nuevo proceso para cada conjunto de argumentos
+        for args in nodos_args:
+            p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados), name=f"Proceso_Nodo_{args[0]}")
+            # p = multiprocessing.Process(target=nodo_run_wrapper, args=(args, cola_resultados))
+            p.start()
+            procesos.append(p)
+        
+        
+        tiempo_inicio = time.time()
+        while time.time() - tiempo_inicio < T_MAX_IT:
+            if all(not p.is_alive() for p in procesos):
+                print(f"Todos los procesos han terminado EXITOSAMENTE.")
+                break
+            time.sleep(2)
+        
+        else:
+            print(f"Se ha alcanzado el tiempo máximo de ejecución.")
+            for p in procesos:
+                if p.is_alive():
+                    p.terminate()
+                    print(f"Se ha terminado el proceso {p.name} por exceder el tiempo máximo de ejecución.")
+                            # Esperar a que cada proceso hijo termine
+            for p in procesos:
+                p.join()
+            
+            retries += 1
+            print(f"Se ha alcanzado el tiempo máximo de ejecución. Se va a intentar de nuevo. Intento {retries} de {max_retries}")
+            continue
+        
+        
+        # Esperar a que cada proceso hijo termine
+        for p in procesos:
+            p.join()
+        
+        resultados = []
+        while not cola_resultados.empty():
+            resultados.append(cola_resultados.get())
+        
+        resultados = sorted(resultados, key=lambda x: x['id'])
+        
+        for resultado in resultados:
+            print(f"ID: {resultado['id']}, Precision: {resultado['precision']}, Recall: {resultado['recall']},"
+                    f"F1: {resultado['f1']}, Muestras entrenadas: {resultado['muestras_train']}, Prototipos entrenados: {resultado['protos_train']},"
+                    f"Capacidad de ejecución: {resultado['cap_ejec']}, Tiempo total: {resultado['tiempo_final_total']},"
+                    f"Tiempo de aprendizaje (prototipos): {resultado['tiempo_learn_queue']}, Tiempo compartiendo prototipos: {resultado['tiempo_share']}, Tam. conjunto prototipos: {resultado['tam_conj_prot']},")
+        
+        to_write = []
+        for stats in resultados:
+                
+            to_write.append(f" - NODO {stats['id']}.\nPrecision: {stats['precision']}\nRecall: {stats['recall']}\nF1: {stats['f1']}\n"
+                                f"Se ha entrenado con {stats['muestras_train']} muestras.\nSe ha entrenado con {stats['protos_train']} prototipos.\n"
+                                f"Ha compartido {stats['shared_times']} veces.\n"
+                                f"Ha compartido {stats['compartidos']} prototipos a cada uno de los {s} vecino/s.\n"
+                                f"Tiempo de aprendizaje (muestras): {stats['tiempo_learn_data']}\n"
+                                f"Tiempo de aprendizaje (prototipos): {stats['tiempo_learn_queue']}\n"
+                                f"Tiempo compartiendo prototipos: {stats['tiempo_share']}\n"
+                                f"Tiempo total: {stats['tiempo_final_total']}\n"
+                                f"Capacidad de ejecución: {stats['cap_ejec']}\n"
+                                f"ID, Tamaño de lotes recibidos: {stats['tam_lotes_recibidos']}\n"
+                                f"Tamaño conjunto de prototipos: {stats['tam_conj_prot']}\n"
+                                f"\n")
 
-    print("Se ha terminado de ejecutar todo.")    
+        print("Se ha terminado de ejecutar todo.")    
 
-    with open(nombre_archivo, "w") as f:
-        f.writelines(to_write)
+        with open(nombre_archivo, "w") as f:
+            f.writelines(to_write)
+        
+        break
     
-    # exit()
+    else: 
+        print(f"BLOQUEO")
+        raise KeyboardInterrupt
             
 
 if __name__ == "__main__":
@@ -155,7 +186,9 @@ if __name__ == "__main__":
     try:
         n_nodos = 5
         n_muestras = 1000
-        
+        t_max_minutes = 5
+        T_MAX_IT = t_max_minutes * 60
+                
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
@@ -199,9 +232,9 @@ if __name__ == "__main__":
                         print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
         
         
-        comando = f"pkill -f \"python3 {nombre_programa}\""
-        print(f"Se va a ejecutar el comando: {comando}")
-        os.system(comando)
+        # comando = f"pkill -f \"python3 {nombre_programa}\""
+        # print(f"Se va a ejecutar el comando: {comando}")
+        # os.system(comando)
         
     except KeyboardInterrupt as e:
         # comando = f"pkill -f \"python3 {nombre_programa}\""
