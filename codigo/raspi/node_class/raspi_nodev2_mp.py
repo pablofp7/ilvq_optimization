@@ -4,10 +4,11 @@ import random
 import pickle
 import multiprocessing
 import time
+from deques_proxy import DequeManager
 
 class RaspiNodev2_mp:
     
-    def __init__(self, manager, id, dataset, modelo_proto, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000):
+    def __init__(self, id, dataset, modelo_proto, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000):
         
         self.id = id
         self.modelo_proto = modelo_proto
@@ -24,8 +25,8 @@ class RaspiNodev2_mp:
         self.puertos_vecinos = [self.puerto_base + i for i in self.vecinos]
         self.dir_vecinos = [f"nodo{i}.local" for i in self.vecinos]
         tam_colas = 500000
-        self.manager = manager
-        self.cola_protos = manager.DequesProxy(num_deques = self.nodos, maxlen = tam_colas)
+        self.manager = DequeManager().start_manager()
+        self.cola_protos = self.manager.DequesProxy(num_deques = self.nodos, maxlen = tam_colas)
         self.cola_index = 0
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         
@@ -39,9 +40,6 @@ class RaspiNodev2_mp:
         #Atributos auxiliares para obtener estadísticas
         self.muestras_train = 0
         self.protos_train = 0
-        self.compartidos = 0
-        self.shared_times = 0
-        self.tam_lotes_recibidos = []
         self.tam_conj_prot = []
         
         #Medidores de tiempo
@@ -51,25 +49,32 @@ class RaspiNodev2_mp:
         self.t_queue_recibir = 0
         self.t_queue_pickle = 0
         self.tiempo_final_total = 0
-        self.tiempo_share = 0
         self.tiempo_espera_total = 0
             
-        #Atributos para gestionar hilos
-        self.tam_lotes_recibidos = manager.ListsProxy(num_lists = 1)
+       #Atributos para gestionar hilos/estadisticas
+        self.tam_lotes_recibidos = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.compartidos = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.shared_times = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.tiempo_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.tiempo_no_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.fin_proceso = multiprocessing.Event()
+        self.fin_proceso_emisor = multiprocessing.Event()
+        self.send_emisor = multiprocessing.Event()
+        self.fin_proceso_emisor.clear()
+        self.fin_proceso.clear()
+        self.send_emisor.clear()
         self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos), name=f"Receptor_{self.id}")
+        self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.id, self.puerto_base, self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
+                                                                                self.s, self.T, self.shared_times, self.compartidos, self.tiempo_share, 
+                                                                                self.tiempo_no_share), name=f"Emisor_{self.id}")
+        
+
+
         
     def run(self):
         
         self.proceso_receptor.start()
-        
-        # Ahora los sockets para enviar
-        client_context = zmq.Context()
-        client_socket = client_context.socket(zmq.ROUTER)
-        client_socket.setsockopt(zmq.SNDBUF, 5 * 1024 * 1024)  # 5 MB
-        client_socket.setsockopt_string(zmq.IDENTITY, f"{self.id}")
-        for dir, puerto in zip(self.dir_vecinos, self.puertos_vecinos):
-            client_socket.connect(f"tcp://{dir}:{puerto}")
+        self.proceso_emisor.start()
             
             
         print(f"Inicia ejecución del nodo {self.id}")
@@ -99,11 +104,8 @@ class RaspiNodev2_mp:
             self.learn_from_data() 
             self.tiempo_learn_data += time.perf_counter() - inicio_learn_data
             self.save_tam_conj()  # Guardar el tamaño del conjunto de prototipos.
-
-            # Temporizador para "share" después de procesar la muestra.
-            inicio_share = time.perf_counter()
-            self.share(socket_enviar=client_socket)
-            self.tiempo_share += time.perf_counter() - inicio_share  # Acumular tiempo en "share".
+            
+            self.send_emisor.set()
 
 
         
@@ -112,37 +114,42 @@ class RaspiNodev2_mp:
         self.tiempo_final_total = time.perf_counter() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
         
         
+        # PROBLEMA CON TERMINATE -> NO SE CIERRAN LOS SOCKETS
+        join_timeout = 5
         self.fin_proceso.set()
-        print(f"Fin Proceso set en nodo {self.id}.")
-        self.proceso_receptor.join(timeout=10)
-        print(f"JOIN en nodo {self.id}.")
+        self.fin_proceso_emisor.set()
+        # self.proceso_receptor.join(timeout=join_timeout)
+        self.proceso_receptor.join()
         if self.proceso_receptor.is_alive():
-            print(f"El proceso receptor en el nodo {self.id} sigue vivo.MATARLO")
             # self.proceso_receptor.terminate()
-        
-        # Cerramos socket de enviar y contexto
-        client_socket.setsockopt(zmq.LINGER, 0)
-        client_socket.close()
-        client_context.term()
-        
+            print(f"El hilo RECEPTOR no ha terminado. Nodo: {self.id}.")
 
+        # self.proceso_emisor.join(timeout=join_timeout)
+        self.proceso_emisor.join()        
+        if self.proceso_emisor.is_alive():
+            # self.proceso_emisor.terminate()
+            print(f"El hilo EMISOR ha terminado. Nodo: {self.id}.")
+        
         self.tam_conj_prot = self.diezmar()  # Diezmar la lista de tamaños de conjuntos de prototipos.
         self.tam_lotes_recibidos = self.tam_lotes_recibidos.get_list(0)  # Obtener la lista de tamaños de lotes recibidos.
-
-
+        
+        self.compartidos_final = self.compartidos.pop(0) # Obtener prototipos compartidos.
+        self.shared_times_final = self.shared_times.pop(0)  # Obtener el número de veces que se compartió.
+        self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
+        self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
+            
+        self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
-        print(f" - El nodo {self.id} ha terminado de ejecutar TODO.\n"
+        print(f"[NODO {self.id}. FIN!!].\n"
             f"El tiempo total de espera calculado por muestras ha sido de {sum(self.t_llegadas) / 60} minutos.\n"
             f"Tiempo total de ejecución: {self.tiempo_final_total / 60} minutos.\n"
             f"Tiempo total de espera activa: {self.tiempo_espera_total / 60} minutos.\n"
             f"Ha tardado {self.tiempo_learn_data / 60} minutos en learn from data.\n"
             f"Ha tardado {self.tiempo_learn_queue / 60} minutos en learn from queue.\n"
-            f"Ha tardado {self.tiempo_share / 60} minutos en share.\n")  # <-- Añadir tiempo de "share".
+            f"Ha tardado {self.tiempo_share_final / 60} minutos en share.\n"
+            f"Ha tardado {self.tiempo_no_share_final / 60} minutos en share (No compartiendo).\n")
         
-        
-       
         return
-
         
     def learn_from_data(self):
         
@@ -225,26 +232,86 @@ class RaspiNodev2_mp:
             self.cola_index = (self.cola_index + 1) % self.nodos
             
         
-    def share(self, socket_enviar):
-        if random.random() < self.T:
-            self.shared_times += 1
+    def share(self, id, puerto_base, vecinos, send_emisor, fin_proceso_emisor, last_set, s, T, shared_times, compartidos, tiempo_share, tiempo_no_share):
+        
+        try:
+            puertos_vecinos = [puerto_base + i for i in vecinos]
+            dir_vecinos = [f"nodo{i}.local" for i in vecinos]
 
-            # Obtener los prototipos del modelo
-            protos = list(self.modelo_proto.buffer.prototypes.values())
-            self.compartidos += len(protos)
+            # Ahora los sockets para enviar
+            client_context = zmq.Context()
+            client_socket = client_context.socket(zmq.ROUTER)
+            client_socket.setsockopt(zmq.SNDBUF, 5 * 1024 * 1024)  # 5 MB
+            client_socket.setsockopt_string(zmq.IDENTITY, f"{id}")
+            
+            for dir, puerto in zip(dir_vecinos, puertos_vecinos):
+                client_socket.connect(f"tcp://{dir}:{puerto}")
 
-            # Serializar los datos a compartir
-            proto_to_share = pickle.dumps({"id": self.id, "protos": [{'x': proto['x'], 'y': proto['y']} for proto in protos]})
 
-            # Seleccionar aleatoriamente 's' vecinos
-            vecinos_seleccionados = random.sample(self.vecinos, self.s)
+            tiempo_share_local = 0
+            shared_times_local = 0
+            compartidos_local = 0
+            tiempo_no_share_local = 0
+            
+            while True:
+                inicio_no_share = time.perf_counter()
+                if fin_proceso_emisor.is_set():
+                    client_socket.setsockopt(zmq.LINGER, 0)
+                    client_socket.close()
+                    client_context.term()
+                    tiempo_share.append(0, tiempo_share_local)
+                    shared_times.append(0, shared_times_local)
+                    print(f"[NODO {id}] . Va a añadir {compartidos_local} a la lista de compartidos.")
+                    compartidos.append(0, compartidos_local)
+                    print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
+                    tiempo_no_share.append(0, tiempo_no_share_local)
+                    print(f"[NODO {id}] El hilo emisor ha terminado. ORDEN {fin_proceso_emisor} / {fin_proceso_emisor.is_set()}. Vuelve al join.")
+                    return
+                
+                elif send_emisor.is_set():
+                    
+                    send_emisor.clear()
+                    inicio_share = time.perf_counter()
 
-            # Enviar los prototipos a los vecinos seleccionados
-            for vecino in vecinos_seleccionados:
-                # Preparar el mensaje para enviar a través de ZeroMQ ROUTER
-                socket_enviar.send_multipart([bytes(f"{vecino}", encoding="utf-8"), bytes(), proto_to_share])
-                                
+                    if random.random() < T:
+                        
+                        shared_times_local += 1                         
+                        # print(f"El nodo {id} ha compartido {shar_prev + 1} veces.") if id == 0 else None
+                        # Obtener los prototipos del modelo
+                        protos = last_set.getleft(id, call_method = "SHARE. Getting own set for sharing.")
+
+                        # Serializar los datos a compartir
+                        proto_to_share = pickle.dumps({"id": id, "protos": [{'x': proto['x'], 'y': proto['y']} for proto in protos]})
+
+                        # Seleccionar aleatoriamente 's' vecinos
+                        vecinos_seleccionados = random.sample(vecinos, s)
+                        vecinos_eficientes = vecinos_seleccionados
+                        sumando = len(protos) if vecinos_eficientes else 0
+                        compartidos_local += sumando
+                        # print(f"El nodo {id} ha compartido {comp_previo + sumando} prototipos.") if id == 0 else None
+                        
+                        # Enviar los prototipos a los vecinos seleccionados
+                        for vecino in vecinos_eficientes:
+                            # Preparar el mensaje para enviar a través de ZeroMQ ROUTER
+                            client_socket.send_multipart([f"{vecino}".encode(), proto_to_share])
+
+                    
+                    tiempo_share_local += time.perf_counter() - inicio_share  # Acumular tiempo en "share".
+                    # print(f"Tiempo Acumulado en Share: {previo + t_share}.") if id == 0 else None
+        
+                else: 
+                    time.sleep(0.05)
+                    tiempo_no_share_local += time.perf_counter() - inicio_no_share  # Acumular tiempo en "no share".
+                
+                    
+        except Exception as e:
+            client_socket.setsockopt(zmq.LINGER, 0)
+            client_socket.close()
+            client_context.term()
+            print(f"[ERROR] en SHARE datos en el nodo {id}: {e}")
             return
+        
+        
         
     def save_tam_conj(self):
         # Guardar el tamaño cada 10 muestras siempre
@@ -280,25 +347,12 @@ class RaspiNodev2_mp:
         return datos_diezmados
 
 
-    def recibir(uk_arg, cola_protos, nodos, puerto_base, id, s, T, fin_proceso, tam_lotes_recibidos):
-        
-        # #Vamos a printear todos lso argumentos:
-        # print(f"")
-        # print(f"Argumentos del método recibir:")
-        # print(f"unknown arg: {uk_arg}")
-        # print(f"cola_protos: {cola_protos}")
-        # print(f"nodos: {nodos}")
-        # print(f"puerto_base: {puerto_base}")
-        # print(f"id: {id}")
-        # print(f"s: {s}")
-        # print(f"T: {T}")
-        # print(f"fin_proceso: {fin_proceso}")
-        # print(f"tam_lotes_recibidos: {tam_lotes_recibidos}")
-        # print(f"")
-        
-        if nodos == 1 or s == 0 or T == 0:
-            return  # No proceder si so lo hay un nodo o no hay comparticion
 
+    def recibir(self, cola_protos, nodos, puerto_base, id, s, T, fin_proceso, tam_lotes_recibidos):
+        
+        print(f"[NODO {id}] ha iniciado el hilo receptor.")
+        if nodos == 1 or s == 0 or T == 0:
+            return  # No proceder si solo hay un nodo o no hay comparticion
 
         server_context = zmq.Context()
         server_socket = server_context.socket(zmq.ROUTER)
@@ -306,13 +360,13 @@ class RaspiNodev2_mp:
         server_socket.setsockopt(zmq.IDENTITY, f"{id}".encode())
         server_socket.bind(f"tcp://*:{puerto_base + id}")
         # El timeout depende de T, porque con T bajo, el nodo debe esperar más tiempo
+        
         timeout_s = 1
         timeout = int(timeout_s * 1000)  # Convertir a milisegundos
         server_socket.setsockopt(zmq.RCVTIMEO, timeout)  # Establecer un tiempo de espera para el socket
-        
+        lista_tam_lotes_recibidos = []
         while True:
             try:
-                # print(f"[RECIBIR-{id}] Esperando por mensaje...")
                 # Bloquear hasta que un mensaje esté disponible
                 identidad, mensaje = server_socket.recv_multipart()
                 # id_emisor = identidad.decode()  # Convertir la identidad del emisor de bytes a str si es necesario
@@ -320,32 +374,29 @@ class RaspiNodev2_mp:
                 data = pickle.loads(mensaje)
                 id_recibido = data["id"]  
                 protos = data["protos"]
+                # print(f"[NODO {id}] Ha recibido de [NODO {id_recibido}]. len={len(protos)}: {protos}.") if id == 0 else None
                 
-                # print(f"El nodo {id} ha recibido {len(protos)} prototipos del nodo {id_recibido}.")
+                print(f"[NODO {id}] Recibido {len(protos)} prototipos de: NODO {id_recibido}.") if id == 0 else None
                             
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
-                # print(f"[RECIBIR-{id}] Añadiendo {len(protos)} prototipos a la cola del nodo {id}.")
-                cola_protos.extendleft(id_recibido, protos)
-                # print(f"[RECIBIR-{id}] Prototipos añadidos a la cola del nodo {id}.")
-                tam_lotes_recibidos.append(0, (id_recibido, len(protos)))
-                # print(f"[RECIBIR-{id}] Tamaño de lotes recibidos actualizado.")
+                # print(f"[NODO {id}] Va a añadir conjunto a la cola tocha de protos.") 
+                cola_protos.extendleft(id_recibido, protos, call_method = "RECEIVING. Extending left neighbour queue.")
+                # print(f"[NODO {id}] Ha añadido. Procede a actualizar la lista de conjunto reciente.")
+                # print(f"[NODO {id}] Ha actualizado la lista de conjunto reciente.")
+                lista_tam_lotes_recibidos.append((id_recibido, len(protos)))
 
     
-            # except zmq.ContextTerminated:
-            #     print(f"El contexto de ZeroMQ ha terminado en el nodo {id}.")
-            #     server_socket.setsockopt(zmq.LINGER, 0)
-            #     server_socket.close()   
-            #     server_context.term()
-            #     return
-            
             except zmq.Again:
                 # print(f"El nodo {id} ha agotado el tiempo de espera.")
                 if fin_proceso.is_set():
                     server_socket.setsockopt(zmq.LINGER, 0)
                     server_socket.close()
                     server_context.term()
-                    print(f"El nodo {id} ha terminado de recibir.")
+                    for item in lista_tam_lotes_recibidos:
+                        tam_lotes_recibidos.append(0, item)
+                        
+                    print(f"[NODO {id}] ha terminado de recibir. Vuelve al join.")
                     return
                 # else:
                 #     print(f"El nodo {id} lleva {timeout_s} segundos esperando. Pero no ha acabado de recibir")
@@ -354,10 +405,9 @@ class RaspiNodev2_mp:
                 server_socket.setsockopt(zmq.LINGER, 0)
                 server_socket.close()   
                 server_context.term()
-                print(f"Error al recibir datos en el nodo {id}: {e}")
+                print(f"[ERROR] al recibir datos en el nodo {self.id}: {e}")
                 return
-
-
+        
 
 
 
