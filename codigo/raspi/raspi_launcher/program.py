@@ -233,7 +233,7 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        for i in range(19, iteraciones):
+        for i in range(31, iteraciones):
             for dataset in datasets:
                 data_frame = read_dataset(dataset)
                 for s in S:
