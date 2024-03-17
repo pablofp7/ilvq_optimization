@@ -10,7 +10,7 @@ import queue
 
 class RaspiNodev4_2:
     
-    def __init__(self, id, dataset, modelo_proto, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000, tam_colas = 1000):
+    def __init__(self, id, dataset, modelo_proto, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000, tam_colas = 10000):
         
         self.id = id
         self.modelo_proto = modelo_proto

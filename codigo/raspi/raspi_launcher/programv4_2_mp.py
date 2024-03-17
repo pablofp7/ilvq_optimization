@@ -45,12 +45,16 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
 
-    nodo = RaspiNodev4(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = RaspiNodev4_2_mp(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas, tam_colas = TAM_COLAS)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
-    hilo.join()
-
+    hilo.join(T_MAX_IT)
+    
+    if hilo.is_alive():
+        print(f"EL HILO ESTÁ BLOQUEADO. CERRANDO PROGRAMA")
+        exit()
+        
     to_write = []
     # to_write.append(f" - TIEMPO EJECUCION: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n\n")
     #Vamos a guardar en una string lo que se va a escribir en el archivo
@@ -106,6 +110,7 @@ def sincronizar():
     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
 
     if id == 0:
+        contador_prints = 0
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
@@ -116,61 +121,64 @@ def sincronizar():
 
             while not all(lista_confirmaciones):
                 data, addr = s.recvfrom(buffer_size)
-                msg = data.decode()
-                print(f"Nodo 0. Recibido: {msg}")
-                option, nodo_id = check_mensaje(msg)
-                if option:
-                    lista_confirmaciones[nodo_id] = True
-                # if msg.startswith("LISTO") and parametros in msg:
-                #     nodo_id = int(msg.split()[1])
-                #     lista_confirmaciones[nodo_id] = True
+                mensaje = data.decode()
+                check_mensaje(mensaje, lista_confirmaciones, contador_prints=contador_prints)
 
             # Enviar "COMENZAR" a todos los nodos excepto al nodo central
-            for i, dir in enumerate(dir_nodos):
-                # print(f"Se va e enviar COMENZAR: dir:{dir}, puerto: {puerto}")
-                s.sendto("COMENZAR".encode(), (dir, puerto))
-            print(f"Se le ha enviado COMENZAR a todos los slaves.")
+            max_intentos = 5 
+            for _ in range(5):
+                for i, dir in enumerate(dir_nodos):
+                    s.sendto("COMENZAR".encode(), (dir, puerto))
+                print(f"Se le ha enviado COMENZAR a todos los slaves.")
             time.sleep(0.1)
-
 
             print("Nodo 0: todos listos.")
     else:
         # Nodo no central
         ready = False
+        contador_prints = 0
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
                 s_recepcion.bind(("0.0.0.0", puerto))
-                s_recepcion.settimeout(0.5)  # Establecer timeout
+                s_recepcion.settimeout(3)  # Establecer timeout
                 while not ready:
                     try:
                         # Enviar "LISTO" al nodo central
                         s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
-                        print(f"LISTO enviado desde {id}")
+                        time.sleep(0.1)  # Esperar un poco después de enviar "LISTO"
+
+                        if contador_prints % 50:
+                            print(f"LISTO enviado desde {id}")
+                        contador_prints += 1
 
                         try:
                             data, _ = s_recepcion.recvfrom(buffer_size)
-                            msg = data.decode()
-                            if msg == "COMENZAR":
+                            mensaje = data.decode()
+                            if mensaje == "COMENZAR":
                                 print(f"{id}: Recibido COMENZAR desde nodo0.")
                                 ready = True
+                                time.sleep(0.1)  # Esperar un poco antes de continuar
                                 break
                         except socket.timeout:
                             print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
                             # No es necesario romper el bucle; sigue esperando
                     except Exception as e:
                         print(f"Error en nodo {id}: {e}")
-                        time.sleep(0.5)  # Esperar un poco antes de reintentar
+                        time.sleep(2)  # Esperar un poco antes de reintentar
 
-                print(f"Nodo {id} contestando a nodo0.")
+                if ready:
+                    print(f"Nodo {id} contestando a nodo0.")
+                else:
+                    print(f"Nodo {id} no está listo para comenzar las simulaciones.")
 
 
-def check_mensaje(mensaje):
+def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
     """
     Evalúa si el mensaje comienza con 'LISTO', contiene los parámetros esperados
     (sin considerar el sufijo '_nodoX'), y extrae el id del nodo. Devuelve True si
     cumple las condiciones, o False en caso contrario, junto con el id del nodo.
     """
-    # Verificar si el mensaje comienza con "LISTO"
+    # Verificar si elmensaje comienza con "LISTO"
     if mensaje.startswith("LISTO"):
         try:
             # Extraer la parte después de "LISTO"
@@ -182,18 +190,25 @@ def check_mensaje(mensaje):
 
             nodo_id = int(nodo_id_str)
             parametros_esperados_sin_nodo = "_".join(parametros.split('_')[:-1])
+            
+
+            if lista_confirmaciones[nodo_id] is True:
+                return
+
+            if contador_prints % 50:
+                print(f"Nodo 0. Recibido: {mensaje}")
+                print(f"Parámetros recibidos: {parametros_recibidos}")
+                print(f"Mis parametros sin nodo {parametros_esperados_sin_nodo}")
+            contador_prints += 1
 
             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
             if parametros_recibidos == parametros_esperados_sin_nodo:
-                # print(f"Mensaje recibido: {mensaje}")
-                # print(f"Parametros esperados vs recibidos: {parametros_esperados_sin_nodo} vs {parametros_recibidos}")
-                return True, nodo_id
+                lista_confirmaciones[nodo_id] = True
         except ValueError as e:
             # Manejar errores de conversión o de formato incorrecto
             print(f"Error al procesar el mensaje: {e}")
 
-    # Si el mensaje no cumple las condiciones, devolver False y None
-    return False, None
+    return 
 
 if __name__ == "__main__":
 
@@ -204,6 +219,8 @@ if __name__ == "__main__":
         n_nodos = 5
         n_muestras = 1000
 
+        T_MAX_IT = 300        
+        TAM_COLAS = 10000
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
@@ -240,6 +257,5 @@ if __name__ == "__main__":
                         print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
 
     except KeyboardInterrupt as e:
-        os.system("ipcrm --all=msg")
-
+        print(f"Se ha interrumpido la ejecución: {e}")
 
