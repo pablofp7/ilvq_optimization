@@ -124,19 +124,17 @@ def sincronizar():
                 data, addr = s.recvfrom(buffer_size)
                 mensaje = data.decode()
                 min_prov = check_mensaje(mensaje, lista_confirmaciones, contador_prints=0, min_prov=min_prov)  # Asumiendo contador_prints gestionado adecuadamente
-                print(f"Min prov al volver de check mensaje: {min_prov}")
             
             # Una vez todos los nodos están listos, enviar la combinación mínima
             combinacion_minima = min_prov  # Obtenida de los mensajes "LISTO"
             mensaje_minimo = indices_a_parametros(combinacion_minima)
-            print(f"Se va enviar COMENZAR +  parametros minimos: {mensaje_minimo}")
+            print(f"Se va enviar COMENZAR + parametros minimos: {mensaje_minimo}")
             for _ in range(5):
                 for i, dir in enumerate(dir_nodos):
                     # Convierte índices a parámetros si es necesario antes de enviar
                     s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
-                print("Nodo 0: Se la ha enviado COMENZAR a todos los slaves.")
             time.sleep(0.05)
-            print("Nodo 0: todos listos con min_prov.")
+            print("Nodo 0: todos listos.")
     else:
         ready = False
         # Nodo no central
@@ -253,11 +251,11 @@ def parsear_parametros(mensaje):
     # Para encontrar el índice de t_value en T, usamos np.isclose para manejar precisión de punto flotante
     t_index = np.where(np.isclose(T, t_value))[0][0]
 
-    return (t_index, s_index, dataset_index, iteration)
+    return (iteration, dataset_index, s_index, t_index)
 
 
 def indices_a_parametros(indices):
-    t_index, s_index, dataset_index, iteration = indices
+    iteration, dataset_index, s_index, t_index = indices
     dataset = datasets[dataset_index]
     s = S[s_index]
     T_value = T[t_index]
@@ -302,7 +300,7 @@ if __name__ == "__main__":
                     while t_idx < len(T):
                         t = T[t_idx]
                         tiempo_inicio = time.perf_counter()
-                        print(f"ITERACIÓN {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
+                        print(f"[ITERATION] Pre-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
 
                         parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
                         nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
@@ -311,14 +309,13 @@ if __name__ == "__main__":
                             t_idx += 1
                             continue  # Salta a la siguiente iteración si el archivo ya existe
 
-                        t_idx, s_idx, dataset_idx, i_iter = sincronizar()
+                        i_iter, dataset_idx, s_idx, t_idx = sincronizar()
                         dataset = datasets[dataset_idx]
                         s = S[s_idx]
                         t = T[t_idx]
                         i_iter = i_iter
                         
-                        aux_param = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
-                        print(f"[ITERATION] Se va a ejecutar el nodo {id} con los parámetros: {aux_param}.")
+                        print(f"[ITERATION] Post-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
                         main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
                         t_idx += 1  # Avanza manualmente a la siguiente iteración de T
