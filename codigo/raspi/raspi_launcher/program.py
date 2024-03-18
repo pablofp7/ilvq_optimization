@@ -180,15 +180,18 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
             indices_mensaje = parsear_parametros(parametros_mensaje)
             print(f"Min prov: {min_prov}, indices mensaje: {indices_mensaje}")
-            if min_prov is None or indices_mensaje < min_prov:
+            if min_prov is None: 
                 min_prov = indices_mensaje
+                print(f"Nuevo min prov por None: {min_prov}")            
+            elif indices_mensaje < min_prov:
+                min_prov = indices_mensaje
+                print(f"Nuevo min prov: {min_prov}")
+
 
             if contador_prints % 50 == 0:
                 print(f"Nodo 0. Recibido: {mensaje}")
             contador_prints += 1
             
-            print(f"New min prov: {min_prov}")
-
 
 
 # def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
