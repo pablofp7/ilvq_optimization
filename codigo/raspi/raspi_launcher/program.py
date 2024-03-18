@@ -128,11 +128,11 @@ def sincronizar():
             
             # Una vez todos los nodos están listos, enviar la combinación mínima
             combinacion_minima = min_prov  # Obtenida de los mensajes "LISTO"
+            mensaje_minimo = indices_a_parametros(combinacion_minima)
+            print(f"Se va enviar COMENZAR +  parametros minimos: {mensaje_minimo}")
             for _ in range(5):
                 for i, dir in enumerate(dir_nodos):
                     # Convierte índices a parámetros si es necesario antes de enviar
-                    print(f"Se va enviar COMENZAR +  combinacion minima: {combinacion_minima}")
-                    mensaje_minimo = indices_a_parametros(combinacion_minima)
                     s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
                 print("Nodo 0: Se la ha enviado COMENZAR a todos los slaves.")
             time.sleep(0.05)
@@ -317,6 +317,8 @@ if __name__ == "__main__":
                         t = T[t_idx]
                         i_iter = i_iter
                         
+                        aux_param = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
+                        print(f"[ITERATION] Se va a ejecutar el nodo {id} con los parámetros: {aux_param}.")
                         main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
                         t_idx += 1  # Avanza manualmente a la siguiente iteración de T
