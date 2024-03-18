@@ -52,6 +52,7 @@ class RaspiNodev2_mp:
         self.tiempo_espera_total = 0
             
        #Atributos para gestionar hilos/estadisticas
+        self.last_set = self.manager.DequesProxy(num_deques = self.nodos, maxlen = 1, id = self.id)
         self.tam_lotes_recibidos = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.compartidos = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.shared_times = self.manager.ListsProxy(num_lists = 1, id = self.id)
@@ -64,9 +65,11 @@ class RaspiNodev2_mp:
         self.fin_proceso.clear()
         self.send_emisor.clear()
         self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos), name=f"Receptor_{self.id}")
-        self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.id, self.puerto_base, self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
+        self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.id, self.puerto_base, self.vecinos, self.send_emisor, self.fin_proceso_emisor, self.last_set,
                                                                                 self.s, self.T, self.shared_times, self.compartidos, self.tiempo_share, 
                                                                                 self.tiempo_no_share), name=f"Emisor_{self.id}")
+        
+
         
 
 
