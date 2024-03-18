@@ -231,18 +231,18 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 def parsear_parametros(mensaje):
     partes = mensaje.split('_')
     
-    for parte in partes:
-        print(f"Parte: {parte}")
-    dataset = partes[1]
-    s_value = int(partes[2][1:])  # Extrae el número después de 's'
-    t_value = float(partes[3][1:])  # Extrae el valor después de 'T'
-    iteration = int(partes[4][2:])  # Extrae el número después de 'it'
-    
+    dataset = partes[0]  # 'elec'
+    s_value = int(partes[1][1:])  # Extrae '1' de 's1' y convierte a entero
+    t_value = float(partes[2][1:])  # Extrae '0.0' de 'T0.0' y mantiene como flotante
+    iteration = int(partes[3][2:])  # Extrae '31' de 'it31' y convierte a entero
+
     # Encuentra índices de los valores en sus respectivas listas
     dataset_index = datasets.index(dataset)
     s_index = S.index(s_value)
-    t_index = np.where(T == t_value)[0][0]
     
+    # Para encontrar el índice de t_value en T, usamos np.isclose para manejar precisión de punto flotante
+    t_index = np.where(np.isclose(T, t_value))[0][0]
+
     return (dataset_index, s_index, t_index, iteration)
 
 
