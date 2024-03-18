@@ -191,8 +191,6 @@ class RaspiNodev2_mp:
         
         self.update_cola_index()
         #Si la cola está vacía, se salta el nodo
-        if not self.cola_protos[self.cola_index]:
-            return        
         
         # print(f"El nodo {self.id} está procesando la cola {self.cola_index}, que tiene {len(self.cola_protos[self.cola_index])} prototipos.")
         colas_revisadas = 0
@@ -200,9 +198,9 @@ class RaspiNodev2_mp:
         
         while colas_revisadas < colas_a_revisar:
             
-            if self.cola_protos.get_length(self.cola_index) > 0:
-                proto = self.cola_protos.popleft(self.cola_index)
-
+            if self.cola_protos.get_length(self.cola_index, call_method = "LEARNING QUEUE. Getting number of protos of neighbour.") > 0:
+                proto = self.cola_protos.popleft(self.cola_index, call_method = "LEARNING QUEUE. Popping proto from neighbour.")
+                
                 self.protos_train += 1
                 print(f"PROTO {self.protos_train}, NODO {self.id}\n") if self.protos_train % 10000 == 0 else None
                 
