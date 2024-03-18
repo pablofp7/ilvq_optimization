@@ -122,11 +122,15 @@ def sincronizar():
             combinacion_minima = min_prov  # Obtenida de los mensajes "LISTO"
             mensaje_minimo = indices_a_parametros(combinacion_minima)
             print(f"Se va enviar COMENZAR + parametros minimos: {mensaje_minimo}")
-            for _ in range(5):
-                for i, dir in enumerate(dir_nodos):
-                    # Convierte índices a parámetros si es necesario antes de enviar
-                    s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
-            time.sleep(0.05)
+            for i, dir in enumerate(dir_nodos):
+                enviado = False
+                while not enviado:
+                    try:
+                        s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
+                        enviado = True  # Si se envía correctamente, establece enviado a True para salir del bucle
+                    except socket.gaierror:
+                        print(f"Error al enviar a {dir}:{puerto}. Reintentando...")
+            time.sleep(2)
             print("Nodo 0: todos listos.")
     else:
         ready = False
@@ -150,6 +154,7 @@ def sincronizar():
                             print(f"Recibido: {mensaje}")
                             ready = True
                             combinacion_minima = parsear_parametros(combinacion_minima)
+                            time.sleep(2)
                             break
                         
                     except socket.timeout:
