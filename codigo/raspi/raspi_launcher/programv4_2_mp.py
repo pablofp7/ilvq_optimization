@@ -68,7 +68,7 @@ def main(df: pd.DataFrame):
     if nodo.tiempo_learn_queue == 0:
         cap_ejec = 0
     else:
-        cap_ejec = round(nodo.protos_train / nodo.tiempo_learn_queue, 3)
+        cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
 
     to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
                     f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"

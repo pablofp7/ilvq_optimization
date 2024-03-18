@@ -2,6 +2,7 @@ import argparse
 import socket
 import subprocess
 import sys
+import os
 
 # Define un parser de argumentos
 parser = argparse.ArgumentParser(description='Controlador de versiones de programa.')
@@ -25,9 +26,15 @@ def handle_command(command):
             print(f"{program} started.")
     elif command == 'stop':
         if program_process:
-            program_process.terminate()  # Finaliza el proceso
+            # Construye el patrón de búsqueda basado en el nombre del archivo del programa
+            program_pattern = f'program{args.version}.py' if args.version else 'program.py'
+            
+            # Mata todos los procesos que coincidan con el nombre del programa
+            # Usar comillas simples directamente. Si se necesita escape: os.system(f"pkill -f \\"{program_pattern}\\"")
+            os.system(f"pkill -f '{program_pattern}'")
+            
             program_process = None
-            print(f"program{args.version}.py stopped.")
+            print(f"{program_pattern} stopped.")
             sys.exit()
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

@@ -68,15 +68,17 @@ def main(df: pd.DataFrame):
     if nodo.tiempo_learn_queue == 0:
         cap_ejec = 0
     else:
-        cap_ejec = round(nodo.protos_train / nodo.tiempo_learn_queue, 3)
+        cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
 
     to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
                     f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
-                    f"Ha compartido {nodo.shared_times} veces.\n"
-                    f"Ha compartido {nodo.compartidos} prototipos a cada uno de los {s} vecino/s.\n"
+                    f"Ha compartido {nodo.shared_times_final} veces.\n"
+                    f"Ha compartido {nodo.compartidos_final} prototipos a cada uno de los {s} vecino/s.\n"
                     f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
                     f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
-                    f"Tiempo compartiendo prototipos: {nodo.tiempo_share}\n"
+                    f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
+                    f"Tiempo no compartiendo prototipos: {nodo.tiempo_no_share_final}\n" 
+                    f"Tiempo total de espera activa: {nodo.tiempo_espera_total}\n"  
                     f"Tiempo total: {nodo.tiempo_final_total}\n"
                     f"Capacidad de ejecución: {cap_ejec}\n"
                     f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n"
