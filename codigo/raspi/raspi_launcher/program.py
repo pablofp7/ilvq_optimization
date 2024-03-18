@@ -186,6 +186,8 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
             if contador_prints % 50 == 0:
                 print(f"Nodo 0. Recibido: {mensaje}")
             contador_prints += 1
+            
+            print(f"New min prov: {min_prov}")
 
 
 
