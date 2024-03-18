@@ -4,23 +4,33 @@ import re
 import os
 import sys
 
-def leer_datos(directorio_resultados, dataset_especifico, s_especifico, T_especifico):
+def leer_datos(directorio_resultados, dataset_especifico, s_especifico, T_especifico, g_especifico=None):
     datos_filtrados = []
     for nombre_archivo in os.listdir(directorio_resultados):
         if nombre_archivo.endswith('.txt') and dataset_especifico in nombre_archivo:
-            match = re.match(rf'result_{dataset_especifico}_s(\d+)_T([\d.]+)_it(\d+).txt', nombre_archivo)
+            # Define la expresión regular base
+            base_regex = rf'result_{dataset_especifico}_s{s_especifico}_T{T_especifico}'
+            
+            # Ajusta la expresión regular según si g_especifico es proporcionado o no
+            if g_especifico:
+                # Si g_especifico no es None, incluye en la expresión regular
+                regex = base_regex + rf'_g{g_especifico}_it\d+.txt'
+            else:
+                # Si g_especifico es None, busca archivos sin el componente 'g'
+                regex = base_regex + r'_it\d+.txt'
+            
+            match = re.match(regex, nombre_archivo)
             if match:
-                s, T, _ = match.groups()
-                if s == s_especifico and T == T_especifico:
-                    ruta_archivo = os.path.join(directorio_resultados, nombre_archivo)
-                    with open(ruta_archivo, 'r') as file:
-                        for linea in file:
-                            match_tamaño_prototipos = re.search(r'Tamaño conjunto de prototipos: \[(.*?)\]', linea)
-                            if match_tamaño_prototipos:
-                                tamaño_prototipos_str = match_tamaño_prototipos.group(1).split('), (')
-                                datos_prototipos = [(int(x.split(', ')[0].strip('()')), int(x.split(', ')[1].strip('()'))) for x in tamaño_prototipos_str]
-                                datos_filtrados.extend(datos_prototipos)
+                ruta_archivo = os.path.join(directorio_resultados, nombre_archivo)
+                with open(ruta_archivo, 'r') as file:
+                    for linea in file:
+                        match_tamaño_prototipos = re.search(r'Tamaño conjunto de prototipos: \[(.*?)\]', linea)
+                        if match_tamaño_prototipos:
+                            tamaño_prototipos_str = match_tamaño_prototipos.group(1).split('), (')
+                            datos_prototipos = [(int(x.split(', ')[0].strip('()')), int(x.split(', ')[1].strip('()'))) for x in tamaño_prototipos_str]
+                            datos_filtrados.extend(datos_prototipos)
     return datos_filtrados
+
 
 def calcular_promedios(datos_filtrados):
     datos_por_x = {}
@@ -33,11 +43,12 @@ def calcular_promedios(datos_filtrados):
     y_proms = [np.mean(datos_por_x[x]) for x in x_vals]
     return x_vals, y_proms
 
-def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico):
+def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico, g_especifico = None):
+    
     plt.figure(figsize=(10, 6))
     
     # Plotear los datos originales
-    plt.scatter(x_vals, y_proms, color='b', label='Datos Originales')
+    plt.plot(x_vals, y_proms, 'o-', color='b', label='Datos Originales')  # 'o-' crea puntos con líneas
     
     # Ajuste polinomial de grado 3 (puedes cambiar el grado para experimentar)
     coeficientes = np.polyfit(x_vals, y_proms, 3)
@@ -48,13 +59,21 @@ def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico):
     # Plotear la curva ajustada
     plt.plot(x_linea, y_linea, color='r', label='Ajuste Polinomial')
     
-    # Configuración del gráfico
-    plt.title(f'Tamaño del conjunto de prototipos para {dataset_especifico}, s={s_especifico} y T={T_especifico}')
-    plt.xlabel('X')
-    plt.ylabel('Promedio de Y')
+    title = f'Tamaño del conjunto de prototipos para '
+    if g_especifico:
+        title += f'\u03B3={g_especifico}'  # Usando el símbolo Unicode de gamma
+    else:
+        title += f'{dataset_especifico}, s={s_especifico} y T={T_especifico}'
+        
+    plt.title(title)
+    plt.xlabel('Número de muestras/prototipos entrenados')
+    plt.ylabel('Tamaño del conjunto de prototipos del modelo')
     plt.legend()
     plt.grid(True)
-    plt.show()
+    if g_especifico:
+        plt.savefig(f"../gamma_pruebas/tam_conj_gamma{g_especifico}.png")
+    else:
+        plt.show()
     
 
 def main():
@@ -66,16 +85,50 @@ def main():
     except:
         directorio_resultados = "../resultados_servidor/old_resultados_raspi"
         
-    print("Valores posibles para el conjunto de datos: elec, phis, elec2")
-    dataset_especifico = input("Ingrese el conjunto de datos específico (por ejemplo, 'elec'): ")
-    print("Valores posibles para s: 1, 2, 3, 4")
-    s_especifico = input("Ingrese el valor específico de s (por ejemplo, '1'): ")
-    print("Valores posibles para T: 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
-    T_especifico = input("Ingrese el valor específico de T (por ejemplo, '0.05'): ")
+    g_especifico = None
+    g_list = None
+    if len(sys.argv) > 1:
+        if "g" in sys.argv[1]:
+            g_list = ["30", "50", "70", "90", "110", "130", "150"]
+            dataset_especifico = "elec"
+            s_especifico = "4"
+            T_especifico = "1.0"
+            directorio_resultados = "../gamma_pruebas"  
 
-    datos_filtrados = leer_datos(directorio_resultados, dataset_especifico, s_especifico, T_especifico)
-    x_vals, y_proms = calcular_promedios(datos_filtrados)
-    plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico)
+            if not g_list:
+                print("Valores posibles para gamma: 30, 50, 70, 90, 110, 130, 150")
+                g_especifico = input("Ingrese el valor específico de gamma (por ejemplo, '30'): ")
+                # Si introduce un g_especifico no valido por defecto se establece a 30
+                if g_especifico not in ["30", "50", "70", "90", "110", "130", "150"]:
+                    g_especifico = "30"
+        
+        else:
+            print("Valores posibles para el conjunto de datos: elec, phis, elec2")
+            dataset_especifico = input("Ingrese el conjunto de datos específico (por ejemplo, 'elec'): ")
+            print("Valores posibles para s: 1, 2, 3, 4")
+            s_especifico = input("Ingrese el valor específico de s (por ejemplo, '1'): ")
+            print("Valores posibles para T: 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
+            T_especifico = input("Ingrese el valor específico de T (por ejemplo, '0.05'): ")
+
+    else:
+        print("Valores posibles para el conjunto de datos: elec, phis, elec2")
+        dataset_especifico = input("Ingrese el conjunto de datos específico (por ejemplo, 'elec'): ")
+        print("Valores posibles para s: 1, 2, 3, 4")
+        s_especifico = input("Ingrese el valor específico de s (por ejemplo, '1'): ")
+        print("Valores posibles para T: 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0")
+        T_especifico = input("Ingrese el valor específico de T (por ejemplo, '0.05'): ")
+    
+
+    if g_list:
+        for g in g_list:
+            datos_filtrados = leer_datos(directorio_resultados, dataset_especifico, s_especifico, T_especifico, g)
+            x_vals, y_proms = calcular_promedios(datos_filtrados)
+            plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico, g)
+        
+    else:
+        datos_filtrados = leer_datos(directorio_resultados, dataset_especifico, s_especifico, T_especifico, g_especifico)
+        x_vals, y_proms = calcular_promedios(datos_filtrados)
+        plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico, g_especifico)
 
 if __name__ == "__main__":
     main()
