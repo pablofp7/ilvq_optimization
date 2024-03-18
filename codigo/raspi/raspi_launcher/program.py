@@ -230,6 +230,9 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
 def parsear_parametros(mensaje):
     partes = mensaje.split('_')
+    
+    for parte in partes:
+        print(f"Parte: {parte}")
     dataset = partes[1]
     s_value = int(partes[2][1:])  # Extrae el número después de 's'
     t_value = float(partes[3][1:])  # Extrae el valor después de 'T'
