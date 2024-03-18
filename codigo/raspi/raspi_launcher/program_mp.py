@@ -91,15 +91,7 @@ def main(df: pd.DataFrame):
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
 
-def vaciar_buffer(socket):
-    print("Vaciando buffer...")
-    ahora = time.perf_counter()
-    while time.perf_counter() - ahora < 1:
-        try:
-            socket.recv(1024)
-        except:
-            print("Buffer vaciado.")
-            break
+
               
         
 def sincronizar():
@@ -247,7 +239,7 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        i_iter = 31  # Comienza en la iteración 31
+        i_iter = 0  
         while i_iter < iteraciones:
             dataset_idx = 0
             while dataset_idx < len(datasets):
@@ -274,6 +266,8 @@ if __name__ == "__main__":
                         s = S[s_idx]
                         t = T[t_idx]
                         i_iter = i_iter
+                        new_parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
+                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.txt"
                         
                         print(f"[ITERATION] Post-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
                         main(data_frame)
@@ -286,3 +280,15 @@ if __name__ == "__main__":
     except KeyboardInterrupt as e:
         print(f"Se ha interrumpido la ejecución del programa: {e}")
 
+
+
+
+# def vaciar_buffer(socket):
+#     print("Vaciando buffer...")
+#     ahora = time.perf_counter()
+#     while time.perf_counter() - ahora < 1:
+#         try:
+#             socket.recv(1024)
+#         except:
+#             print("Buffer vaciado.")
+#             break
