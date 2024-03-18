@@ -123,7 +123,7 @@ def sincronizar():
             while not all(lista_confirmaciones):
                 data, addr = s.recvfrom(buffer_size)
                 mensaje = data.decode()
-                check_mensaje(mensaje, lista_confirmaciones, contador_prints=0, min_prov=min_prov)  # Asumiendo contador_prints gestionado adecuadamente
+                min_prov = check_mensaje(mensaje, lista_confirmaciones, contador_prints=0, min_prov=min_prov)  # Asumiendo contador_prints gestionado adecuadamente
                 print(f"Min prov al volver de check mensaje: {min_prov}")
             
             # Una vez todos los nodos están listos, enviar la combinación mínima
@@ -193,6 +193,9 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
                 print(f"Nodo 0. Recibido: {mensaje}")
             contador_prints += 1
             
+            return min_prov
+            
+        return min_prov
 
 
 # def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
