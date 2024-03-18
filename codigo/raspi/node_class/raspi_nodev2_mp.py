@@ -108,6 +108,7 @@ class RaspiNodev2_mp:
             self.tiempo_learn_data += time.perf_counter() - inicio_learn_data
             self.save_tam_conj()  # Guardar el tamaño del conjunto de prototipos.
             
+            self.last_set.append(self.id, list(self.modelo_proto.buffer.prototypes.values()), call_method = "RUN. Updating own set for sharing.")
             self.send_emisor.set()
 
 
