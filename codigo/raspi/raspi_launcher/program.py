@@ -130,6 +130,7 @@ def sincronizar():
             for _ in range(5):
                 for i, dir in enumerate(dir_nodos):
                     # Convierte índices a parámetros si es necesario antes de enviar
+                    print(f"Se va enviar COMENZAR +  combinacion minima: {combinacion_minima}")
                     mensaje_minimo = indices_a_parametros(combinacion_minima)
                     s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
                 print("Nodo 0: Se la ha enviado COMENZAR a todos los slaves.")
@@ -161,7 +162,8 @@ def sincronizar():
                         
                     except socket.timeout:
                         time.sleep(1)
-                        
+             
+    print(f"[SINCRONIZACIÓN] Combinación mínima: {combinacion_minima}")           
     return combinacion_minima
 
 
