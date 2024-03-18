@@ -6,8 +6,7 @@ import multiprocessing
 import time
 from collections import deque
 from entropia import jsd
-import queue
-from deques_proxy import DequeManager
+from node_class.deques_proxy import DequeManager
 
 class RaspiNodev4_1_mp:
     

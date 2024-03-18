@@ -12,8 +12,6 @@ import threading
 import numpy as np
 import socket
 
-# Cada raspi ejecuta su propio "Nodo"
-##IMPLEMENTAR MECANISMOS DE SINCRONIZACION A LA HORA DE INICAR CADA ITERACION DEL SCRIPT(por ejemplo request al central y que este responda con un ok)
 
 
 def read_dataset(name: str):
@@ -91,16 +89,9 @@ def main(df: pd.DataFrame):
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
 
-def vaciar_buffer(socket):
-    print("Vaciando buffer...")
-    ahora = time.perf_counter()
-    while time.perf_counter() - ahora < 1:
-        try:
-            socket.recv(1024)
-        except:
-            print("Buffer vaciado.")
-            break
 
+              
+        
 def sincronizar():
 
     print("Comienza la sincronización...")
@@ -110,105 +101,115 @@ def sincronizar():
     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
 
     if id == 0:
-        contador_prints = 0
+        min_prov = None
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
-            # vaciar_buffer(s)
-
+            
+            # Inicializar la lista de confirmaciones y esperar los mensajes "LISTO"
             lista_confirmaciones = [False] * n_nodos
             lista_confirmaciones[id] = True
-
+            
             while not all(lista_confirmaciones):
                 data, addr = s.recvfrom(buffer_size)
                 mensaje = data.decode()
-                check_mensaje(mensaje, lista_confirmaciones, contador_prints=contador_prints)
-
-            # Enviar "COMENZAR" a todos los nodos excepto al nodo central
-            max_intentos = 5 
+                min_prov = check_mensaje(mensaje, lista_confirmaciones, contador_prints=0, min_prov=min_prov)  # Asumiendo contador_prints gestionado adecuadamente
+            
+            # Una vez todos los nodos están listos, enviar la combinación mínima
+            combinacion_minima = min_prov  # Obtenida de los mensajes "LISTO"
+            mensaje_minimo = indices_a_parametros(combinacion_minima)
+            print(f"Se va enviar COMENZAR + parametros minimos: {mensaje_minimo}")
             for _ in range(5):
                 for i, dir in enumerate(dir_nodos):
-                    s.sendto("COMENZAR".encode(), (dir, puerto))
-                print(f"Se le ha enviado COMENZAR a todos los slaves.")
-            time.sleep(0.1)
-
+                    # Convierte índices a parámetros si es necesario antes de enviar
+                    s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
+            time.sleep(0.05)
             print("Nodo 0: todos listos.")
     else:
-        # Nodo no central
         ready = False
-        contador_prints = 0
+        # Nodo no central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
                 s_recepcion.bind(("0.0.0.0", puerto))
                 s_recepcion.settimeout(3)  # Establecer timeout
+                
                 while not ready:
+                    # Enviar mensaje "LISTO" al nodo central
+                    mensaje_listo = f"LISTO {parametros}"  # Asegúrate de que 'parametros' está definido correctamente
+                    s.sendto(mensaje_listo.encode(), (dir_server, puerto))
+                    
+                    # Esperar el mensaje "COMENZAR" del nodo central
                     try:
-                        # Enviar "LISTO" al nodo central
-                        s.sendto(f"LISTO {parametros}".encode(), (dir_server, puerto))
-                        time.sleep(0.1)  # Esperar un poco después de enviar "LISTO"
-
-                        if contador_prints % 50:
-                            print(f"LISTO enviado desde {id}")
-                        contador_prints += 1
-
-                        try:
-                            data, _ = s_recepcion.recvfrom(buffer_size)
-                            mensaje = data.decode()
-                            if mensaje == "COMENZAR":
-                                print(f"{id}: Recibido COMENZAR desde nodo0.")
-                                ready = True
-                                time.sleep(0.1)  # Esperar un poco antes de continuar
-                                break
-                        except socket.timeout:
-                            print(f"{id}: Esperando a recibir COMENZAR del nodo 0.")
-                            # No es necesario romper el bucle; sigue esperando
-                    except Exception as e:
-                        print(f"Error en nodo {id}: {e}")
-                        time.sleep(2)  # Esperar un poco antes de reintentar
-
-                if ready:
-                    print(f"Nodo {id} contestando a nodo0.")
-                else:
-                    print(f"Nodo {id} no está listo para comenzar las simulaciones.")
+                        data, _ = s_recepcion.recvfrom(buffer_size)
+                        mensaje = data.decode()
+                        if mensaje.startswith("COMENZAR"):
+                            _, combinacion_minima = mensaje.split(' ', 1)
+                            print(f"Recibido: {mensaje}")
+                            ready = True
+                            combinacion_minima = parsear_parametros(combinacion_minima)
+                            break
+                        
+                    except socket.timeout:
+                        time.sleep(1)
+             
+    print(f"[SINCRONIZACIÓN] Combinación mínima: {combinacion_minima}")           
+    return combinacion_minima
 
 
-def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
-    """
-    Evalúa si el mensaje comienza con 'LISTO', contiene los parámetros esperados
-    (sin considerar el sufijo '_nodoX'), y extrae el id del nodo. Devuelve True si
-    cumple las condiciones, o False en caso contrario, junto con el id del nodo.
-    """
-    # Verificar si elmensaje comienza con "LISTO"
+def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
+
     if mensaje.startswith("LISTO"):
-        try:
-            # Extraer la parte después de "LISTO"
-            _, resto_mensaje = mensaje.split(' ', 1)
+        _, parametros_mensaje = mensaje.split(' ', 1)
+        
+        # Comprueba si el mensaje recibido tiene índices menores y actualiza min_prov
+        
+        nodo_id = int(parametros_mensaje.split('_')[-1].replace("nodo", ""))
+        if not lista_confirmaciones[nodo_id]:
+            lista_confirmaciones[nodo_id] = True
 
-            partes = resto_mensaje.split('_')
-            nodo_id_str = partes[-1].replace("nodo", "")  # Extraer el ID del nodo, que está al final
-            parametros_recibidos = "_".join(partes[:-1])  # Unir todas las partes excepto la última
+            indices_mensaje = parsear_parametros(parametros_mensaje)
+            print(f"Min prov: {min_prov}, indices mensaje: {indices_mensaje}")
+            if min_prov is None: 
+                min_prov = indices_mensaje
+                print(f"Nuevo min prov por None: {min_prov}")            
+            elif indices_mensaje < min_prov:
+                min_prov = indices_mensaje
+                print(f"Nuevo min prov: {min_prov}")
 
-            nodo_id = int(nodo_id_str)
-            parametros_esperados_sin_nodo = "_".join(parametros.split('_')[:-1])
-            
 
-            if lista_confirmaciones[nodo_id] is True:
-                return
-
-            if contador_prints % 50:
+            if contador_prints % 50 == 0:
                 print(f"Nodo 0. Recibido: {mensaje}")
-                print(f"Parámetros recibidos: {parametros_recibidos}")
-                print(f"Mis parametros sin nodo {parametros_esperados_sin_nodo}")
             contador_prints += 1
+            
+            return min_prov
+            
+        return min_prov
 
-            # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
-            if parametros_recibidos == parametros_esperados_sin_nodo:
-                lista_confirmaciones[nodo_id] = True
-        except ValueError as e:
-            # Manejar errores de conversión o de formato incorrecto
-            print(f"Error al procesar el mensaje: {e}")
 
-    return 
+def parsear_parametros(mensaje):
+    partes = mensaje.split('_')
+    
+    dataset = partes[0]  # 'elec'
+    s_value = int(partes[1][1:])  # Extrae '1' de 's1' y convierte a entero
+    t_value = float(partes[2][1:])  # Extrae '0.0' de 'T0.0' y mantiene como flotante
+    iteration = int(partes[3][2:])  # Extrae '31' de 'it31' y convierte a entero
+
+    # Encuentra índices de los valores en sus respectivas listas
+    dataset_index = datasets.index(dataset)
+    s_index = S.index(s_value)
+    
+    # Para encontrar el índice de t_value en T, usamos np.isclose para manejar precisión de punto flotante
+    t_index = np.where(np.isclose(T, t_value))[0][0]
+
+    return (iteration, dataset_index, s_index, t_index)
+
+
+def indices_a_parametros(indices):
+    iteration, dataset_index, s_index, t_index = indices
+    dataset = datasets[dataset_index]
+    s = S[s_index]
+    T_value = T[t_index]
+    return f"{dataset}_s{s}_T{T_value}_it{iteration}"
 
 if __name__ == "__main__":
 
@@ -219,7 +220,7 @@ if __name__ == "__main__":
         n_nodos = 5
         n_muestras = 1000
 
-        T_MAX_IT = 300        
+        T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
@@ -236,25 +237,56 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        for i in range(iteraciones):
-            for dataset in datasets:
+        i_iter = 0  
+        while i_iter < iteraciones:
+            dataset_idx = 0
+            while dataset_idx < len(datasets):
+                dataset = datasets[dataset_idx]
                 data_frame = read_dataset(dataset)
-                for s in S:
-                    tiempo_s = time.perf_counter()
-                    for t in T:
+                s_idx = 0
+                while s_idx < len(S):
+                    s = S[s_idx]
+                    t_idx = 0
+                    while t_idx < len(T):
+                        t = T[t_idx]
                         tiempo_inicio = time.perf_counter()
-                        print(f"ITERACIÓN {i}, dataset: {dataset}, S: {s}, T:{t}")
+                        print(f"[ITERATION] Pre-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
 
-                        parametros = f"{dataset}_s{s}_T{t}_it{i}_nodo{id}"
+                        parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
                         nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
                         if os.path.isfile(nombre_archivo):
                             print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
+                            t_idx += 1
                             continue  # Salta a la siguiente iteración si el archivo ya existe
 
-                        sincronizar()
+                        i_iter, dataset_idx, s_idx, t_idx = sincronizar()
+                        dataset = datasets[dataset_idx]
+                        s = S[s_idx]
+                        t = T[t_idx]
+                        i_iter = i_iter
+                        new_parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
+                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.txt"
+                        
+                        print(f"[ITERATION] Post-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
                         main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
+                        t_idx += 1  # Avanza manualmente a la siguiente iteración de T
+                    s_idx += 1  # Avanza manualmente a la siguiente iteración de S
+                dataset_idx += 1  # Avanza manualmente a la siguiente iteración del dataset
+            i_iter += 1  # Avanza manualmente a la siguiente iteración principal
 
     except KeyboardInterrupt as e:
-        print(f"Se ha interrumpido la ejecución: {e}")
+        print(f"Se ha interrumpido la ejecución del programa: {e}")
 
+
+
+
+# def vaciar_buffer(socket):
+#     print("Vaciando buffer...")
+#     ahora = time.perf_counter()
+#     while time.perf_counter() - ahora < 1:
+#         try:
+#             socket.recv(1024)
+#         except:
+#             print("Buffer vaciado.")
+#             break
