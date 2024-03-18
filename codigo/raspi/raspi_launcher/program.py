@@ -170,25 +170,23 @@ def sincronizar():
 def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
     if mensaje.startswith("LISTO"):
-        # try:
-            _, parametros_mensaje = mensaje.split(' ', 1)
+        _, parametros_mensaje = mensaje.split(' ', 1)
+        
+        # Comprueba si el mensaje recibido tiene índices menores y actualiza min_prov
+        
+        nodo_id = int(parametros_mensaje.split('_')[-1].replace("nodo", ""))
+        if not lista_confirmaciones[nodo_id]:
+            lista_confirmaciones[nodo_id] = True
+
             indices_mensaje = parsear_parametros(parametros_mensaje)
-            
-            # Comprueba si el mensaje recibido tiene índices menores y actualiza min_prov
             print(f"Min prov: {min_prov}, indices mensaje: {indices_mensaje}")
             if min_prov is None or indices_mensaje < min_prov:
                 min_prov = indices_mensaje
-            
-            # Lógica para actualizar lista_confirmaciones (no se muestra por brevedad)
-            nodo_id = int(parametros_mensaje.split('_')[-1].replace("nodo", ""))
-            if not lista_confirmaciones[nodo_id]:
-                lista_confirmaciones[nodo_id] = True
-                if contador_prints % 50 == 0:
-                    print(f"Nodo 0. Recibido: {mensaje}")
-                contador_prints += 1
 
-        # except ValueError as e:
-        #     print(f"Error al procesar el mensaje: {e}")
+            if contador_prints % 50 == 0:
+                print(f"Nodo 0. Recibido: {mensaje}")
+            contador_prints += 1
+
 
 
 # def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
@@ -246,7 +244,7 @@ def parsear_parametros(mensaje):
     # Para encontrar el índice de t_value en T, usamos np.isclose para manejar precisión de punto flotante
     t_index = np.where(np.isclose(T, t_value))[0][0]
 
-    return (dataset_index, s_index, t_index, iteration)
+    return (t_index, s_index, dataset_index, iteration)
 
 
 def indices_a_parametros(indices):
@@ -304,7 +302,7 @@ if __name__ == "__main__":
                             t_idx += 1
                             continue  # Salta a la siguiente iteración si el archivo ya existe
 
-                        dataset_idx, s_idx, t_idx, i_iter = sincronizar()
+                        t_idx, s_idx, dataset_idx, i_iter = sincronizar()
                         dataset = datasets[dataset_idx]
                         s = S[s_idx]
                         t = T[t_idx]
