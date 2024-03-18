@@ -63,7 +63,7 @@ class RaspiNodev4_1_mp:
         self.shared_times = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.tiempo_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.tiempo_no_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
-        self.compartidos_sinjsd = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.no_comp_jsd = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.fin_proceso = multiprocessing.Event()
         self.fin_proceso_emisor = multiprocessing.Event()
         self.send_emisor = multiprocessing.Event()
@@ -73,7 +73,7 @@ class RaspiNodev4_1_mp:
         self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos), name=f"Receptor_{self.id}")
         self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.id, self.puerto_base, self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
                                                                                 self.last_set, self.s, self.T, self.shared_times, self.compartidos, self.tiempo_share, 
-                                                                                self.tiempo_no_share, self.compartidos_sinjsd), name=f"Emisor_{self.id}")
+                                                                                self.tiempo_no_share, self.no_comp_jsd), name=f"Emisor_{self.id}")
         
 
             
@@ -139,9 +139,11 @@ class RaspiNodev4_1_mp:
         self.tam_lotes_recibidos = self.tam_lotes_recibidos.get_list(0)  # Obtener la lista de tamaños de lotes recibidos.
         
         self.compartidos_final = self.compartidos.pop(0) # Obtener prototipos compartidos.
+        self.no_comp_jsd_final = self.no_comp_jsd.pop(0)  # Obtener prototipos no compartidos.
         self.shared_times_final = self.shared_times.pop(0)  # Obtener el número de veces que se compartió.
         self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
+        
             
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
@@ -236,7 +238,7 @@ class RaspiNodev4_1_mp:
             self.cola_index = (self.cola_index + 1) % self.nodos
             
         
-    def share(self, id, puerto_base, vecinos, send_emisor, fin_proceso_emisor, last_set, s, T, shared_times, compartidos, tiempo_share, tiempo_no_share, compartidos_sinjsd):
+    def share(self, id, puerto_base, vecinos, send_emisor, fin_proceso_emisor, last_set, s, T, shared_times, compartidos, tiempo_share, tiempo_no_share, no_comp_jsd):
         
         try:
             puertos_vecinos = [puerto_base + i for i in vecinos]
@@ -256,7 +258,7 @@ class RaspiNodev4_1_mp:
             shared_times_local = 0
             compartidos_local = 0
             tiempo_no_share_local = 0
-            compartidos_sinjsd = 0
+            no_comp_jsd_local = 0
             
             while True:
                 inicio_no_share = time.perf_counter()
@@ -268,6 +270,8 @@ class RaspiNodev4_1_mp:
                     shared_times.append(0, shared_times_local)
                     print(f"[NODO {id}] . Va a añadir {compartidos_local} a la lista de compartidos.")
                     compartidos.append(0, compartidos_local)
+                    print(f"[NODO {id}] . Va a añadir {no_comp_jsd_local} a la lista de no_comp_jsd.")
+                    no_comp_jsd.append(0, no_comp_jsd_local)
                     print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
                     tiempo_no_share.append(0, tiempo_no_share_local)
                     print(f"[NODO {id}] El hilo emisor ha terminado. ORDEN {fin_proceso_emisor} / {fin_proceso_emisor.is_set()}. Vuelve al join.")
@@ -291,8 +295,8 @@ class RaspiNodev4_1_mp:
                         # Seleccionar aleatoriamente 's' vecinos
                         vecinos_seleccionados = random.sample(vecinos, s)
                         vecinos_eficientes = self.check_sharing(vecinos_seleccionados, last_set, id)
-                        sumando = len(protos) if vecinos_eficientes else 0
-                        compartidos_local += sumando
+                        compartidos_local += len(protos) * len(vecinos_eficientes)
+                        no_comp_jsd += len(protos) * (len(vecinos_seleccionados) - len(vecinos_eficientes))
                         # print(f"El nodo {id} ha compartido {comp_previo + sumando} prototipos.") if id == 0 else None
                         
                         # Enviar los prototipos a los vecinos seleccionados

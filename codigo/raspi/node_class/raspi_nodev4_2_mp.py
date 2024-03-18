@@ -63,16 +63,19 @@ class RaspiNodev4_2_mp:
         self.shared_times = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.tiempo_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.tiempo_no_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.no_comp_jsd = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.protos_descartados = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.fin_proceso = multiprocessing.Event()
         self.fin_proceso_emisor = multiprocessing.Event()
         self.send_emisor = multiprocessing.Event()
         self.fin_proceso_emisor.clear()
         self.fin_proceso.clear()
         self.send_emisor.clear()
-        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos), name=f"Receptor_{self.id}")
+        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, 
+                                                                                   self.tam_lotes_recibidos, self.protos_descartados), name=f"Receptor_{self.id}")
         self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.id, self.puerto_base, self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
                                                                                 self.last_set, self.s, self.T, self.shared_times, self.compartidos, self.tiempo_share, 
-                                                                                self.tiempo_no_share), name=f"Emisor_{self.id}")
+                                                                                self.tiempo_no_share, self.no_comp_jsd), name=f"Emisor_{self.id}")
         
 
             
@@ -138,9 +141,11 @@ class RaspiNodev4_2_mp:
         self.tam_lotes_recibidos = self.tam_lotes_recibidos.get_list(0)  # Obtener la lista de tamaños de lotes recibidos.
         
         self.compartidos_final = self.compartidos.pop(0) # Obtener prototipos compartidos.
+        self.no_comp_jsd_final = self.no_comp_jsd.pop(0)  # Obtener prototipos no compartidos.
         self.shared_times_final = self.shared_times.pop(0)  # Obtener el número de veces que se compartió.
         self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
+        self.protos_descartados_final = self.protos_descartados.pop(0)  # Obtener el número de prototipos descartados.
             
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
@@ -235,7 +240,7 @@ class RaspiNodev4_2_mp:
             self.cola_index = (self.cola_index + 1) % self.nodos
             
         
-    def share(self, id, puerto_base, vecinos, send_emisor, fin_proceso_emisor, last_set, s, T, shared_times, compartidos, tiempo_share, tiempo_no_share):
+    def share(self, id, puerto_base, vecinos, send_emisor, fin_proceso_emisor, last_set, s, T, shared_times, compartidos, tiempo_share, tiempo_no_share, no_comp_jsd):
         
         try:
             puertos_vecinos = [puerto_base + i for i in vecinos]
@@ -255,6 +260,7 @@ class RaspiNodev4_2_mp:
             shared_times_local = 0
             compartidos_local = 0
             tiempo_no_share_local = 0
+            no_comp_jsd_local = 0
             
             while True:
                 inicio_no_share = time.perf_counter()
@@ -266,6 +272,8 @@ class RaspiNodev4_2_mp:
                     shared_times.append(0, shared_times_local)
                     print(f"[NODO {id}] . Va a añadir {compartidos_local} a la lista de compartidos.")
                     compartidos.append(0, compartidos_local)
+                    print(f"[NODO {id}] . Va a añadir {no_comp_jsd_local} a la lista de no_comp_jsd.")
+                    no_comp_jsd.append(0, no_comp_jsd_local)
                     print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
                     tiempo_no_share.append(0, tiempo_no_share_local)
                     print(f"[NODO {id}] El hilo emisor ha terminado. ORDEN {fin_proceso_emisor} / {fin_proceso_emisor.is_set()}. Vuelve al join.")
@@ -289,8 +297,8 @@ class RaspiNodev4_2_mp:
                         # Seleccionar aleatoriamente 's' vecinos
                         vecinos_seleccionados = random.sample(vecinos, s)
                         vecinos_eficientes = self.check_sharing(vecinos_seleccionados, last_set, id)
-                        sumando = len(protos) if vecinos_eficientes else 0
-                        compartidos_local += sumando
+                        compartidos_local += len(protos) * len(vecinos_eficientes)
+                        no_comp_jsd += len(protos) * (len(vecinos_seleccionados) - len(vecinos_eficientes))
                         # print(f"El nodo {id} ha compartido {comp_previo + sumando} prototipos.") if id == 0 else None
                         
                         # Enviar los prototipos a los vecinos seleccionados
@@ -382,7 +390,7 @@ class RaspiNodev4_2_mp:
         return datos_diezmados
 
 
-    def recibir(self, cola_protos, nodos, puerto_base, id, s, T, fin_proceso, tam_lotes_recibidos, last_set):
+    def recibir(self, cola_protos, nodos, puerto_base, id, s, T, fin_proceso, tam_lotes_recibidos, last_set, protos_descartados):
         
         print(f"[NODO {id}] ha iniciado el hilo receptor.")
         if nodos == 1 or s == 0 or T == 0:
@@ -399,6 +407,7 @@ class RaspiNodev4_2_mp:
         timeout = int(timeout_s * 1000)  # Convertir a milisegundos
         server_socket.setsockopt(zmq.RCVTIMEO, timeout)  # Establecer un tiempo de espera para el socket
         lista_tam_lotes_recibidos = []
+        protos_descartados_local = 0
         while True:
             try:
                 # Bloquear hasta que un mensaje esté disponible
@@ -415,7 +424,18 @@ class RaspiNodev4_2_mp:
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
                 # print(f"[NODO {id}] Va a añadir conjunto a la cola tocha de protos.") 
+                
+                
+                # Calcular cuantos prototipos había antes, y cuantos después de añadir a la cola
+                # Ver así cuantos se han descartado.
+                # len(protos a añadir) - (get_length despúes - get_length antes)
+                n_add = len(protos)
+                n_before = cola_protos.get_length(id_recibido, call_method = "RECEIVING. Getting number of protos of neighbour.")
                 cola_protos.extendleft(id_recibido, protos, call_method = "RECEIVING. Extending left neighbour queue.")
+                n_after = cola_protos.get_length(id_recibido, call_method = "RECEIVING. Getting number of protos of neighbour.")
+                
+                protos_descartados_local += (n_add - (n_after - n_before))
+                
                 # print(f"[NODO {id}] Ha añadido. Procede a actualizar la lista de conjunto reciente.")
                 self.update_conj_proto(id, id_recibido, protos, last_set)
                 # print(f"[NODO {id}] Ha actualizado la lista de conjunto reciente.")
@@ -430,6 +450,8 @@ class RaspiNodev4_2_mp:
                     server_context.term()
                     for item in lista_tam_lotes_recibidos:
                         tam_lotes_recibidos.append(0, item)
+                        
+                    protos_descartados.append(0, protos_descartados_local)
                         
                     print(f"[NODO {id}] ha terminado de recibir. Vuelve al join.")
                     return

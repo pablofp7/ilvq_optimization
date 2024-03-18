@@ -288,7 +288,7 @@ class RaspiNodev2_mp:
                         # Seleccionar aleatoriamente 's' vecinos
                         vecinos_seleccionados = random.sample(vecinos, s)
                         vecinos_eficientes = vecinos_seleccionados
-                        sumando = len(protos) if vecinos_eficientes else 0
+                        sumando = len(protos) * len(vecinos_eficientes)
                         compartidos_local += sumando
                         # print(f"El nodo {id} ha compartido {comp_previo + sumando} prototipos.") if id == 0 else None
                         

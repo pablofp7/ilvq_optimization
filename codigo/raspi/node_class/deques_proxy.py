@@ -1,7 +1,6 @@
 from collections import deque
 import multiprocessing
 from multiprocessing.managers import BaseManager
-import sys
 
 LOGGING = False
 

@@ -73,7 +73,7 @@ def main(df: pd.DataFrame):
     to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
                     f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
                     f"Ha compartido {nodo.shared_times_final} veces.\n"
-                    f"Ha compartido {nodo.compartidos_final} prototipos a cada uno de los {s} vecino/s.\n"
+                    f"Ha compartido {nodo.compartidos_final} en total.\n"
                     f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
                     f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
                     f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
@@ -226,7 +226,7 @@ if __name__ == "__main__":
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
-        tasa_llegadas = 5
+        tasa_llegadas = 10
         media_llegadas = 1 / tasa_llegadas
 
         iteraciones = 50
