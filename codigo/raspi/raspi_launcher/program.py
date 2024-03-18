@@ -168,7 +168,7 @@ def sincronizar():
 def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
     if mensaje.startswith("LISTO"):
-        try:
+        # try:
             _, parametros_mensaje = mensaje.split(' ', 1)
             indices_mensaje = parsear_parametros(parametros_mensaje)
             
@@ -184,8 +184,8 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
                     print(f"Nodo 0. Recibido: {mensaje}")
                 contador_prints += 1
 
-        except ValueError as e:
-            print(f"Error al procesar el mensaje: {e}")
+        # except ValueError as e:
+        #     print(f"Error al procesar el mensaje: {e}")
 
 
 # def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
