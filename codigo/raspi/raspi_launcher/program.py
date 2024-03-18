@@ -175,6 +175,7 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
             indices_mensaje = parsear_parametros(parametros_mensaje)
             
             # Comprueba si el mensaje recibido tiene índices menores y actualiza min_prov
+            print(f"Min prov: {min_prov}, indices mensaje: {indices_mensaje}")
             if min_prov is None or indices_mensaje < min_prov:
                 min_prov = indices_mensaje
             
