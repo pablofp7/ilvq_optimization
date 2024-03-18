@@ -4,7 +4,7 @@ import random
 import pickle
 import multiprocessing
 import time
-from deques_proxy import DequeManager
+from node_class.deques_proxy import DequeManager
 
 class RaspiNodev2_mp:
     

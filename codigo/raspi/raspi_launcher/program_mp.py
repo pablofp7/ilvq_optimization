@@ -12,8 +12,6 @@ import threading
 import numpy as np
 import socket
 
-# Cada raspi ejecuta su propio "Nodo"
-##IMPLEMENTAR MECANISMOS DE SINCRONIZACION A LA HORA DE INICAR CADA ITERACION DEL SCRIPT(por ejemplo request al central y que este responda con un ok)
 
 
 def read_dataset(name: str):
