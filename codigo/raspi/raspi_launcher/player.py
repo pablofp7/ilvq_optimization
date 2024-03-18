@@ -28,8 +28,7 @@ def handle_command(command):
         if program_process:
             # Construye el patrón de búsqueda basado en el nombre del archivo del programa
             program_pattern = f'program{args.version}.py' if args.version else 'program.py'
-            
-            # Mata todos los procesos que coincidan con el nombre del programa
+            program_process.terminate()            
             # Usar comillas simples directamente. Si se necesita escape: os.system(f"pkill -f \\"{program_pattern}\\"")
             os.system(f"pkill -f '{program_pattern}'")
             
