@@ -91,15 +91,7 @@ def main(df: pd.DataFrame):
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
 
-def vaciar_buffer(socket):
-    print("Vaciando buffer...")
-    ahora = time.perf_counter()
-    while time.perf_counter() - ahora < 1:
-        try:
-            socket.recv(1024)
-        except:
-            print("Buffer vaciado.")
-            break
+
               
         
 def sincronizar():
@@ -196,46 +188,6 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
         return min_prov
 
 
-# def check_mensaje(mensaje, lista_confirmaciones, contador_prints):
-#     """
-#     Evalúa si el mensaje comienza con 'LISTO', contiene los parámetros esperados
-#     (sin considerar el sufijo '_nodoX'), y extrae el id del nodo. Devuelve True si
-#     cumple las condiciones, o False en caso contrario, junto con el id del nodo.
-#     """
-#     # Verificar si elmensaje comienza con "LISTO"
-#     if mensaje.startswith("LISTO"):
-#         try:
-#             # Extraer la parte después de "LISTO"
-#             _, resto_mensaje = mensaje.split(' ', 1)
-
-#             partes = resto_mensaje.split('_')
-#             nodo_id_str = partes[-1].replace("nodo", "")  # Extraer el ID del nodo, que está al final
-#             parametros_recibidos = "_".join(partes[:-1])  # Unir todas las partes excepto la última
-
-#             nodo_id = int(nodo_id_str)
-#             parametros_esperados_sin_nodo = "_".join(parametros.split('_')[:-1])
-            
-
-#             if lista_confirmaciones[nodo_id] is True:
-#                 return
-
-#             if contador_prints % 50:
-#                 print(f"Nodo 0. Recibido: {mensaje}")
-#                 print(f"Parámetros recibidos: {parametros_recibidos}")
-#                 print(f"Mis parametros sin nodo {parametros_esperados_sin_nodo}")
-#             contador_prints += 1
-
-#             # Verificar si los parámetros recibidos coinciden con los esperados (sin '_nodoX')
-#             if parametros_recibidos == parametros_esperados_sin_nodo:
-#                 lista_confirmaciones[nodo_id] = True
-#                 # Aquí se obtiene 
-
-#         except ValueError as e:
-#             # Manejar errores de conversión o de formato incorrecto
-#             print(f"Error al procesar el mensaje: {e}")
-
-#     return 
-
 def parsear_parametros(mensaje):
     partes = mensaje.split('_')
     
@@ -314,6 +266,8 @@ if __name__ == "__main__":
                         s = S[s_idx]
                         t = T[t_idx]
                         i_iter = i_iter
+                        new_parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
+                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.txt"
                         
                         print(f"[ITERATION] Post-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
                         main(data_frame)
@@ -326,3 +280,15 @@ if __name__ == "__main__":
     except KeyboardInterrupt as e:
         print(f"Se ha interrumpido la ejecución del programa: {e}")
 
+
+
+
+def vaciar_buffer(socket):
+    print("Vaciando buffer...")
+    ahora = time.perf_counter()
+    while time.perf_counter() - ahora < 1:
+        try:
+            socket.recv(1024)
+        except:
+            print("Buffer vaciado.")
+            break
