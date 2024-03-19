@@ -235,28 +235,29 @@ def check_availability(nodo_id, nodos, puerto, max_intentos=100, retraso=1):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:    
         s.settimeout(2)  # Configura un timeout para las respuestas
         
-        todos_disponibles = False
-        while not todos_disponibles:
-            respuestas_exitosas = 0
-            
-            for nodo in nodos:
-                try:
-                    print(f"Enviando 'ping' a {nodo}")
-                    s.sendto(b"ping", (nodo, puerto))
-                    data, _ = s.recvfrom(1024)
-                    if data.decode() == "pong":
-                        print(f"{nodo} respondió 'pong'")
-                        respuestas_exitosas += 1
-                except (socket.gaierror, socket.timeout):
-                    print(f"{nodo} no respondió o timeout alcanzado.")
-            
-            # Verifica si todos los nodos respondieron en esta iteración
-            if respuestas_exitosas == len(nodos):
-                todos_disponibles = True
-                print("Todos los nodos están disponibles.")
-            else:
-                print("No todos los nodos están disponibles. Reintentando...")
-                time.sleep(1)  # Espera un momento antes de intentar nuevamente
+        if nodo_id == 0:
+            todos_disponibles = False
+            while not todos_disponibles:
+                respuestas_exitosas = 0
+                
+                for nodo in nodos:
+                    try:
+                        print(f"Enviando 'ping' a {nodo}")
+                        s.sendto(b"ping", (nodo, puerto))
+                        data, _ = s.recvfrom(1024)
+                        if data.decode() == "pong":
+                            print(f"{nodo} respondió 'pong'")
+                            respuestas_exitosas += 1
+                    except (socket.gaierror, socket.timeout):
+                        print(f"{nodo} no respondió o timeout alcanzado.")
+                
+                # Verifica si todos los nodos respondieron en esta iteración
+                if respuestas_exitosas == len(nodos):
+                    todos_disponibles = True
+                    print("Todos los nodos están disponibles.")
+                else:
+                    print("No todos los nodos están disponibles. Reintentando...")
+                    time.sleep(1)  # Espera un momento antes de intentar nuevamente
 
         
         else: 
