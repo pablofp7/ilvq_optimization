@@ -232,9 +232,9 @@ def check_availability(nodo_id, nodos, puerto):
     una conexión UDP. Reintenta hasta un máximo de veces especificado.
     """
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:    
-        s.settimeout(2)  # Configura un timeout para las respuestas
         
         if nodo_id == 0:
+            s.settimeout(10)  # Configura un timeout para las respuestas
             todos_disponibles = False
             while not todos_disponibles:
                 respuestas_exitosas = 0
@@ -262,7 +262,6 @@ def check_availability(nodo_id, nodos, puerto):
         else: 
             # Configurar el nodo no central para responder a pings
             s.bind(("0.0.0.0", puerto))
-            s.settimeout(10)  # Espera un poco antes de concluir que no hay pings
             while True:
                 try:
                     data, addr = s.recvfrom(1024)
