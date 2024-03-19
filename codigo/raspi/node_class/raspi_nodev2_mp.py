@@ -378,7 +378,7 @@ class RaspiNodev2_mp:
                 protos = data["protos"]
                 # print(f"[NODO {id}] Ha recibido de [NODO {id_recibido}]. len={len(protos)}: {protos}.") if id == 0 else None
                 
-                print(f"[NODO {id}] Recibido {len(protos)} prototipos de: NODO {id_recibido}.") 
+                # print(f"[NODO {id}] Recibido {len(protos)} prototipos de: NODO {id_recibido}.") 
                             
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
