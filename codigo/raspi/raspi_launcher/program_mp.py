@@ -102,10 +102,10 @@ def sincronizar():
     dir_server = "nodo0.local"  # Dirección del nodo central
     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
 
+    check_availability(id, dir_nodos, puerto)
     if id == 0:
         min_prov = None
         # Nodo central
-        check_availability(id, dir_nodos, puerto)
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
             
@@ -137,7 +137,6 @@ def sincronizar():
     else:
         ready = False
         # Nodo no central
-        check_availability(id, [dir_server], puerto)
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s_recepcion:
                 s_recepcion.bind(("0.0.0.0", puerto))
@@ -227,7 +226,7 @@ def indices_a_parametros(indices):
     T_value = T[t_index]
     return f"{dataset}_s{s}_T{T_value}_it{iteration}"
 
-def check_availability(nodo_id, nodos, puerto, max_intentos=100, retraso=1):
+def check_availability(nodo_id, nodos, puerto):
     """
     Comprueba la disponibilidad de todos los nodos intentando establecer
     una conexión UDP. Reintenta hasta un máximo de veces especificado.
