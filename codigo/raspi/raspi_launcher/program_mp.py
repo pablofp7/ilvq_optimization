@@ -105,7 +105,7 @@ def sincronizar():
     if id == 0:
         min_prov = None
         # Nodo central
-        check_availability(dir_nodos, puerto)
+        check_availability(id, dir_nodos, puerto)
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
             
@@ -226,32 +226,47 @@ def indices_a_parametros(indices):
     T_value = T[t_index]
     return f"{dataset}_s{s}_T{T_value}_it{iteration}"
 
-def check_availability(nodos, puerto, max_intentos=100, retraso=1):
+def check_availability(nodo_id, nodos, puerto, max_intentos=100, retraso=1):
     """
     Comprueba la disponibilidad de todos los nodos intentando establecer
     una conexión UDP. Reintenta hasta un máximo de veces especificado.
     """
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-        s.settimeout(retraso)  # Establece un timeout para cada intento de envío/recepción
-        for nodo in nodos:
-            disponible = False
-            intentos = 0
-            while not disponible and intentos < max_intentos:
-                try:
-                    # Intenta enviar un mensaje de 'ping'
-                    s.sendto(b'ping', (nodo, puerto))
-                    # Espera recibir un 'pong' como respuesta
-                    _, _ = s.recvfrom(1024)
-                    disponible = True  # Si se recibe respuesta, el nodo está disponible
-                    print(f"{nodo} está disponible.")
-                except (socket.gaierror, socket.timeout):
-                    print(f"No se pudo contactar a {nodo}, reintentando...")
-                    intentos += 1
-                    time.sleep(retraso)  # Espera antes de reintentar
-            if not disponible:
-                print(f"{nodo} no respondió tras {max_intentos} intentos. Verificar estado del nodo.")
-                exit()
-        print("Todos los nodos están disponibles.")
+        if nodo_id == 0:
+            s.settimeout(retraso)  # Establece un timeout para cada intento de envío/recepción
+            for nodo in nodos:
+                disponible = False
+                intentos = 0
+                while not disponible and intentos < max_intentos:
+                    try:
+                        # Intenta enviar un mensaje de 'ping'
+                        s.sendto(b'ping', (nodo, puerto))
+                        # Espera recibir un 'pong' como respuesta
+                        _, _ = s.recvfrom(1024)
+                        disponible = True  # Si se recibe respuesta, el nodo está disponible
+                        print(f"{nodo} está disponible.")
+                    except (socket.gaierror, socket.timeout):
+                        print(f"No se pudo contactar a {nodo}, reintentando...")
+                        intentos += 1
+                        time.sleep(retraso)  # Espera antes de reintentar
+                if not disponible:
+                    print(f"{nodo} no respondió tras {max_intentos} intentos. Verificar estado del nodo.")
+                    exit()
+            print("Todos los nodos están disponibles.")
+        
+        else: 
+            # Configurar el nodo no central para responder a pings
+            s.bind(("0.0.0.0", puerto))
+            s.settimeout(10)  # Espera un poco antes de concluir que no hay pings
+            try:
+                data, addr = s.recvfrom(1024)
+                if data.decode() == "ping":
+                    s.sendto(b"pong", addr)
+                    print("Respondido 'pong'")
+            except socket.timeout:
+                print("No se recibieron pings en el tiempo esperado.")
+
+        
 
 if __name__ == "__main__":
 
