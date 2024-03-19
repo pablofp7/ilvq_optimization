@@ -254,6 +254,8 @@ def check_availability(nodo_id, nodos, puerto):
                 if respuestas_exitosas == len(nodos):
                     todos_disponibles = True
                     print("Todos los nodos están disponibles.")
+                    for nodo in nodos:
+                        s.sendto(b"stop", (nodo, puerto))
                 else:
                     print("No todos los nodos están disponibles. Reintentando...")
                     time.sleep(1)  # Espera un momento antes de intentar nuevamente
@@ -268,6 +270,8 @@ def check_availability(nodo_id, nodos, puerto):
                     if data.decode() == "ping":
                         s.sendto(b"pong", addr)
                         print("Respondido 'pong'")
+                    elif data.decode() == "stop":
+                        print(f"Recibido 'stop'. Cerrando socket...")
                         break
                 except socket.timeout:
                     print("No se recibieron pings en el tiempo esperado.")
