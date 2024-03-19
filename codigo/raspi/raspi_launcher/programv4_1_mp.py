@@ -103,6 +103,7 @@ def sincronizar():
     dir_server = "nodo0.local"  # Dirección del nodo central
     dir_nodos = [f"nodo{i}.local" for i in range(1, 5)]  # Direcciones de los nodos no centrales
 
+    check_availability(id, dir_nodos, puerto)
     if id == 0:
         min_prov = None
         # Nodo central
@@ -122,14 +123,16 @@ def sincronizar():
             combinacion_minima = min_prov  # Obtenida de los mensajes "LISTO"
             mensaje_minimo = indices_a_parametros(combinacion_minima)
             print(f"Se va enviar COMENZAR + parametros minimos: {mensaje_minimo}")
-            for i, dir in enumerate(dir_nodos):
-                enviado = False
-                while not enviado:
-                    try:
-                        s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
-                        enviado = True  # Si se envía correctamente, establece enviado a True para salir del bucle
-                    except socket.gaierror:
-                        print(f"Error al enviar a {dir}:{puerto}. Reintentando...")
+            for _ in range(5):  # Intenta enviar el mensaje un máximo de 5 veces para cada nodo
+                for i, dir in enumerate(dir_nodos):
+                    enviado = False
+                    while not enviado:
+                        try:
+                            s.sendto(f"COMENZAR {mensaje_minimo}".encode(), (dir, puerto))
+                            enviado = True  # Si se envía correctamente, establece enviado a True para salir del bucle
+                        except socket.gaierror:
+                            print(f"Error al enviar a {dir}:{puerto}. Reintentando...")
+                            
             time.sleep(2)
             print("Nodo 0: todos listos.")
     else:
@@ -140,24 +143,29 @@ def sincronizar():
                 s_recepcion.bind(("0.0.0.0", puerto))
                 s_recepcion.settimeout(3)  # Establecer timeout
                 
-                while not ready:
-                    # Enviar mensaje "LISTO" al nodo central
-                    mensaje_listo = f"LISTO {parametros}"  # Asegúrate de que 'parametros' está definido correctamente
-                    s.sendto(mensaje_listo.encode(), (dir_server, puerto))
-                    
-                    # Esperar el mensaje "COMENZAR" del nodo central
+                while True:
                     try:
-                        data, _ = s_recepcion.recvfrom(buffer_size)
-                        mensaje = data.decode()
-                        if mensaje.startswith("COMENZAR"):
-                            _, combinacion_minima = mensaje.split(' ', 1)
-                            print(f"Recibido: {mensaje}")
-                            ready = True
-                            combinacion_minima = parsear_parametros(combinacion_minima)
-                            time.sleep(2)
-                            break
+                        # Enviar mensaje "LISTO" al nodo central
+                        mensaje_listo = f"LISTO {parametros}"  # Asegúrate de que 'parametros' está definido correctamente
+                        s.sendto(mensaje_listo.encode(), (dir_server, puerto))
                         
-                    except socket.timeout:
+                        # Esperar el mensaje "COMENZAR" del nodo central
+                        try:
+                            data, _ = s_recepcion.recvfrom(buffer_size)
+                            mensaje = data.decode()
+                            if mensaje.startswith("COMENZAR"):
+                                _, combinacion_minima = mensaje.split(' ', 1)
+                                print(f"Recibido: {mensaje}")
+                                ready = True
+                                combinacion_minima = parsear_parametros(combinacion_minima)
+                                time.sleep(2)
+                                break
+                            
+                        except socket.timeout:
+                            time.sleep(1)
+
+                    except socket.gaierror:
+                        print(f"Error al enviar a {dir_server}:{puerto}. Reintentando...")
                         time.sleep(1)
              
     print(f"[SINCRONIZACIÓN] Combinación mínima: {combinacion_minima}")           
@@ -218,6 +226,58 @@ def indices_a_parametros(indices):
     s = S[s_index]
     T_value = T[t_index]
     return f"{dataset}_s{s}_T{T_value}_it{iteration}"
+
+def check_availability(nodo_id, nodos, puerto):
+    """
+    Comprueba la disponibilidad de todos los nodos intentando establecer
+    una conexión UDP. Reintenta hasta un máximo de veces especificado.
+    """
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:    
+        
+        if nodo_id == 0:
+            s.settimeout(10)  # Configura un timeout para las respuestas
+            todos_disponibles = False
+            while not todos_disponibles:
+                respuestas_exitosas = 0
+                
+                for nodo in nodos:
+                    try:
+                        print(f"Enviando 'ping' a {nodo}")
+                        s.sendto(b"ping", (nodo, puerto))
+                        data, _ = s.recvfrom(1024)
+                        if data.decode() == "pong":
+                            print(f"{nodo} respondió 'pong'")
+                            respuestas_exitosas += 1
+                    except (socket.gaierror, socket.timeout):
+                        print(f"{nodo} no respondió o timeout alcanzado.")
+                
+                # Verifica si todos los nodos respondieron en esta iteración
+                if respuestas_exitosas == len(nodos):
+                    todos_disponibles = True
+                    print("Todos los nodos están disponibles.")
+                    for nodo in nodos:
+                        s.sendto(b"stop", (nodo, puerto))
+                else:
+                    print("No todos los nodos están disponibles. Reintentando...")
+                    time.sleep(1)  # Espera un momento antes de intentar nuevamente
+
+        
+        else: 
+            # Configurar el nodo no central para responder a pings
+            s.bind(("0.0.0.0", puerto))
+            while True:
+                try:
+                    data, addr = s.recvfrom(1024)
+                    if data.decode() == "ping":
+                        s.sendto(b"pong", addr)
+                        print("Respondido 'pong'")
+                    elif data.decode() == "stop":
+                        print(f"Recibido 'stop'. Cerrando socket...")
+                        break
+                except socket.timeout:
+                    print("No se recibieron pings en el tiempo esperado.")
+
+        
 
 if __name__ == "__main__":
 
