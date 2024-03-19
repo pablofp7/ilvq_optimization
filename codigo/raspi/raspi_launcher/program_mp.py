@@ -141,24 +141,29 @@ def sincronizar():
                 s_recepcion.bind(("0.0.0.0", puerto))
                 s_recepcion.settimeout(3)  # Establecer timeout
                 
-                while not ready:
-                    # Enviar mensaje "LISTO" al nodo central
-                    mensaje_listo = f"LISTO {parametros}"  # Asegúrate de que 'parametros' está definido correctamente
-                    s.sendto(mensaje_listo.encode(), (dir_server, puerto))
-                    
-                    # Esperar el mensaje "COMENZAR" del nodo central
+                while True:
                     try:
-                        data, _ = s_recepcion.recvfrom(buffer_size)
-                        mensaje = data.decode()
-                        if mensaje.startswith("COMENZAR"):
-                            _, combinacion_minima = mensaje.split(' ', 1)
-                            print(f"Recibido: {mensaje}")
-                            ready = True
-                            combinacion_minima = parsear_parametros(combinacion_minima)
-                            time.sleep(2)
-                            break
+                        # Enviar mensaje "LISTO" al nodo central
+                        mensaje_listo = f"LISTO {parametros}"  # Asegúrate de que 'parametros' está definido correctamente
+                        s.sendto(mensaje_listo.encode(), (dir_server, puerto))
                         
-                    except socket.timeout:
+                        # Esperar el mensaje "COMENZAR" del nodo central
+                        try:
+                            data, _ = s_recepcion.recvfrom(buffer_size)
+                            mensaje = data.decode()
+                            if mensaje.startswith("COMENZAR"):
+                                _, combinacion_minima = mensaje.split(' ', 1)
+                                print(f"Recibido: {mensaje}")
+                                ready = True
+                                combinacion_minima = parsear_parametros(combinacion_minima)
+                                time.sleep(2)
+                                break
+                            
+                        except socket.timeout:
+                            time.sleep(1)
+
+                    except socket.gaierror:
+                        print(f"Error al enviar a {dir_server}:{puerto}. Reintentando...")
                         time.sleep(1)
              
     print(f"[SINCRONIZACIÓN] Combinación mínima: {combinacion_minima}")           
