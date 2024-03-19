@@ -240,27 +240,42 @@ def parse_args():
         help="Especifica la métrica para trazar. Si no se especifica, se iniciará la interfaz gráfica. \
               Opciones válidas son: precision, recall, f1, mensajes, entrenados, compartidos."
     )
-    
-    # Define a custom type for checking the format "testX" where X is 1 to 10
+
+    # Define a custom type for checking the format "testX" or "testX.Y" where X is 1 to 10 and Y is 0 to 9
     def test_type(value):
         if not value.startswith("test"):
             raise argparse.ArgumentTypeError(f"Value must start with 'test'. You entered: {value}")
+        
+        number_part = value[4:]  # Extract the number part after "test"
+
+        # Check for both integer and decimal formats
         try:
-            num = int(value[4:])  # Extract the number part
-            if num < 1 or num > 10:
-                raise argparse.ArgumentTypeError("The number must be between 1 and 10.")
+            num = float(number_part)  # Attempt to convert to float to allow decimal formats
+
+            # Validate the range
+            if not 1 <= num <= 10:
+                raise argparse.ArgumentTypeError("The number must be between 1 and 10, inclusive.")
+
+            # Additional check for the decimal part, if exists, must be between .0 to .9
+            if '.' in number_part:
+                decimal_part = number_part.split('.')[1]
+                if len(decimal_part) > 1 or not decimal_part.isdigit():
+                    raise argparse.ArgumentTypeError("Decimal part must be a single digit between 0 and 9.")
+
         except ValueError:
-            raise argparse.ArgumentTypeError("The format must be 'testX' where X is 1 to 10.")
+            raise argparse.ArgumentTypeError("The format must be 'testX' or 'testX.Y' where X is 1 to 10 and Y is 0 to 9.")
+        
         return value
 
     parser.add_argument(
         '-t',
         type=test_type,
         default='test1',  # Set 'test1' as the default value
-        help="Specify the test case to run. Acceptable values are from 'test1' to 'test10'. If not specified, 'test1' is used as the default."
+        help="Specify the test case to run. Acceptable values are from 'test1' to 'test10', including 'testX.Y' where X is 1 to 10 and Y is 0 to 9. If not specified, 'test1' is used as the default."
     )
 
     return parser.parse_args()
+
 
 def find_matching_metric(input_metric):
     metricas = {
