@@ -84,6 +84,7 @@ def check_latest():
             break  # Sale del bucle si no encuentra archivos para una iteración
 
     if last_it == -1:
+        print(f"ITERACION. No se encontraron archivos combinados en {target_dir}...")
         return None  # No se encontraron archivos
 
 
@@ -116,6 +117,7 @@ def check_latest():
             last_T_index = i  # Actualizamos el índice de T_values al último T válido encontrado
 
     if last_T_index == -1:
+        print(f"ÑAST  T INDEX. No se encontraron archivos combinados en {target_dir}...")
         return None  # No se encontró un valor de T válido con archivos
 
     # Comprobar si están todos los nodos para el último T encontrado
@@ -130,13 +132,22 @@ def check_latest():
     if not all_nodes_present and last_T_index > 0:
         last_T_index -= 1
 
+    print(f"Últimos valores encontrados: it={last_it}, dataset={last_data}, s={last_s}, T={T_values[last_T_index]}")
     return last_it, last_data, last_s, T_values[last_T_index] if last_T_index >= 0 else None
 
 
 
 def process_combinations_from_latest():
 
-    last_it, last_data, last_s, last_T = check_latest()  # Obtiene los últimos valores procesados
+    combinacion = check_latest()
+    try:
+        last_it, last_data, last_s, last_T = combinacion
+    except:
+        print("No hay archivos previos")
+        last_it = None
+        last_data = None
+        last_s = None
+        last_T = None
 
     if last_it is not None:
         # Convertir los valores a índices
