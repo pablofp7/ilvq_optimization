@@ -21,13 +21,13 @@ def handle_command(command):
     if command == 'start':
         if program_process is None:
             # Lanza program.py como un proceso independiente
-            program = f'program{args.version}.py' if args.version else 'program.py'
+            program = f'programv{args.version}.py' if args.version else 'program.py'
             program_process = subprocess.Popen(['python3', program])
             print(f"{program} started.")
     elif command == 'stop':
         if program_process:
             # Construye el patrón de búsqueda basado en el nombre del archivo del programa
-            program_pattern = f'program{args.version}.py' if args.version else 'program.py'
+            program_pattern = f'programv{args.version}.py' if args.version else 'program.py'
             program_process.terminate()            
             # Usar comillas simples directamente. Si se necesita escape: os.system(f"pkill -f \\"{program_pattern}\\"")
             os.system(f"pkill -f '{program_pattern}'")
