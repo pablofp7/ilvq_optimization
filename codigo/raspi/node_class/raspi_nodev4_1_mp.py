@@ -70,7 +70,7 @@ class RaspiNodev4_1_mp:
         self.fin_proceso_emisor.clear()
         self.fin_proceso.clear()
         self.send_emisor.clear()
-        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos), name=f"Receptor_{self.id}")
+        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.cola_protos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso, self.tam_lotes_recibidos, self.last_set), name=f"Receptor_{self.id}")
         self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.id, self.puerto_base, self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
                                                                                 self.last_set, self.s, self.T, self.shared_times, self.compartidos, self.tiempo_share, 
                                                                                 self.tiempo_no_share, self.no_comp_jsd), name=f"Emisor_{self.id}")
