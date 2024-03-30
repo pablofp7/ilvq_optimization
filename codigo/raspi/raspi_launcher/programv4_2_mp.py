@@ -94,7 +94,6 @@ def main(df: pd.DataFrame):
         f.writelines(to_write)
 
 
-              
 def sincronizar():
 
     print("Comienza la sincronización...")
@@ -277,6 +276,7 @@ def check_availability(nodo_id, nodos, puerto):
                 except socket.timeout:
                     print("No se recibieron pings en el tiempo esperado.")
 
+        
         
 
 if __name__ == "__main__":

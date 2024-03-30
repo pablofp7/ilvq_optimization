@@ -344,7 +344,7 @@ class RaspiNodev4_2_mp:
             print(f"[NODO {id}] Conjunto NODO {destino}: {len(dest_conj)}.") if id == 0 else None
             distancia = jsd.monte_carlo_jsd(mi_conj, dest_conj)
             print(f"Distancia entre conjuntos de prototipos del nodo {id} y el nodo {destino}: {distancia}.")  if id == 0 else None
-            if distancia > 0.2:
+            if distancia > 0.5:
                 # print(f"Es eficiente compartirle al nodo {destino}.") if id == 0 else None
                 destinos_eficiente.append(destino)
             

@@ -92,9 +92,6 @@ def main(df: pd.DataFrame):
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
 
-
-              
-        
 def sincronizar():
 
     print("Comienza la sincronización...")
@@ -278,6 +275,7 @@ def check_availability(nodo_id, nodos, puerto):
                     print("No se recibieron pings en el tiempo esperado.")
 
         
+
 
 if __name__ == "__main__":
 
