@@ -298,7 +298,7 @@ class RaspiNodev4_2_mp:
                         vecinos_seleccionados = random.sample(vecinos, s)
                         vecinos_eficientes = self.check_sharing(vecinos_seleccionados, last_set, id)
                         compartidos_local += len(protos) * len(vecinos_eficientes)
-                        no_comp_jsd += len(protos) * (len(vecinos_seleccionados) - len(vecinos_eficientes))
+                        no_comp_jsd_local += len(protos) * (len(vecinos_seleccionados) - len(vecinos_eficientes))
                         # print(f"El nodo {id} ha compartido {comp_previo + sumando} prototipos.") if id == 0 else None
                         
                         # Enviar los prototipos a los vecinos seleccionados
