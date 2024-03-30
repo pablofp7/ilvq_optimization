@@ -334,16 +334,16 @@ class RaspiNodev4_2_mp:
         for destino in destinos:
             if last_set.get_length(destino, call_method = "CHECKING SHARE. Getting number of sets of neighbour") < 1:
                 destinos_eficiente.append(destino)
-                print(f"[NODO {id}] comparte con el nodo {destino} porque no tiene última versión.") 
+                # print(f"[NODO {id}] comparte con el nodo {destino} porque no tiene última versión.") 
                 continue
             
-            #Vamos a printear los conjuntos de prototipos a evaluar
+            # #Vamos a printear los conjuntos de prototipos a evaluar
             dest_conj = last_set.getleft(destino, call_method = "CHECKING SHARE. Getting neighbour set for checking.")
-            # Vamos a hacer un print mostrando ambos conjuntos:
-            print(f"[NODO {id}] MI conjunto: {len(mi_conj)}.") if id == 0 else None
-            print(f"[NODO {id}] Conjunto NODO {destino}: {len(dest_conj)}.") if id == 0 else None
+            # # Vamos a hacer un print mostrando ambos conjuntos:
+            # print(f"[NODO {id}] MI conjunto: {len(mi_conj)}.") if id == 0 else None
+            # print(f"[NODO {id}] Conjunto NODO {destino}: {len(dest_conj)}.") if id == 0 else None
             distancia = jsd.monte_carlo_jsd(mi_conj, dest_conj)
-            print(f"Distancia entre conjuntos de prototipos del nodo {id} y el nodo {destino}: {distancia}.")  if id == 0 else None
+            # print(f"Distancia entre conjuntos de prototipos del nodo {id} y el nodo {destino}: {distancia}.")  if id == 0 else None
             if distancia > 0.5:
                 # print(f"Es eficiente compartirle al nodo {destino}.") if id == 0 else None
                 destinos_eficiente.append(destino)
