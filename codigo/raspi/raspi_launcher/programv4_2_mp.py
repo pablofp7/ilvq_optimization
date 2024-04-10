@@ -43,7 +43,7 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
 
-    nodo = RaspiNodev4_2_mp(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas, tam_colas = TAM_COLAS)
+    nodo = RaspiNodev4_2_mp(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
@@ -69,13 +69,12 @@ def main(df: pd.DataFrame):
         cap_ejec = 0
     else:
         cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
-   
+    
     to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
                     f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
                     f"Ha compartido {nodo.shared_times_final} veces.\n"
                     f"Ha compartido {nodo.compartidos_final} prototipos.\n"
                     f"Se ha ahorrado compartir {nodo.no_comp_jsd_final} prototipos.\n"
-                    f"Se han descartado {nodo.protos_descartados_final} prototipospor overflow.\n"
                     f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
                     f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
                     f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
@@ -92,7 +91,6 @@ def main(df: pd.DataFrame):
 
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
-
 
 def sincronizar():
 
@@ -277,7 +275,7 @@ def check_availability(nodo_id, nodos, puerto):
                     print("No se recibieron pings en el tiempo esperado.")
 
         
-        
+
 
 if __name__ == "__main__":
 
@@ -288,7 +286,6 @@ if __name__ == "__main__":
         n_nodos = 5
         n_muestras = 1000
 
-        TAM_COLAS = 10000
         T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
@@ -306,7 +303,7 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        i_iter = 0  
+        i_iter = 0
         while i_iter < iteraciones:
             dataset_idx = 0
             while dataset_idx < len(datasets):
