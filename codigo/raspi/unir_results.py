@@ -48,7 +48,7 @@ results_dir = 'resultados_raspi_indiv'
 try:
     test = sys.argv[1]     
 except:
-    test = "test3"
+    test = "test4"
 
 target_dir = f'{test}_resultados'
 if not os.path.exists(target_dir):
