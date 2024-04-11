@@ -103,7 +103,8 @@ def sincronizar():
 
     check_availability(id, dir_nodos, puerto)
     if id == 0:
-        min_prov = None
+        # Como base se ponen los parametros del nodo central
+        min_prov = parsear_parametros(parametros)
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
