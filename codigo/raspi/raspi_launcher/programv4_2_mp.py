@@ -75,6 +75,7 @@ def main(df: pd.DataFrame):
                     f"Ha compartido {nodo.shared_times_final} veces.\n"
                     f"Ha compartido {nodo.compartidos_final} prototipos.\n"
                     f"Se ha ahorrado compartir {nodo.no_comp_jsd_final} prototipos.\n"
+                    f"Se han descartado por limitación cola {nodo.protos_descartados_final} prototipos.\n"
                     f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
                     f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
                     f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
