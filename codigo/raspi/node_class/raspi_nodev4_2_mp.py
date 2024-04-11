@@ -394,6 +394,7 @@ class RaspiNodev4_2_mp:
         
         print(f"[NODO {id}] ha iniciado el hilo receptor.")
         if nodos == 1 or s == 0 or T == 0:
+            protos_descartados.append(0, 0)
             return  # No proceder si solo hay un nodo o no hay comparticion
 
         server_context = zmq.Context()
