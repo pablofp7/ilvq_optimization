@@ -3,6 +3,8 @@ codigo/zlater/benchmarks
 codigo/new_exp/__pycache__
 codigo/new_exp/prototypes/__pycache__
 codigo/raspi/gamma_pruebas
+codigo/raspi/dataset/
+
 *.pyc
 codigo/new_exp/tiempos.txt
 
@@ -10,3 +12,4 @@ codigo/new_exp/tiempos.txt
 **/*.log
 **/__pycache__/
 **/nohup.out
+
