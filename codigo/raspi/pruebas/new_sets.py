@@ -24,7 +24,6 @@ def preprocess_dataset(option: int):
         
         http = pd.read_csv("../dataset/kdd99_http.csv", sep=",")
         http.dropna(inplace=True)
-        http.drop_duplicates(inplace=True)
 
     if option == 1 or option == 2:
         movie = pd.read_csv("../dataset/ml_100k.csv", sep='\t')
@@ -75,26 +74,80 @@ def read_dataset():
     
     http = pd.read_csv("../dataset/http_proc.csv", low_memory=False)
     movie = pd.read_csv("../dataset/movie_proc.csv", low_memory=False)
-    
     return http, movie
 
 
 def get_metrics(matrix: dict):
+    # Determine if the classification is binary or multi-class
+    classes = matrix.get('classes')
+    
+    if classes is None:
+        # Assuming binary classification if no 'classes' key is found
+        classes = [0, 1]
+    
+    if len(classes) == 2:
+        # Binary classification metrics
+        try:
+            precision = matrix["TP"] / (matrix["TP"] + matrix["FP"])
+        except ZeroDivisionError:
+            precision = 0
 
-    try: 
-        precision = matrix["TP"] / (matrix["TP"] + matrix["FP"]) 
-    except: 
-        precision = 0
-    try:
-        recall = matrix["TP"] / (matrix["TP"] + matrix["FN"]) 
-    except:
-        recall = 0
-    try:
-        f1 = 2 * (precision * recall) / (precision + recall) 
-    except:
-        f1 = 0    
+        try:
+            recall = matrix["TP"] / (matrix["TP"] + matrix["FN"])
+        except ZeroDivisionError:
+            recall = 0
+
+        try:
+            f1 = 2 * (precision * recall) / (precision + recall)
+        except ZeroDivisionError:
+            f1 = 0
+
+        try:
+            accuracy = (matrix["TP"] + matrix["TN"]) / sum(matrix.values())
+        except ZeroDivisionError:
+            accuracy = 0
         
-    return precision, recall, f1
+    else:
+        # Multi-class classification metrics
+        precision_list = []
+        recall_list = []
+        f1_list = []
+
+        for class_label in classes:
+            TP = matrix.get(f'TP_{class_label}', 0)
+            FP = matrix.get(f'FP_{class_label}', 0)
+            FN = matrix.get(f'FN_{class_label}', 0)
+            precision = TP / (TP + FP) if (TP + FP) > 0 else 0
+            recall = TP / (TP + FN) if (TP + FN) > 0 else 0
+            f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+            
+            precision_list.append(precision)
+            recall_list.append(recall)
+            f1_list.append(f1)
+
+        # Macro-average metrics
+        precision = sum(precision_list) / len(precision_list)
+        recall = sum(recall_list) / len(recall_list)
+        f1 = sum(f1_list) / len(f1_list)
+
+        # Micro-average metrics
+        TP_micro = sum(matrix.get(f'TP_{cls}', 0) for cls in classes)
+        FP_micro = sum(matrix.get(f'FP_{cls}', 0) for cls in classes)
+        FN_micro = sum(matrix.get(f'FN_{cls}', 0) for cls in classes)
+        precision_micro = TP_micro / (TP_micro + FP_micro) if (TP_micro + FP_micro) > 0 else 0
+        recall_micro = TP_micro / (TP_micro + FN_micro) if (TP_micro + FN_micro) > 0 else 0
+        f1_micro = 2 * (precision_micro * recall_micro) / (precision_micro + recall_micro) if (precision_micro + recall_micro) > 0 else 0
+        
+        # Combine macro and micro metrics
+        precision = (precision, precision_micro)
+        recall = (recall, recall_micro)
+        f1 = (f1, f1_micro)
+        # Accuracy is not directly meaningful in multiclass micro-average context
+        accuracy = None
+
+    return precision, recall, f1, accuracy
+
+
 
 if __name__ == "__main__":
 
@@ -115,6 +168,9 @@ if __name__ == "__main__":
         lista_tam_conj_movie = []
 
         for i, movie in enumerate(movie_list):
+            
+            if i == 20:
+                break
 
             protos = list(modelo_movie.buffer.prototypes.values())
             tam_num = len(protos)
@@ -129,6 +185,8 @@ if __name__ == "__main__":
             prediccion = modelo_movie.predict_one(x)
             end_time = time.perf_counter()
             predict_times_movie.append(end_time - start_time)
+            
+            print(f"Predicción: {prediccion}, Real: {y}")
 
             if isinstance(prediccion, dict):
                 if 1.0 in prediccion:
@@ -142,7 +200,7 @@ if __name__ == "__main__":
                 matrix_movie["TP"] += 1
             elif prediccion == 1 and y == 0:
                 matrix_movie["FP"] += 1
-            else:
+            elif prediccion == 0 and y == 1:
                 matrix_movie["FN"] += 1
             
             # Medir tiempo de learn_one
@@ -158,6 +216,9 @@ if __name__ == "__main__":
         lista_tam_conj_http = []
 
         for i, http in enumerate(http_list):
+            
+            if i == 20:
+                break
 
             protos = list(modelo_http.buffer.prototypes.values())
             tam_num = len(protos)
@@ -172,6 +233,9 @@ if __name__ == "__main__":
             prediccion = modelo_http.predict_one(x)
             end_time = time.perf_counter()
             predict_times_http.append(end_time - start_time)
+            
+            print(f"Predicción: {prediccion}, Real: {y}")
+
 
             if isinstance(prediccion, dict):
                 if 1.0 in prediccion:
@@ -181,12 +245,17 @@ if __name__ == "__main__":
 
             if prediccion == 0 and y == 0:
                 matrix_http["TN"] += 1
+                print(f"Esto ha sido TN, Predicción: {prediccion}, Real: {y}")
+                
             elif prediccion == 1 and y == 1:
                 matrix_http["TP"] += 1
+                print(f"Esto ha sido TP, Predicción: {prediccion}, Real: {y}")
             elif prediccion == 1 and y == 0:
                 matrix_http["FP"] += 1
-            else:
+                print(f"Esto ha sido FP, Predicción: {prediccion}, Real: {y}")
+            elif prediccion == 0 and y == 1:
                 matrix_http["FN"] += 1
+                print(f"Esto ha sido FN, Predicción: {prediccion}, Real: {y}")
             
             # Medir tiempo de learn_one
             start_time = time.perf_counter()
@@ -219,46 +288,99 @@ if __name__ == "__main__":
     precision_movie, recall_movie, f1_movie, accuracy_movie = get_metrics(metrics_movie)
     print(f"Movie Metrics: Precision={precision_movie}, Recall={recall_movie}, F1={f1_movie}, Accuracy={accuracy_movie}")
 
-    # Create the figure and axes for the subplots
-    plt.figure(figsize=(12, 10))
+
+    # Asegúrate de que todas las listas tengan la misma longitud
+    max_length = max(len(lista_tam_conj_http), len(lista_tam_conj_movie), len(predict_times_movie), len(predict_times_http))
+
+    # Extender las listas más cortas con NaN para igualar la longitud
+    def extend_list(lst, length):
+        return lst + [np.nan] * (length - len(lst))
+
+    lista_tam_conj_http_extended = extend_list(lista_tam_conj_http, max_length)
+    lista_tam_conj_movie_extended = extend_list(lista_tam_conj_movie, max_length)
+    learning_times_http_extended = extend_list(learn_times_http, max_length)
+    learning_times_movie_extended = extend_list(learn_times_movie, max_length)
+    predict_times_movie_extended = extend_list(predict_times_movie, max_length)
+    predict_times_http_extended = extend_list(predict_times_http, max_length)
+
+    # Crear un DataFrame con estos datos
+    data = {
+        "Size of Prototypes HTTP": lista_tam_conj_http_extended,
+        "Size of Prototypes Movies": lista_tam_conj_movie_extended,
+        "Learning Times Movies": learning_times_movie_extended,
+        "Learning Times HTTP": learning_times_http_extended,
+        "Prediction Times Movies": predict_times_movie_extended,
+        "Prediction Times HTTP": predict_times_http_extended
+    }
+    df = pd.DataFrame(data)
+
+    # Apply rolling mean to smooth the 'Times' columns
+    df['Smoothed Learning Times Movies'] = df['Learning Times Movies'].rolling(window=3, min_periods=1).mean() 
+    df['Smoothed Learning Times HTTP'] = df['Learning Times HTTP'].rolling(window=3, min_periods=1).mean()
+    df['Smoothed Prediction Times Movies'] = df['Prediction Times Movies'].rolling(window=3, min_periods=1).mean()
+    df['Smoothed Prediction Times HTTP'] = df['Prediction Times HTTP'].rolling(window=3, min_periods=1).mean()
+
+    # Unpack the list of tuples for HTTP
+    x_http, y_http = zip(*lista_tam_conj_http)
+
+    # Unpack the list of tuples for Movies
+    x_movies, y_movies = zip(*lista_tam_conj_movie)
+
+    # Creating the figure and axes for the subplots
+    plt.figure(figsize=(12, 15))  # Increased figure size to accommodate more subplots
 
     # First row: Evolution of the prototype set sizes
-    ax1 = plt.subplot(2, 2, 1)  # First subplot in a 2x2 layout
-    ax1.plot(range(len(lista_tam_conj_http)), lista_tam_conj_http, color='b')
+    ax1 = plt.subplot(3, 2, 1)
+    ax1.plot(x_http, y_http, color='b')
     ax1.set_title('Evolución del Tamaño del Conjunto de Prototipos HTTP')
     ax1.set_xlabel('Índice de Muestra')
     ax1.set_ylabel('Tamaño del Conjunto de Prototipos')
     ax1.grid(True)
 
-    ax2 = plt.subplot(2, 2, 2)  # Second subplot in a 2x2 layout
-    ax2.plot(range(len(lista_tam_conj_movie)), lista_tam_conj_movie, color='r')
+    ax2 = plt.subplot(3, 2, 2)
+    ax2.plot(x_movies, y_movies, color='r')
     ax2.set_title('Evolución del Tamaño del Conjunto de Prototipos Películas')
     ax2.set_xlabel('Índice de Muestra')
     ax2.set_ylabel('Tamaño del Conjunto de Prototipos')
     ax2.grid(True)
-        
-    # Second row: Timing metrics for prediction and learning
-    ax3 = plt.subplot(2, 2, 3)  # Third subplot in a 2x2 layout
-    ax3.plot(predict_times_movie, label='Prediction Times (Movie)')
-    ax3.plot(learn_times_movie, label='Learning Times (Movie)', linestyle='--')
-    ax3.set_title('Movie Model Performance Over Time')
+
+    # Second row: Smoothed prediction times
+    ax3 = plt.subplot(3, 2, 3)
+    ax3.plot(df['Smoothed Prediction Times Movies'], label='Smoothed Prediction Times (Movies)')
+    ax3.set_title('Smoothed Movie Model Prediction Performance')
     ax3.set_xlabel('Sample Number')
     ax3.set_ylabel('Time (seconds)')
     ax3.legend()
 
-    ax4 = plt.subplot(2, 2, 4)  # Fourth subplot in a 2x2 layout
-    ax4.plot(predict_times_http, label='Prediction Times (HTTP)')
-    ax4.plot(learn_times_http, label='Learning Times (HTTP)', linestyle='--')
-    ax4.set_title('HTTP Model Performance Over Time')
+    ax4 = plt.subplot(3, 2, 4)
+    ax4.plot(df['Smoothed Prediction Times HTTP'], label='Smoothed Prediction Times (HTTP)')
+    ax4.set_title('Smoothed HTTP Model Prediction Performance')
     ax4.set_xlabel('Sample Number')
     ax4.set_ylabel('Time (seconds)')
     ax4.legend()
 
-    # Apply a tight layout and show the plot
+    # Third row: Smoothed learning times
+    ax5 = plt.subplot(3, 2, 5)
+    ax5.plot(df['Smoothed Learning Times Movies'], label='Smoothed Learning Times (Movies)', linestyle='--')
+    ax5.set_title('Smoothed Movie Model Learning Performance')
+    ax5.set_xlabel('Sample Number')
+    ax5.set_ylabel('Time (seconds)')
+    ax5.legend()
+
+    ax6 = plt.subplot(3, 2, 6)
+    ax6.plot(df['Smoothed Learning Times HTTP'], label='Smoothed Learning Times (HTTP)', linestyle='--')
+    ax6.set_title('Smoothed HTTP Model Learning Performance')
+    ax6.set_xlabel('Sample Number')
+    ax6.set_ylabel('Time (seconds)')
+    ax6.legend()
+
+    # Adjust layout to prevent overlap
     plt.tight_layout()
+    plt.subplots_adjust(hspace=0.4)  # Adjust horizontal spacing if needed 
     plt.show()
     
-        
     
-
-
+    # Printear los valores de las lista de tam de conjs
+    print(lista_tam_conj_http)
+    print(lista_tam_conj_movie)
+    
