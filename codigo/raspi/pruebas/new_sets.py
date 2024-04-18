@@ -149,7 +149,7 @@ def get_metrics(matrix: dict):
 
 if __name__ == "__main__":
 
-    # preprocess_dataset()
+    preprocess_dataset()
 
     # Cargar los datasets
     http, movie = read_dataset()
@@ -168,7 +168,7 @@ if __name__ == "__main__":
         lista_tam_conj_movie = []
 
         for i, (x, y) in enumerate(movie_list):
-            if i % 1000:  # Assuming you only want to process the first 20 for testing purposes
+            if i % 1000 == 0:  # Assuming you only want to process the first 20 for testing purposes
                 print(f"Muestra {i} de {len(movie_list)}. MOVIE")    
                 # break
             
@@ -217,7 +217,7 @@ if __name__ == "__main__":
 
 
         for i, (x, y) in enumerate(http_list):
-            if i % 1000:  # Similarly for HTTP model
+            if i % 1000 == 0:  # Similarly for HTTP model
                 print(f"Muestra {i} de {len(http_list)}. HTTP")
             #     break
             
