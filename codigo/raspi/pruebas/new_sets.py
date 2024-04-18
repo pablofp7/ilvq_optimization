@@ -358,6 +358,7 @@ if __name__ == "__main__":
     # Adjust layout to prevent overlap
     plt.tight_layout()
     plt.subplots_adjust(hspace=0.4)  # Adjust horizontal spacing if needed 
+    plt.savefig("grafica_newset.png")
     # plt.show()
     
     
