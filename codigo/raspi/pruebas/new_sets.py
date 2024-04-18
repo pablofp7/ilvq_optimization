@@ -223,6 +223,7 @@ if __name__ == "__main__":
             
             protos = list(modelo_movie.buffer.prototypes.values())
             tam = len(protos)
+            print(f"Tam: {tam}")
             lista_tam_conj_http.append((i, tam))
 
             x = {k: v for k, v in enumerate(x)}
