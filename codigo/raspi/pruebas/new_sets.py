@@ -362,4 +362,3 @@ if __name__ == "__main__":
     # plt.show()
     
     
-    print(f"Lista tam conj http: {lista_tam_conj_http}")
