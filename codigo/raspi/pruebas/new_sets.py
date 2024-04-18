@@ -221,9 +221,8 @@ if __name__ == "__main__":
                 print(f"Muestra {i} de {len(http_list)}. HTTP")
                 break
             
-            protos = list(modelo_movie.buffer.prototypes.values())
+            protos = list(modelo_http.buffer.prototypes.values())
             tam = len(protos)
-            print(f"Tam: {tam}")
             lista_tam_conj_http.append((i, tam))
 
             x = {k: v for k, v in enumerate(x)}
