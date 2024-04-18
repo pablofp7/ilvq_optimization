@@ -262,13 +262,15 @@ if __name__ == "__main__":
         accuracy_http = accuracy_score(true_labels_http, predictions_http)
 
     # Output the metrics and times
-    print(f"Movie Metrics: Precision={precision_movie}, Recall={recall_movie}, F1={f1_movie}, Accuracy={accuracy_movie}")
-    print(f"HTTP Metrics: Precision={precision_http}, Recall={recall_http}, F1={f1_http}, Accuracy={accuracy_http}")
     print(f"Average Prediction Time for Movie Model: {sum(predict_times_movie) / len(predict_times_movie):.5f} seconds")
     print(f"Average Learning Time for Movie Model: {sum(learn_times_movie) / len(learn_times_movie):.5f} seconds")
     print(f"Average Prediction Time for HTTP Model: {sum(predict_times_http) / len(predict_times_http):.5f} seconds")
     print(f"Average Learning Time for HTTP Model: {sum(learn_times_http) / len(learn_times_http):.5f} seconds")
+    print(f"Movie Metrics: Precision={precision_movie}, Recall={recall_movie}, F1={f1_movie}, Accuracy={accuracy_movie}")
+    print(f"HTTP Metrics: Precision={precision_http}, Recall={recall_http}, F1={f1_http}, Accuracy={accuracy_http}")
 
+    print(f"Movie Confusion Matrix:\n{cm_movie}")
+    print(f"HTTP Confusion Matrix:\n{cm_http}")
 
     # Asegúrate de que todas las listas tengan la misma longitud
     max_length = max(len(lista_tam_conj_http), len(lista_tam_conj_movie), len(predict_times_movie), len(predict_times_http))
