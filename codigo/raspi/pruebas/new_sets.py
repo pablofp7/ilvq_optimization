@@ -149,7 +149,7 @@ def get_metrics(matrix: dict):
 
 if __name__ == "__main__":
 
-    preprocess_dataset()
+    # preprocess_dataset()
 
     # Cargar los datasets
     http, movie = read_dataset()
@@ -358,8 +358,7 @@ if __name__ == "__main__":
     # Adjust layout to prevent overlap
     plt.tight_layout()
     plt.subplots_adjust(hspace=0.4)  # Adjust horizontal spacing if needed 
-    plt.show()
+    # plt.show()
     
     
     print(f"Lista tam conj http: {lista_tam_conj_http}")
-    print(f"Lista tam conj movie: {lista_tam_conj_movie}")        
