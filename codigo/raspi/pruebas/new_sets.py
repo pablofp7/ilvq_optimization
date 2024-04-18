@@ -15,6 +15,9 @@ from matplotlib import pyplot as plt
 from sklearn.feature_extraction.text import CountVectorizer
 import time
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, accuracy_score
+from river.forest import ARFClassifier
+from sklearn.dummy import DummyClassifier
+
 
 
 def preprocess_dataset():
@@ -162,11 +165,25 @@ if __name__ == "__main__":
 
     if movie is not None:
         modelo_movie = XuILVQ()
+        forest_movie = ARFClassifier()
+        dummy_movie = DummyClassifier(strategy='stratified')
         movie_list = [(fila[:-1], fila[-1]) for fila in movie.values]
         predictions_movie = []
         true_labels_movie = []
+        predictions_movie_forest = []
+        true_labels_movie_forest = []
+        predictions_movie_dummy = []
+        true_labels_movie_dummy = []
         lista_tam_conj_movie = []
 
+        # Primero se evalua el dummy
+        features = [fila[:-1] for fila in movie_list]
+        labels = [fila[-1] for fila in movie_list]
+        dummy_movie.fit(features, labels)
+        predictions_movie_dummy.extend(list(dummy_movie.predict(features)))
+        true_labels_movie_dummy.extend(labels)
+
+        
         for i, (x, y) in enumerate(movie_list):
             if i % 1001 == 1000:  # Assuming you only want to process the first 20 for testing purposes
                 print(f"Muestra {i} de {len(movie_list)}. MOVIE")    
@@ -194,6 +211,7 @@ if __name__ == "__main__":
                     
             predictions_movie.append(prediction)
             true_labels_movie.append(y)
+            
 
             # Measure learning time
             start_time = time.perf_counter()
@@ -201,19 +219,50 @@ if __name__ == "__main__":
             end_time = time.perf_counter()
             learn_times_movie.append(end_time - start_time)
 
+            pred = forest_movie.predict_one(x)
+            if pred is not None:
+                predictions_movie_forest.append(forest_movie.predict_one(x))
+                true_labels_movie_forest.append(y)
+            forest_movie.learn_one(x, y)
+
         # Calculate confusion matrix and metrics for movie model
         cm_movie = confusion_matrix(true_labels_movie, predictions_movie)
         precision_movie = precision_score(true_labels_movie, predictions_movie, average='weighted', zero_division=0)
         recall_movie = recall_score(true_labels_movie, predictions_movie, average='weighted', zero_division=0)
         f1_movie = f1_score(true_labels_movie, predictions_movie, average='weighted', zero_division=0)
         accuracy_movie = accuracy_score(true_labels_movie, predictions_movie)
+        
+        cm_movie_forest = confusion_matrix(true_labels_movie_forest, predictions_movie_forest)
+        precision_movie_forest = precision_score(true_labels_movie_forest, predictions_movie_forest, average='weighted', zero_division=0)
+        recall_movie_forest = recall_score(true_labels_movie_forest, predictions_movie_forest, average='weighted', zero_division=0)
+        f1_movie_forest = f1_score(true_labels_movie_forest, predictions_movie_forest, average='weighted', zero_division=0)
+        accuracy_movie_forest = accuracy_score(true_labels_movie_forest, predictions_movie_forest)
+        
+        cm_movie_dummy = confusion_matrix(true_labels_movie_dummy, predictions_movie_dummy)
+        precision_movie_dummy = precision_score(true_labels_movie_dummy, predictions_movie_dummy, average='weighted', zero_division=0)
+        recall_movie_dummy = recall_score(true_labels_movie_dummy, predictions_movie_dummy, average='weighted', zero_division=0)
+        f1_movie_dummy = f1_score(true_labels_movie_dummy, predictions_movie_dummy, average='weighted', zero_division=0)
+        accuracy_movie_dummy = accuracy_score(true_labels_movie_dummy, predictions_movie_dummy)
 
     if http is not None:
         modelo_http = XuILVQ()
+        forest_http = ARFClassifier()
+        dummy_http = DummyClassifier(strategy='stratified')
         http_list = [(fila[:-1], fila[-1]) for fila in http.values]
         predictions_http = []
         true_labels_http = []
+        predictions_http_forest = []
+        true_labels_http_forest = []
+        predictions_http_dummy = []
+        true_labels_http_dummy = []
         lista_tam_conj_http = []
+        
+        # Primero se evalua el dummy
+        features = [fila[:-1] for fila in http_list]
+        labels = [fila[-1] for fila in http_list]
+        dummy_http.fit(features, labels)
+        predictions_http_dummy.extend(list(dummy_http.predict(features)))
+        true_labels_http_dummy.extend(labels)
 
 
         for i, (x, y) in enumerate(http_list):
@@ -253,6 +302,14 @@ if __name__ == "__main__":
             modelo_http.learn_one(x, y)
             end_time = time.perf_counter()
             learn_times_http.append(end_time - start_time)
+            
+            
+            pred = forest_http.predict_one(x)
+            if pred is not None:
+                predictions_http_forest.append(forest_http.predict_one(x))
+                true_labels_http_forest.append(y)
+            forest_http.learn_one(x, y)            
+
 
         # Calculate confusion matrix and metrics for HTTP model
         cm_http = confusion_matrix(true_labels_http, predictions_http)
@@ -260,6 +317,18 @@ if __name__ == "__main__":
         recall_http = recall_score(true_labels_http, predictions_http, average='weighted', zero_division=0)
         f1_http = f1_score(true_labels_http, predictions_http, average='weighted', zero_division=0)
         accuracy_http = accuracy_score(true_labels_http, predictions_http)
+        
+        cm_http_forest = confusion_matrix(true_labels_http_forest, predictions_http_forest)
+        precision_http_forest = precision_score(true_labels_http_forest, predictions_http_forest, average='weighted', zero_division=0)
+        recall_http_forest = recall_score(true_labels_http_forest, predictions_http_forest, average='weighted', zero_division=0)
+        f1_http_forest = f1_score(true_labels_http_forest, predictions_http_forest, average='weighted', zero_division=0)
+        accuracy_http_forest = accuracy_score(true_labels_http_forest, predictions_http_forest)
+        
+        cm_http_dummy = confusion_matrix(true_labels_http_dummy, predictions_http_dummy)
+        precision_http_dummy = precision_score(true_labels_http_dummy, predictions_http_dummy, average='weighted', zero_division=0)
+        recall_http_dummy = recall_score(true_labels_http_dummy, predictions_http_dummy, average='weighted', zero_division=0)
+        f1_http_dummy = f1_score(true_labels_http_dummy, predictions_http_dummy, average='weighted', zero_division=0)
+        accuracy_http_dummy = accuracy_score(true_labels_http_dummy, predictions_http_dummy)
 
     # Output the metrics and times
     print(f"Average Prediction Time for Movie Model: {sum(predict_times_movie) / len(predict_times_movie):.5f} seconds")
@@ -267,10 +336,15 @@ if __name__ == "__main__":
     print(f"Average Prediction Time for HTTP Model: {sum(predict_times_http) / len(predict_times_http):.5f} seconds")
     print(f"Average Learning Time for HTTP Model: {sum(learn_times_http) / len(learn_times_http):.5f} seconds")
     print(f"Movie Metrics: Precision={precision_movie}, Recall={recall_movie}, F1={f1_movie}, Accuracy={accuracy_movie}")
+    print(f"Movie (Forest) Metrics: Precision={precision_movie_forest}, Recall={recall_movie_forest}, F1={f1_movie_forest}, Accuracy={accuracy_movie_forest}")
+    print(f"Movie (Dummy) Metrics: Precision={precision_movie_dummy}, Recall={recall_movie_dummy}, F1={f1_movie_dummy}, Accuracy={accuracy_movie_dummy}")
     print(f"HTTP Metrics: Precision={precision_http}, Recall={recall_http}, F1={f1_http}, Accuracy={accuracy_http}")
+    print(f"HTTP (Forest) Metrics: Precision={precision_http_forest}, Recall={recall_http_forest}, F1={f1_http_forest}, Accuracy={accuracy_http_forest}")
+    print(f"HTTP (Dummy) Metrics: Precision={precision_http_dummy}, Recall={recall_http_dummy}, F1={f1_http_dummy}, Accuracy={accuracy_http_dummy}")
+    
 
     print(f"Movie Confusion Matrix:\n{cm_movie}")
-    print(f"HTTP Confusion Matrix:\n{cm_http}")
+    print(f"HTTP Confusion Matrix:\n{cm_http}") 
 
     # Asegúrate de que todas las listas tengan la misma longitud
     max_length = max(len(lista_tam_conj_http), len(lista_tam_conj_movie), len(predict_times_movie), len(predict_times_http))
