@@ -170,7 +170,7 @@ if __name__ == "__main__":
         for i, (x, y) in enumerate(movie_list):
             if i % 1001 == 1000:  # Assuming you only want to process the first 20 for testing purposes
                 print(f"Muestra {i} de {len(movie_list)}. MOVIE")    
-                break
+                # break
             
             protos = list(modelo_movie.buffer.prototypes.values())
             tam = len(protos)
@@ -219,7 +219,7 @@ if __name__ == "__main__":
         for i, (x, y) in enumerate(http_list):
             if i % 1001 == 1000:  # Similarly for HTTP model
                 print(f"Muestra {i} de {len(http_list)}. HTTP")
-                break
+                # break
             
             protos = list(modelo_http.buffer.prototypes.values())
             tam = len(protos)
