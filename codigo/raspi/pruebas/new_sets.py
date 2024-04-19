@@ -325,6 +325,11 @@ if __name__ == "__main__":
         accuracy_http_forest = accuracy_score(true_labels_http_forest, predictions_http_forest)
         
         cm_http_dummy = confusion_matrix(true_labels_http_dummy, predictions_http_dummy)
+        print(f"Confusion matrix http dummy: {cm_http_dummy}")
+        print(f"True Positives: {cm_http_dummy[1][1]}")
+        print(f"True Negatives: {cm_http_dummy[0][0]}")
+        print(f"False Positives: {cm_http_dummy[0][1]}")
+        print(f"False Negatives: {cm_http_dummy[1][0]}")
         precision_http_dummy = precision_score(true_labels_http_dummy, predictions_http_dummy, average='weighted', zero_division=0)
         recall_http_dummy = recall_score(true_labels_http_dummy, predictions_http_dummy, average='weighted', zero_division=0)
         f1_http_dummy = f1_score(true_labels_http_dummy, predictions_http_dummy, average='weighted', zero_division=0)
