@@ -227,18 +227,33 @@ if __name__ == "__main__":
 
         # Calculate confusion matrix and metrics for movie model
         cm_movie = confusion_matrix(true_labels_movie, predictions_movie)
+        print(f"Confusion matrix movie: {cm_movie}")
+        print(f"True Positives: {cm_movie[1][1]}")
+        print(f"True Negatives: {cm_movie[0][0]}")
+        print(f"False Positives: {cm_movie[0][1]}")
+        print(f"False Negatives: {cm_movie[1][0]}")
         precision_movie = precision_score(true_labels_movie, predictions_movie, average='weighted', zero_division=0)
         recall_movie = recall_score(true_labels_movie, predictions_movie, average='weighted', zero_division=0)
         f1_movie = f1_score(true_labels_movie, predictions_movie, average='weighted', zero_division=0)
         accuracy_movie = accuracy_score(true_labels_movie, predictions_movie)
         
         cm_movie_forest = confusion_matrix(true_labels_movie_forest, predictions_movie_forest)
+        print(f"Confusion matrix movie FOREST: {cm_movie_forest}")
+        print(f"True Positives: {cm_movie_forest[1][1]}")
+        print(f"True Negatives: {cm_movie_forest[0][0]}")
+        print(f"False Positives: {cm_movie_forest[0][1]}")
+        print(f"False Negatives: {cm_movie_forest[1][0]}")
         precision_movie_forest = precision_score(true_labels_movie_forest, predictions_movie_forest, average='weighted', zero_division=0)
         recall_movie_forest = recall_score(true_labels_movie_forest, predictions_movie_forest, average='weighted', zero_division=0)
         f1_movie_forest = f1_score(true_labels_movie_forest, predictions_movie_forest, average='weighted', zero_division=0)
         accuracy_movie_forest = accuracy_score(true_labels_movie_forest, predictions_movie_forest)
         
         cm_movie_dummy = confusion_matrix(true_labels_movie_dummy, predictions_movie_dummy)
+        print(f"Confusion matrix movie DUMMY: {cm_movie_dummy}")
+        print(f"True Positives: {cm_movie_dummy[1][1]}")
+        print(f"True Negatives: {cm_movie_dummy[0][0]}")
+        print(f"False Positives: {cm_movie_dummy[0][1]}")
+        print(f"False Negatives: {cm_movie_dummy[1][0]}")
         precision_movie_dummy = precision_score(true_labels_movie_dummy, predictions_movie_dummy, average='weighted', zero_division=0)
         recall_movie_dummy = recall_score(true_labels_movie_dummy, predictions_movie_dummy, average='weighted', zero_division=0)
         f1_movie_dummy = f1_score(true_labels_movie_dummy, predictions_movie_dummy, average='weighted', zero_division=0)
@@ -313,19 +328,29 @@ if __name__ == "__main__":
 
         # Calculate confusion matrix and metrics for HTTP model
         cm_http = confusion_matrix(true_labels_http, predictions_http)
+        print(f"Confusion matrix http: {cm_http}")
+        print(f"True Positives: {cm_http[1][1]}")
+        print(f"True Negatives: {cm_http[0][0]}")
+        print(f"False Positives: {cm_http[0][1]}")  
+        print(f"False Negatives: {cm_http[1][0]}")
         precision_http = precision_score(true_labels_http, predictions_http, average='weighted', zero_division=0)
         recall_http = recall_score(true_labels_http, predictions_http, average='weighted', zero_division=0)
         f1_http = f1_score(true_labels_http, predictions_http, average='weighted', zero_division=0)
         accuracy_http = accuracy_score(true_labels_http, predictions_http)
         
         cm_http_forest = confusion_matrix(true_labels_http_forest, predictions_http_forest)
+        print(f"Confusion matrix http FOREST: {cm_http_forest}")
+        print(f"True Positives: {cm_http_forest[1][1]}")
+        print(f"True Negatives: {cm_http_forest[0][0]}")
+        print(f"False Positives: {cm_http_forest[0][1]}")
+        print(f"False Negatives: {cm_http_forest[1][0]}")   
         precision_http_forest = precision_score(true_labels_http_forest, predictions_http_forest, average='weighted', zero_division=0)
         recall_http_forest = recall_score(true_labels_http_forest, predictions_http_forest, average='weighted', zero_division=0)
         f1_http_forest = f1_score(true_labels_http_forest, predictions_http_forest, average='weighted', zero_division=0)
         accuracy_http_forest = accuracy_score(true_labels_http_forest, predictions_http_forest)
         
         cm_http_dummy = confusion_matrix(true_labels_http_dummy, predictions_http_dummy)
-        print(f"Confusion matrix http dummy: {cm_http_dummy}")
+        print(f"Confusion matrix http DUMMY: {cm_http_dummy}")
         print(f"True Positives: {cm_http_dummy[1][1]}")
         print(f"True Negatives: {cm_http_dummy[0][0]}")
         print(f"False Positives: {cm_http_dummy[0][1]}")
@@ -348,8 +373,6 @@ if __name__ == "__main__":
     print(f"HTTP (Dummy) Metrics: Precision={precision_http_dummy}, Recall={recall_http_dummy}, F1={f1_http_dummy}, Accuracy={accuracy_http_dummy}")
     
 
-    print(f"Movie Confusion Matrix:\n{cm_movie}")
-    print(f"HTTP Confusion Matrix:\n{cm_http}") 
 
     # Asegúrate de que todas las listas tengan la misma longitud
     max_length = max(len(lista_tam_conj_http), len(lista_tam_conj_movie), len(predict_times_movie), len(predict_times_http))
