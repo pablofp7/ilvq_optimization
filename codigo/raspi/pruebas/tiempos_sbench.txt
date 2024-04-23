@@ -1,0 +1,12 @@
+electricity.csv: 581.8501436056396
+
+http_proc.csv: 200560.75713040907
+
+2electricity.csv: 310.3856749939119
+
+electricity.csv: 1317
+
+http_proc.csv: 1317
+
+2electricity.csv: 1324
+

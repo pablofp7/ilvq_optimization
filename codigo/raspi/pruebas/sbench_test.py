@@ -38,7 +38,7 @@ def read_dataset(name: str):
 def main():
     
     datasets = ["electricity.csv", "http_proc.csv", "2electricity.csv"]
-    tiempos = {key: None for key in datasets}
+    cap_ejec = {key: None for key in datasets}
     tams = {key: None for key in datasets}
     
     modelo = XuILVQ()
@@ -56,15 +56,17 @@ def main():
             x = {k: v for k, v in enumerate(x)}
             modelo.learn_one(x, y)
         end = time.perf_counter()
-        tiempos[dataset] = len(df) / (end - start)
+        cap_ejec[dataset] = len(df) / (end - start)
         tams[dataset] = len(list(modelo.buffer.prototypes.values()))
         
     
     with open("tiempos_sbench.txt", "w") as f:
-        for key, value in tiempos.items():
+        f.write("Capacidad de ejecución\n")
+        for key, value in cap_ejec.items():
             f.write(f"{key}: {value}\n")
             f.write("\n")
         
+        f.write("\nTamaños de los conjuntos de prototipos generados\n")
         for key, value in tams.items():
             f.write(f"{key}: {value}\n")
             f.write("\n")
