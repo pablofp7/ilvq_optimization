@@ -61,6 +61,11 @@ def main():
     with open("tiempos_sbench.txt", "w") as f:
         for key, value in tiempos.items():
             f.write(f"{key}: {value}\n")
+        f.write("\n")
+        #Vamos a escribir el número de prototipos generados por el modelo
+        protos = list(modelo.buffer.prototypes.values())
+        tam_num = len(protos)
+        f.write(f"Nº PROT: {tam_num}")
             
 
 if __name__ == "__main__":
