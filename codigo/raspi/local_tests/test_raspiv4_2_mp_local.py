@@ -92,6 +92,8 @@ def main(df: pd.DataFrame):
             max_init_index = len(df) - tam_muestra
             print(f"max_init_index: {max_init_index}, tam_muestra: {tam_muestra}, len(df): {len(df)}")
             init_index = np.random.randint(0, max_init_index) if max_init_index > 0 else 0
+        elif "http" in dataset:
+            tam_muestra = len(df)
         
         df_short = df[init_index : init_index + tam_muestra]
         df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
@@ -188,26 +190,24 @@ if __name__ == "__main__":
         n_muestras = 1000
         t_max_minutes = 5
         T_MAX_IT = t_max_minutes * 60
-        TAM_COLAS = 10000
+        TAM_COLAS = 500
                 
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
-        tasa_llegadas = 5
+        tasa_llegadas = 10
         media_llegadas = 1 / tasa_llegadas
         
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        n_muestras = 50
-        # iteraciones = 20
         datasets = ["phis"]
-        # S = [1, 4]
-        # T = [0.1, 0.5, 1.0] 
+        S = [4]
+        T = [0.0, 0.2, 1.0] 
 
-        data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
+        data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv", "http": "http_proc.csv", "movie": "movie_proc.csv"}
         
-        directorio_resultados = "../resultados_raspiv4"
+        directorio_resultados = "../resultados_local"
         
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)

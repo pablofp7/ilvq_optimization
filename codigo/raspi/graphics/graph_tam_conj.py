@@ -85,6 +85,8 @@ def main():
     except:
         directorio_resultados = "../resultados_servidor/old_resultados_raspi"
         
+    directorio_resultados = "../resultados_local"
+        
     g_especifico = None
     g_list = None
     if len(sys.argv) > 1:
