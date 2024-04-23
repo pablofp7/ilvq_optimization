@@ -39,6 +39,7 @@ def main():
     
     datasets = ["electricity.csv", "http_proc.csv", "2electricity.csv"]
     tiempos = {key: None for key in datasets}
+    tams = {key: None for key in datasets}
     
     modelo = XuILVQ()
     
@@ -56,18 +57,19 @@ def main():
             modelo.learn_one(x, y)
         end = time.perf_counter()
         tiempos[dataset] = len(df) / (end - start)
+        tams = len(list(modelo.buffer.prototypes.values()))
         
     
     with open("tiempos_sbench.txt", "w") as f:
         for key, value in tiempos.items():
             f.write(f"{key}: {value}\n")
-        f.write("\n")
-        #Vamos a escribir el número de prototipos generados por el modelo
-        protos = list(modelo.buffer.prototypes.values())
-        tam_num = len(protos)
-        f.write(f"Nº PROT: {tam_num}")
+            f.write("\n")
+        
+        for key, value in tams.items():
+            f.write(f"{key}: {value}\n")
+            f.write("\n")
             
-
+            
 if __name__ == "__main__":
     main()
                 
