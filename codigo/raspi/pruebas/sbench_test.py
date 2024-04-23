@@ -41,7 +41,7 @@ def main():
     cap_ejec = {key: None for key in datasets}
     tams = {key: None for key in datasets}
     
-    modelo = XuILVQ()
+    modelo = [XuILVQ() for _ in range(len(datasets))]
     
     # Vamos a realizar train y contar cuantas muestras se han entrenado por segundo
     # Esto se hace entrenando con el dataset, diviendo número de muestras entrenadas entre los segundos que ha tardado
@@ -54,10 +54,10 @@ def main():
         start = time.perf_counter()
         for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing {dataset}")):
             x = {k: v for k, v in enumerate(x)}
-            modelo.learn_one(x, y)
+            modelo[datasets.index(dataset)].learn_one(x, y)
         end = time.perf_counter()
         cap_ejec[dataset] = len(df) / (end - start)
-        tams[dataset] = len(list(modelo.buffer.prototypes.values()))
+        tams[dataset] = len(list(modelo[datasets.index(dataset)].buffer.prototypes.values()))
         
     
     with open("tiempos_sbench.txt", "w") as f:
