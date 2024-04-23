@@ -57,7 +57,7 @@ def main():
             modelo.learn_one(x, y)
         end = time.perf_counter()
         tiempos[dataset] = len(df) / (end - start)
-        tams = len(list(modelo.buffer.prototypes.values()))
+        tams[dataset] = len(list(modelo.buffer.prototypes.values()))
         
     
     with open("tiempos_sbench.txt", "w") as f:
