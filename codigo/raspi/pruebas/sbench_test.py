@@ -51,6 +51,8 @@ def main():
 
         start = time.perf_counter()
         for i in range(len(df_list)):
+            if i % 1000 == 0:
+                print(f"Muestra {i} de {len(df_list)}")
             x, y = df_list.pop(0)            
             x = {k: v for k, v in enumerate(x)}    
             modelo.learn_one(x, y)
