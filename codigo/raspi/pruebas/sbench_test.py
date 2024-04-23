@@ -7,7 +7,7 @@ if ruta_directorio_main not in sys.path:
 import pandas as pd
 from prototypes import XuILVQ
 import time
-import tqdm
+from tqdm import tqdm
 
 def read_dataset(name: str):
     
