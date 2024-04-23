@@ -4,10 +4,14 @@ import pandas as pd
 from prototypes import XuILVQ
 import time
 from tqdm import tqdm
-
+import socket
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
+
+
+hostname = socket.gethostname()
+
 
 def read_dataset(name: str):
     dataset_path = f"../dataset/{name.strip('2')}"
@@ -43,7 +47,7 @@ def main():
             resultados[dataset]['tams'].append(tams)
     
     # Escribir los resultados promedio en un archivo
-    with open("tiempos_sbench.txt", "w") as f:
+    with open(f"sbench_{hostname}.txt", "w") as f:
         f.write("Capacidad de ejecución promedio\n")
         for key in resultados:
             f.write(f"{key}: {sum(resultados[key]['cap_ejec']) / num_runs}\n")
