@@ -28,20 +28,19 @@ def main():
     resultados = {key: {'cap_ejec': [], 'tams': []} for key in datasets}
 
     for _ in range(num_runs):
-        modelo = [XuILVQ() for _ in range(len(datasets))]
-        
         for dataset in datasets:
+            modelo = XuILVQ()
             df = read_dataset(dataset)
             df_list = [(fila[:-1], fila[-1]) for fila in df.values]
             
             start = time.perf_counter()
             for x, y in tqdm(df_list, desc=f"Processing {dataset}"):
                 x = dict(enumerate(x))
-                modelo[datasets.index(dataset)].learn_one(x, y)
+                modelo.learn_one(x, y)
             end = time.perf_counter()
             
             cap_ejec = len(df) / (end - start)
-            tams = len(modelo[datasets.index(dataset)].buffer.prototypes)
+            tams = len(list(modelo.buffer.prototypes.values()))
             
             resultados[dataset]['cap_ejec'].append(cap_ejec)
             resultados[dataset]['tams'].append(tams)
