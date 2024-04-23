@@ -201,7 +201,7 @@ if __name__ == "__main__":
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"]
         
-        datasets = ["phis"]
+        datasets = ["http"]
         S = [4]
         T = [0.0, 0.2, 1.0] 
 
