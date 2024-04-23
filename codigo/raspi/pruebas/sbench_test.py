@@ -1,13 +1,13 @@
 import sys
 import os
 import pandas as pd
-from prototypes import XuILVQ
 import time
 from tqdm import tqdm
 import socket
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
+from prototypes import XuILVQ
 
 
 hostname = socket.gethostname()
