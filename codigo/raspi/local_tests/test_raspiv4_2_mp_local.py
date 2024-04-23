@@ -188,7 +188,7 @@ if __name__ == "__main__":
     try:
         n_nodos = 5
         n_muestras = 1000
-        t_max_minutes = 5
+        t_max_minutes = 250000
         T_MAX_IT = t_max_minutes * 60
         TAM_COLAS = 500
                 
