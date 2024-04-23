@@ -1,77 +1,56 @@
 import sys
 import os
-ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if ruta_directorio_main not in sys.path:
-    sys.path.append(ruta_directorio_main)
-
 import pandas as pd
 from prototypes import XuILVQ
 import time
 from tqdm import tqdm
 
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 def read_dataset(name: str):
+    dataset_path = f"../dataset/{name.strip('2')}"
+    dataset = pd.read_csv(dataset_path)
+    dataset.replace({'UP': 1, 'DOWN': 0, 'True': 1, 'False': 0}, inplace=True)
     
     if "2" in name:
-        name = name[1:]
-        dataset = pd.read_csv(f"../dataset/{name}")
-        # Se cambia el 'UP' por 1 y el 'DOWN' por 0
-        dataset.replace('UP', 1, inplace=True)
-        dataset.replace('DOWN', 0, inplace=True)
-        dataset.replace('True', 1, inplace=True)
-        dataset.replace('False', 0, inplace=True)
-        #En el segundo caso de electricity se entrena "sólo" con mil muestras desde el principio pero intercaladas de 5 en 5
-        dataset = dataset.iloc[::5].iloc[:1000]
-        return dataset
-        
-    dataset = pd.read_csv(f"../dataset/{name}")
-    # Se cambia el 'UP' por 1 y el 'DOWN' por 0
-    dataset.replace('UP', 1, inplace=True)
-    dataset.replace('DOWN', 0, inplace=True) 
-
-    dataset.replace('True', 1, inplace=True)
-    dataset.replace('False', 0, inplace=True) 
-
-
+        return dataset.iloc[::5].iloc[:1000]
     return dataset
 
-
 def main():
-    
+    num_runs = 30  # Ejecutar el experimento 30 veces
     datasets = ["electricity.csv", "http_proc.csv", "2electricity.csv"]
-    cap_ejec = {key: None for key in datasets}
-    tams = {key: None for key in datasets}
-    
-    modelo = [XuILVQ() for _ in range(len(datasets))]
-    
-    # Vamos a realizar train y contar cuantas muestras se han entrenado por segundo
-    # Esto se hace entrenando con el dataset, diviendo número de muestras entrenadas entre los segundos que ha tardado
-    
-    for dataset in datasets:
-        df = read_dataset(dataset)
-        print(f"Dataset: {dataset}")
-        df_list = [(fila[:-1], fila[-1]) for fila in df.values]
+    resultados = {key: {'cap_ejec': [], 'tams': []} for key in datasets}
 
-        start = time.perf_counter()
-        for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing {dataset}")):
-            x = {k: v for k, v in enumerate(x)}
-            modelo[datasets.index(dataset)].learn_one(x, y)
-        end = time.perf_counter()
-        cap_ejec[dataset] = len(df) / (end - start)
-        tams[dataset] = len(list(modelo[datasets.index(dataset)].buffer.prototypes.values()))
+    for _ in range(num_runs):
+        modelo = [XuILVQ() for _ in range(len(datasets))]
         
-    
-    with open("tiempos_sbench.txt", "w") as f:
-        f.write("Capacidad de ejecución\n")
-        for key, value in cap_ejec.items():
-            f.write(f"{key}: {value}\n")
-            f.write("\n")
-        
-        f.write("\nTamaños de los conjuntos de prototipos generados\n")
-        for key, value in tams.items():
-            f.write(f"{key}: {value}\n")
-            f.write("\n")
+        for dataset in datasets:
+            df = read_dataset(dataset)
+            df_list = [(fila[:-1], fila[-1]) for fila in df.values]
             
+            start = time.perf_counter()
+            for x, y in tqdm(df_list, desc=f"Processing {dataset}"):
+                x = dict(enumerate(x))
+                modelo[datasets.index(dataset)].learn_one(x, y)
+            end = time.perf_counter()
+            
+            cap_ejec = len(df) / (end - start)
+            tams = len(modelo[datasets.index(dataset)].buffer.prototypes)
+            
+            resultados[dataset]['cap_ejec'].append(cap_ejec)
+            resultados[dataset]['tams'].append(tams)
+    
+    # Escribir los resultados promedio en un archivo
+    with open("tiempos_sbench.txt", "w") as f:
+        f.write("Capacidad de ejecución promedio\n")
+        for key in resultados:
+            f.write(f"{key}: {sum(resultados[key]['cap_ejec']) / num_runs}\n")
+        
+        f.write("\nTamaños promedios de los conjuntos de prototipos generados\n")
+        for key in resultados:
+            f.write(f"{key}: {sum(resultados[key]['tams']) / num_runs}\n")
             
 if __name__ == "__main__":
     main()
-                
