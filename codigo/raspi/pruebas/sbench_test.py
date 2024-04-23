@@ -7,6 +7,7 @@ if ruta_directorio_main not in sys.path:
 import pandas as pd
 from prototypes import XuILVQ
 import time
+import tqdm
 
 def read_dataset(name: str):
     
@@ -50,11 +51,8 @@ def main():
         df_list = [(fila[:-1], fila[-1]) for fila in df.values]
 
         start = time.perf_counter()
-        for i in range(len(df_list)):
-            if i % 1000 == 0:
-                print(f"Muestra {i} de {len(df_list)}")
-            x, y = df_list.pop(0)            
-            x = {k: v for k, v in enumerate(x)}    
+        for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing {dataset}")):
+            x = {k: v for k, v in enumerate(x)}
             modelo.learn_one(x, y)
         end = time.perf_counter()
         tiempos[dataset] = len(df) / (end - start)
