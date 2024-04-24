@@ -23,7 +23,7 @@ def read_dataset(name: str):
     return dataset
 
 def main():
-    num_runs = 10  # Ejecutar el experimento 30 veces
+    num_runs = 3  # Ejecutar el experimento 30 veces
     datasets = ["electricity.csv", "http_proc.csv", "2electricity.csv"]
     resultados = {key: {'cap_ejec': [], 'tams': []} for key in datasets}
 
