@@ -1,0 +1,9 @@
+Capacidad de ejecución promedio
+electricity.csv: 497.3330259807748
+http_proc.csv: 445.5748741508076
+2electricity.csv: 3960.674318629927
+
+Tamaños promedios de los conjuntos de prototipos generados
+electricity.csv: 1317.0
+http_proc.csv: 1603.0
+2electricity.csv: 109.0
