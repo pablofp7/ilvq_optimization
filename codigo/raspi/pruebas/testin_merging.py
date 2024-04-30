@@ -6,10 +6,7 @@ if ruta_directorio_main not in sys.path:
 
 import numpy as np
 import pandas as pd     
-from prototypes import XuILVQ
-import pickle
-from matplotlib import pyplot as plt
-from scipy.interpolate import UnivariateSpline
+from prototypes_mod import XuILVQ
 
 
 
@@ -76,3 +73,6 @@ prototipos_orig = modelo.buffer.prototypes
 print(f"Tipo de prototipos: {type(prototipos_orig)}")
 print(f"Numero de prototipos: {len(prototipos_orig)}")
 print(f"Formato de los prototipos: {prototipos_orig}")
+
+
+
