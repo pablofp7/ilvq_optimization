@@ -57,7 +57,7 @@ class XuILVQ(BasePrototypes, base.Classifier):
             alpha_winner: float = 0.9,
             alpha_runner: float = 0.1,
             age_old: int = 400,
-            gamma: int = 150,
+            gamma: int = 10000000000,
             n_prototypes: int = 5
     ):
         super().__init__()

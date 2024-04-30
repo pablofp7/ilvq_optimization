@@ -7,6 +7,8 @@ if ruta_directorio_main not in sys.path:
 import numpy as np
 import pandas as pd     
 from prototypes_mod import XuILVQ
+from sklearn.cluster import DBSCAN
+
 
 
 
@@ -23,26 +25,29 @@ def read_dataset():
     return dataset
 
 
-def cuantizacion_dinamica(modelo, porcentaje_minimo, porcentaje_maximo, limite, factor_inicial=0.1):
-    factor_redondeo = factor_inicial
-    prototipos_cuantizados = cuantizacion_custom(prototipos, factor_redondeo)
-    num_prototipos = len(prototipos_cuantizados)
-    porcentaje_prototipos = num_prototipos / len(prototipos) * 100
-    
-    while porcentaje_prototipos < porcentaje_minimo or porcentaje_prototipos > porcentaje_maximo:
-        if porcentaje_prototipos < porcentaje_minimo:
-            factor_redondeo *= 0.9  # Reducir el factor de redondeo para hacer la cuantización más fina
-        elif porcentaje_prototipos > porcentaje_maximo:
-            factor_redondeo *= 1.1  # Aumentar el factor de redondeo para hacer la cuantización más gruesa
-            
-        prototipos_cuantizados = cuantizacion_custom(prototipos, factor_redondeo)
-        num_prototipos = len(prototipos_cuantizados)
-        porcentaje_prototipos = num_prototipos / len(prototipos) * 100
+def dbscan_prototypes(prototypes, max_prototypes=100, target_range=(80, 90), eps_initial=0.3):
+    current_count = prototypes.shape[0]
+    eps = eps_initial
+
+    # Realizar ajustes hasta que el número de prototipos esté dentro del rango deseado
+    while not (target_range[0] <= current_count <= target_range[1]):
+        # Aplicar DBSCAN con los parámetros actuales
+        dbscan = DBSCAN(eps=eps, min_samples=1)
+        labels = dbscan.fit_predict(prototypes)
+
+        # Nuevos prototipos como centroides de los clusters formados
+        unique_labels = np.unique(labels)
+        new_prototypes = np.array([prototypes[labels == label].mean(axis=0) for label in unique_labels if label != -1])
+
+        current_count = new_prototypes.shape[0]
         
-        if num_prototipos >= limite:
-            break  # Salir del bucle si se alcanza el límite máximo de prototipos
-        
-    return prototipos_cuantizados
+        # Ajustar eps según si hay más prototipos de lo deseado o menos
+        if current_count > target_range[1]:
+            eps *= 1.1  # Hacer los clusters más grandes (menos clusters)
+        elif current_count < target_range[0]:
+            eps /= 1.1  # Hacer los clusters más pequeños (más clusters)
+
+    return new_prototypes
 
     
 
