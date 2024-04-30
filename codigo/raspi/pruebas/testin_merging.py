@@ -23,9 +23,27 @@ def read_dataset():
     return dataset
 
 
-def fusion(modelo: XuILVQ):
+def cuantizacion_dinamica(modelo, porcentaje_minimo, porcentaje_maximo, limite, factor_inicial=0.1):
+    factor_redondeo = factor_inicial
+    prototipos_cuantizados = cuantizacion_custom(prototipos, factor_redondeo)
+    num_prototipos = len(prototipos_cuantizados)
+    porcentaje_prototipos = num_prototipos / len(prototipos) * 100
     
-    return
+    while porcentaje_prototipos < porcentaje_minimo or porcentaje_prototipos > porcentaje_maximo:
+        if porcentaje_prototipos < porcentaje_minimo:
+            factor_redondeo *= 0.9  # Reducir el factor de redondeo para hacer la cuantización más fina
+        elif porcentaje_prototipos > porcentaje_maximo:
+            factor_redondeo *= 1.1  # Aumentar el factor de redondeo para hacer la cuantización más gruesa
+            
+        prototipos_cuantizados = cuantizacion_custom(prototipos, factor_redondeo)
+        num_prototipos = len(prototipos_cuantizados)
+        porcentaje_prototipos = num_prototipos / len(prototipos) * 100
+        
+        if num_prototipos >= limite:
+            break  # Salir del bucle si se alcanza el límite máximo de prototipos
+        
+    return prototipos_cuantizados
+
     
 
 
