@@ -256,6 +256,9 @@ results.append({
 results_df = pd.DataFrame(results)
 print(results_df)
 
+with open("results_test_limit.txt", "w") as f:
+    f.write(results_df.to_string())
+
     
 
 
