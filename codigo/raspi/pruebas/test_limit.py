@@ -49,8 +49,6 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
         new_prototypes = {}
         next_prototype_id = 1
 
-        # eps = float(input("Introduce un valor de eps:"))
-        
         for label in set(proto['y'] for proto in original_prototypes.values()):
             label_prototypes = np.array([proto['x'] for proto in original_prototypes.values() if proto['y'] == label])
             if label_prototypes.size == 0:
@@ -63,7 +61,8 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
                 cluster_indices = np.where(labels == cluster_id)[0]
                 cluster_protos = [label_prototypes[i] for i in cluster_indices]
                 centroid = np.mean(cluster_protos, axis=0)
-                sum_m = sum(original_prototypes[i+1]['m'] for i in cluster_indices)
+
+                sum_m = sum(original_prototypes[list(original_prototypes.keys())[i]]['m'] for i in cluster_indices)
 
                 new_prototypes[next_prototype_id] = {
                     'x': centroid,
