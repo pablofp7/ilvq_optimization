@@ -7,7 +7,6 @@ if ruta_directorio_main not in sys.path:
 import numpy as np
 import pandas as pd     
 from prototypes_mod import XuILVQ
-from prototypes import XuILVQ
 from sklearn.cluster import DBSCAN
 from tqdm import tqdm
 
