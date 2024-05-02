@@ -119,7 +119,9 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
         
         if iterations > 100:
             print("Max iterations reached. Stopping.")
-            break
+            with open("max_it_reached.txt", "w") as f:
+                f.write("Max iterations reached. Stopping.")
+            exit()
         
         iterations += 1
 
