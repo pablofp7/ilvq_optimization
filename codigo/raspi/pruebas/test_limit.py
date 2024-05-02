@@ -9,6 +9,7 @@ import pandas as pd
 from prototypes_mod import XuILVQ
 from sklearn.cluster import DBSCAN
 from tqdm import tqdm
+import time
 
 
 
@@ -173,6 +174,10 @@ for LIMIT in limit_values:
 
         modelo = XuILVQ()
         matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
+        train_time = 0
+        prediction_time = 0
+        train_operations = 0
+        prediction_operations = 0
 
         for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, Target={target_range}")):
             x = {k: v for k, v in enumerate(x)}
@@ -182,7 +187,13 @@ for LIMIT in limit_values:
                 rebuild_neighborhoods(modelo)
 
             prediction = modelo.predict_one(x)
+            prediction_time += time.time() - start_time
+            prediction_operations += 1
+
+            start_time = time.time()
             modelo.learn_one(x, y)
+            train_time += time.time() - start_time
+            train_operations += 1
 
             if isinstance(prediction, dict):
                 prediction = prediction.get(1.0, 0.0)
@@ -202,12 +213,15 @@ for LIMIT in limit_values:
         recall = matriz_conf["TP"] / (matriz_conf["TP"] + matriz_conf["FN"]) if matriz_conf["TP"] + matriz_conf["FN"] > 0 else 0
         f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
 
+        avg_train_time = train_time / train_operations if train_operations else 0
+        avg_prediction_time = prediction_time / prediction_operations if prediction_operations else 0
+
         results.append({
             "LIMIT": LIMIT,
             "Target Range": target_range,
-            "Precision": precision,
-            "Recall": recall,
-            "F1 Score": f1
+            "F1 Score": f1,
+            "Avg Time Train": avg_train_time,
+            "Avg Time Prediction": avg_prediction_time
         })
 
         print(f"Finished: LIMIT={LIMIT}, Target={target_range}, Precision={precision}, Recall={recall}, F1={f1}")
@@ -219,11 +233,22 @@ df_list = [(fila[:-1], fila[-1]) for fila in df.values]
 
 modelo = XuILVQ(gamma=150)
 matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
+train_time = 0
+prediction_time = 0
+train_operations = 0
+prediction_operations = 0
+
 for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, Target=ORIGINAL")):
     x = {k: v for k, v in enumerate(x)}
 
     prediction = modelo.predict_one(x)
+    prediction_time += time.time() - start_time
+    prediction_operations += 1
+
+    start_time = time.time()
     modelo.learn_one(x, y)
+    train_time += time.time() - start_time
+    train_operations += 1
 
     if isinstance(prediction, dict):
         prediction = prediction.get(1.0, 0.0)
@@ -243,15 +268,20 @@ precision = matriz_conf["TP"] / (matriz_conf["TP"] + matriz_conf["FP"]) if matri
 recall = matriz_conf["TP"] / (matriz_conf["TP"] + matriz_conf["FN"]) if matriz_conf["TP"] + matriz_conf["FN"] > 0 else 0
 f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 else 0
 
-results.append({
-    "LIMIT": "BASE",
-    "Target Range": "ORIGINAL",
-    "Precision": precision,
-    "Recall": recall,
-    "F1 Score": f1
+avg_train_time = train_time / train_operations if train_operations else 0
+avg_prediction_time = prediction_time / prediction_operations if prediction_operations else 0
+
+last_results = []
+last_results.append({
+    "LIMIT": "ORIGINAL",
+    "Target Range": "BASE",
+    "F1 Score": f1,
+    "Avg Time Train": avg_train_time,
+    "Avg Time Prediction": avg_prediction_time
 })
 
-
+last_results.extend(results)
+results = last_results
 
 # Optionally, convert results to a DataFrame for better visualization
 results_df = pd.DataFrame(results)
