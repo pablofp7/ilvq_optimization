@@ -175,10 +175,18 @@ class PrototypeBuffer:
     def prototypes(self):
         return self._prototypes
     
+    @property
+    def edges(self):
+        return self._edge_age.keys()
+    
     @prototypes.setter
     def prototypes(self, prototypes):
         self._prototypes = prototypes
 
     @property
-    def edges(self):
-        return self._edge_age.keys()
+    def edges_whole(self):
+        return self._edge_age
+
+    @edges.setter
+    def edges(self, edges):
+        self._edge_age = edges
