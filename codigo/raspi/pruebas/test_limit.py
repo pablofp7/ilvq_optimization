@@ -178,13 +178,30 @@ for LIMIT in limit_values:
         prediction_time = 0
         train_operations = 0
         prediction_operations = 0
+        total_dbscan_time = 0
+        total_rebuild_time = 0
+        total_iteration_time = 0
+        iteration_count = 0
+        dbscan_count = 0
+        rebuild_count = 0
 
         for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, Target={target_range}")):
+            start_iteration_time = time.perf_counter()
+            
             x = {k: v for k, v in enumerate(x)}
 
             if len(modelo.buffer.prototypes) > LIMIT:
+                start_dbscan = time.perf_counter()
                 dbscan_prototypes(modelo, max_prototypes=LIMIT, target_range=target_range)
+                fin_dbscan = time.perf_counter() - start_dbscan
+                total_dbscan_time += fin_dbscan
+                dbscan_count += 1
+                 
+                start_rebuild = time.perf_counter()
                 rebuild_neighborhoods(modelo)
+                fin_rebuild = time.perf_counter() - start_rebuild
+                total_rebuild_time += fin_rebuild
+                rebuild_count += 1
 
             start_time = time.perf_counter()
             prediction = modelo.predict_one(x)
@@ -209,6 +226,9 @@ for LIMIT in limit_values:
                     matriz_conf["FP"] += 1
                 else:
                     matriz_conf["FN"] += 1
+                    
+            iteration_time = time.perf_counter() - start_iteration_time
+            total_iteration_time += iteration_time
 
         precision = matriz_conf["TP"] / (matriz_conf["TP"] + matriz_conf["FP"]) if matriz_conf["TP"] + matriz_conf["FP"] > 0 else 0
         recall = matriz_conf["TP"] / (matriz_conf["TP"] + matriz_conf["FN"]) if matriz_conf["TP"] + matriz_conf["FN"] > 0 else 0
@@ -216,13 +236,19 @@ for LIMIT in limit_values:
 
         avg_train_time = train_time / train_operations if train_operations else 0
         avg_prediction_time = prediction_time / prediction_operations if prediction_operations else 0
+        avg_dbscan_time = total_dbscan_time / dbscan_count if dbscan_count else 0
+        avg_rebuild_time = total_rebuild_time / rebuild_count if rebuild_count else 0
+        avg_iteration_time = total_iteration_time / len(df_list)
 
         results.append({
             "LIMIT": LIMIT,
             "Target Range": target_range,
             "F1 Score": f1,
             "Avg Time Train": avg_train_time,
-            "Avg Time Prediction": avg_prediction_time
+            "Avg Time Prediction": avg_prediction_time,
+            "Avg Time DBSCAN": avg_dbscan_time,
+            "Avg Time Rebuild": avg_rebuild_time,
+            "Avg Time Iteration": avg_iteration_time
         })
 
         print(f"Finished: LIMIT={LIMIT}, Target={target_range}, Precision={precision}, Recall={recall}, F1={f1}")
@@ -238,8 +264,10 @@ train_time = 0
 prediction_time = 0
 train_operations = 0
 prediction_operations = 0
+count_iterations = 0
 
 for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, Target=ORIGINAL")):
+    start_iteration_time = time.perf_counter()
     x = {k: v for k, v in enumerate(x)}
 
     prediction = modelo.predict_one(x)
@@ -264,6 +292,10 @@ for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, T
             matriz_conf["FP"] += 1
         else:
             matriz_conf["FN"] += 1
+    
+    iteration_time = time.perf_counter() - start_iteration_time
+    count_iterations += 1
+    
 
 precision = matriz_conf["TP"] / (matriz_conf["TP"] + matriz_conf["FP"]) if matriz_conf["TP"] + matriz_conf["FP"] > 0 else 0
 recall = matriz_conf["TP"] / (matriz_conf["TP"] + matriz_conf["FN"]) if matriz_conf["TP"] + matriz_conf["FN"] > 0 else 0
@@ -271,19 +303,23 @@ f1 = 2 * precision * recall / (precision + recall) if precision + recall > 0 els
 
 avg_train_time = train_time / train_operations if train_operations else 0
 avg_prediction_time = prediction_time / prediction_operations if prediction_operations else 0
+avg_dbscan_time = 0
+avg_rebuild_time = 0
+avg_iteration_time = iteration_time / count_iterations
 
-last_results = []
-last_results.append({
-    "LIMIT": "ORIGINAL",
-    "Target Range": "BASE",
-    "F1 Score": f1,
-    "Avg Time Train": avg_train_time,
-    "Avg Time Prediction": avg_prediction_time
-})
 
-last_results.extend(results)
-sorted_results = sorted(last_results, key=lambda x: x['F1 Score'], reverse=True)
-results = sorted_results
+results.append({
+        "LIMIT": "ORIGINAL",
+        "Target Range": "BASE",
+        "F1 Score": f1,
+        "Avg Time Train": avg_train_time,
+        "Avg Time Prediction": avg_prediction_time,
+        "Avg Time DBSCAN": avg_dbscan_time,
+        "Avg Time Rebuild": avg_rebuild_time,
+        "Avg Time Iteration": avg_iteration_time
+    })
+
+results = sorted(results, key=lambda x: x['F1 Score'], reverse=True)
 
 # Optionally, convert results to a DataFrame for better visualization
 results_df = pd.DataFrame(results)
