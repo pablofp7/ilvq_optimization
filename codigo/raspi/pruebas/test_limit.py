@@ -186,13 +186,14 @@ for LIMIT in limit_values:
                 dbscan_prototypes(modelo, max_prototypes=LIMIT, target_range=target_range)
                 rebuild_neighborhoods(modelo)
 
+            start_time = time.perf_counter()
             prediction = modelo.predict_one(x)
-            prediction_time += time.time() - start_time
+            prediction_time += time.perf_counter() - start_time
             prediction_operations += 1
 
-            start_time = time.time()
+            start_time = time.perf_counter()
             modelo.learn_one(x, y)
-            train_time += time.time() - start_time
+            train_time += time.perf_counter() - start_time
             train_operations += 1
 
             if isinstance(prediction, dict):
@@ -242,12 +243,12 @@ for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, T
     x = {k: v for k, v in enumerate(x)}
 
     prediction = modelo.predict_one(x)
-    prediction_time += time.time() - start_time
+    prediction_time += time.perf_counter() - start_time
     prediction_operations += 1
 
-    start_time = time.time()
+    start_time = time.perf_counter()
     modelo.learn_one(x, y)
-    train_time += time.time() - start_time
+    train_time += time.perf_counter() - start_time
     train_operations += 1
 
     if isinstance(prediction, dict):
@@ -281,7 +282,8 @@ last_results.append({
 })
 
 last_results.extend(results)
-results = last_results
+sorted_results = sorted(last_results, key=lambda x: x['F1 Score'], reverse=True)
+results = sorted_results
 
 # Optionally, convert results to a DataFrame for better visualization
 results_df = pd.DataFrame(results)
