@@ -1,3 +1,0 @@
-      LIMIT Target Range  F1 Score  Avg Time Train  Avg Time Prediction  Avg Time DBSCAN  Avg Time Rebuild  Avg Time Iteration
-0  ORIGINAL         BASE    0.7450        0.001739             0.001583         0.000000          0.000000            0.003327
-1        50     (80, 90)    0.6866        0.000150             0.000113         0.012454          0.004081            0.000749
