@@ -27,7 +27,7 @@ def read_dataset():
     return dataset
 
 
-def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_initial=0.0001):
+def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_initial=0.000001):
     original_count = len(modelo.buffer.prototypes)
     if original_count <= max_prototypes:
         print("No need to run DBSCAN.")
@@ -39,12 +39,17 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
     min_samples = 1
     iterations = 0
     previous_value = original_count
+    ajuste_grueso = True
+    
+    if eps_initial is None:
+        eps_initial = 0.000001
+
     eps = eps_initial
     last_eps = eps_initial
-    
-    ajuste_grueso = True
     lower_eps = eps_initial
     upper_eps = eps_initial
+        
+
 
     while True:
         new_prototypes = {}
@@ -129,6 +134,7 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
 
     # print(f"Conjunto de prototipos antes: {modelo.buffer.prototypes}")
     modelo.buffer.prototypes = new_prototypes
+    return eps
     # print(f"Conjunto de prototipos despues: {modelo.buffer.prototypes}")
     
     
@@ -184,6 +190,8 @@ for LIMIT in limit_values:
         iteration_count = 0
         dbscan_count = 0
         rebuild_count = 0
+        
+        prev_eps = None
 
         for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, Target={target_range}")):
             start_iteration_time = time.perf_counter_ns()
@@ -192,7 +200,7 @@ for LIMIT in limit_values:
 
             if len(modelo.buffer.prototypes) > LIMIT:
                 start_dbscan = time.perf_counter_ns()
-                dbscan_prototypes(modelo, max_prototypes=LIMIT, target_range=target_range)
+                prev_eps = dbscan_prototypes(modelo, max_prototypes=LIMIT, target_range=target_range, eps_initial=prev_eps)
                 fin_dbscan = time.perf_counter_ns() - start_dbscan
                 total_dbscan_time += fin_dbscan
                 dbscan_count += 1
