@@ -79,10 +79,10 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
                 next_prototype_id += 1
 
         current_prototype_count = len(new_prototypes)
-        # print(f"Prototypes after DBSCAN iteration {iterations}: {current_prototype_count}")
-
+        print(f"Prototypes after DBSCAN iteration {iterations}: {current_prototype_count}. Objective: {target_min} - {target_max}")
+        
         if target_min <= current_prototype_count <= target_max:
-            # print(f"Prototypes within target range after {iterations} iterations. {current_prototype_count} prototypes.")
+            print(f"Prototypes within target range after {iterations} iterations. {current_prototype_count} prototypes.")
             break
         
         if ajuste_grueso:
@@ -95,19 +95,23 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
                     ajuste_grueso = False
                     upper_eps = eps
                     lower_eps = last_eps
-                    
-                        
+                    # if lower_eps == upper_eps:
+                    #     lower_eps = upper_eps / 10
+
                 previous_value = current_prototype_count
 
             elif current_prototype_count < target_min:
                 if previous_value < target_min:
                     last_eps = eps
                     eps /= 10
-                    # print(f"Ajuste grueso, eps = {eps}. Valores condi: Proto tras dbscan: {current_prototype_count}, target_min: {target_min}. Previous value: {previous_value}")
+                    print(f"Ajuste grueso, eps = {eps}. Valores condi: Proto tras dbscan: {current_prototype_count}, target_min: {target_min}. Previous value: {previous_value}")
                 else:
                     ajuste_grueso = False
                     lower_eps = eps
                     upper_eps = last_eps
+                    # if lower_eps == upper_eps:
+                    #     upper_eps = lower_eps * 10
+                    print(f"AKI")
         
                 previous_value = current_prototype_count
         
@@ -115,12 +119,13 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
                 
             if current_prototype_count > target_max:
                 upper_eps = eps
-                eps = (lower_eps + upper_eps) / 2
-                # print(f"Ajuste fino, eps = {eps}. Valores condi: Proto tras dbscan: {current_prototype_count}, target_max: {target_max}. Previous value: {previous_value}")
             elif current_prototype_count < target_min:
                 lower_eps = eps
-                eps = (lower_eps + upper_eps) / 2
-                # print(f"Ajuste fino, eps = {eps}. Valores condi: Proto tras dbscan: {current_prototype_count}, target_min: {target_min}. Previous value: {previous_value}")
+            
+            new_eps = (lower_eps + upper_eps) / 2
+            if new_eps == eps:
+                ajuste_grueso = True
+            eps = new_eps
                 
         
         if iterations > 100:
@@ -131,10 +136,9 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
         
         iterations += 1
 
-
     # print(f"Conjunto de prototipos antes: {modelo.buffer.prototypes}")
     modelo.buffer.prototypes = new_prototypes
-    return eps
+    return eps 
     # print(f"Conjunto de prototipos despues: {modelo.buffer.prototypes}")
     
     
@@ -192,6 +196,7 @@ for LIMIT in limit_values:
         rebuild_count = 0
         
         prev_eps = None
+        aux_eps = None
 
         for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with LIMIT={LIMIT}, Target={target_range}")):
             start_iteration_time = time.perf_counter_ns()
@@ -200,7 +205,8 @@ for LIMIT in limit_values:
 
             if len(modelo.buffer.prototypes) > LIMIT:
                 start_dbscan = time.perf_counter_ns()
-                prev_eps = dbscan_prototypes(modelo, max_prototypes=LIMIT, target_range=target_range, eps_initial=prev_eps)
+                aux_eps = dbscan_prototypes(modelo, max_prototypes=LIMIT, target_range=target_range, eps_initial=prev_eps)
+                prev_eps = aux_eps
                 fin_dbscan = time.perf_counter_ns() - start_dbscan
                 total_dbscan_time += fin_dbscan
                 dbscan_count += 1
