@@ -82,7 +82,7 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
         # print(f"Prototypes after DBSCAN iteration {iterations}: {current_prototype_count}. Objective: {target_min} - {target_max}")
         
         if target_min <= current_prototype_count <= target_max:
-            print(f"Prototypes within target range after {iterations} iterations. {current_prototype_count} prototypes.")
+            # print(f"Prototypes within target range after {iterations} iterations. {current_prototype_count} prototypes.")
             break
         
         if ajuste_grueso:
