@@ -79,7 +79,7 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
                 next_prototype_id += 1
 
         current_prototype_count = len(new_prototypes)
-        print(f"Prototypes after DBSCAN iteration {iterations}: {current_prototype_count}. Objective: {target_min} - {target_max}")
+        # print(f"Prototypes after DBSCAN iteration {iterations}: {current_prototype_count}. Objective: {target_min} - {target_max}")
         
         if target_min <= current_prototype_count <= target_max:
             print(f"Prototypes within target range after {iterations} iterations. {current_prototype_count} prototypes.")
@@ -95,8 +95,6 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
                     ajuste_grueso = False
                     upper_eps = eps
                     lower_eps = last_eps
-                    # if lower_eps == upper_eps:
-                    #     lower_eps = upper_eps / 10
 
                 previous_value = current_prototype_count
 
@@ -104,14 +102,11 @@ def dbscan_prototypes(modelo, max_prototypes=100, target_range=(80, 90), eps_ini
                 if previous_value < target_min:
                     last_eps = eps
                     eps /= 10
-                    print(f"Ajuste grueso, eps = {eps}. Valores condi: Proto tras dbscan: {current_prototype_count}, target_min: {target_min}. Previous value: {previous_value}")
+                    # print(f"Ajuste grueso, eps = {eps}. Valores condi: Proto tras dbscan: {current_prototype_count}, target_min: {target_min}. Previous value: {previous_value}")
                 else:
                     ajuste_grueso = False
                     lower_eps = eps
                     upper_eps = last_eps
-                    # if lower_eps == upper_eps:
-                    #     upper_eps = lower_eps * 10
-                    print(f"AKI")
         
                 previous_value = current_prototype_count
         
