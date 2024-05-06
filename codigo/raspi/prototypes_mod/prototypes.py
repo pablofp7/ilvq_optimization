@@ -154,8 +154,11 @@ class PrototypeBuffer:
         old_edges = {edge for edge, age in self._edge_age.items() if age > age_old}
         for s1, s2 in old_edges:
             del self._edge_age[(s1, s2)]  # removes the edge from the age dictionary
-            self._prototypes[s1]['neighbors'].remove(s2)  # removes s2 as a neighbor of s1
-            self._prototypes[s2]['neighbors'].remove(s1)  # removes s1 as a neighbor of s2
+            if s2 in self._prototypes[s1]['neighbors']:
+                self._prototypes[s1]['neighbors'].remove(s2)  # removes s2 as a neighbor of s1
+            if s1 in self._prototypes[s2]['neighbors']:
+                self._prototypes[s2]['neighbors'].remove(s1)  # removes s1 as a neighbor of s2
+
 
     def denoise(self) -> None:
         """
