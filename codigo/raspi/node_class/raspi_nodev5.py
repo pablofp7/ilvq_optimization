@@ -422,8 +422,7 @@ class RaspiNodev5:
                 # cola_protos.clear(id_recibido, call_method = "RECEIVING. Clearing neighbour queue.")
                 # cola_protos.extendleft(id_recibido, protos, call_method = "RECEIVING. Extending left neighbour queue.")
                 
-                cola_especifica = cola_protos[id_recibido][0]
-                n_before = len(cola_especifica[0]) if cola_especifica else 0
+                n_before = cola_protos.get_length(id_recibido, call_method = "RECEIVING. Getting the number of protos of neighbour.")
                 protos_descartados_local += n_before
                 cola_protos.append(id_recibido, protos, call_method ="RECEIVING. Appending protos to neighbour queue.")
 
