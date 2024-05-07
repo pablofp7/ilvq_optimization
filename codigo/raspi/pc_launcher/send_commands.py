@@ -29,5 +29,5 @@ def send_commands(hosts, commands, username='pablo', password='123', sudo_passwo
 if __name__ == "__main__":
     hosts = [f"nodo{i}.local" for i in range(5)]
     # Define the list of commands you want to execute on the Raspberry Pis
-    commands = ['sudo apt update', 'echo "Hello from Raspberry Pi!"']
+    commands = ['echo "Hello from Raspberry Pi!"']
     send_commands(hosts, commands)
