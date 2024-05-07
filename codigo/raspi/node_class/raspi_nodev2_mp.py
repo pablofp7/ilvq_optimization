@@ -378,7 +378,7 @@ class RaspiNodev2_mp:
                 protos = data["protos"]
                 # print(f"[NODO {id}] Ha recibido de [NODO {id_recibido}]. len={len(protos)}: {protos}.") if id == 0 else None
                 
-                # print(f"[NODO {id}] Recibido {len(protos)} prototipos de: NODO {id_recibido}.") 
+                print(f"[NODO {id}] Recibido {len(protos)} prototipos de: NODO {id_recibido}.")
                             
                 # Procesar los prototipos recibidos
                 # Por ejemplo, añadir los prototipos recibidos a la cola correspondiente para su procesamiento
@@ -399,7 +399,7 @@ class RaspiNodev2_mp:
                         tam_lotes_recibidos.append(0, item)
                         
                     print(f"[NODO {id}] ha terminado de recibir. Vuelve al join.\n"
-                          f"Fin proceso: {fin_proceso.is_set()}. Error: {again}")
+                          f"Fin recibir = {fin_proceso.is_set()}. Excepción = {again}.")
                     return
                 # else:
                 #     print(f"El nodo {id} lleva {timeout_s} segundos esperando. Pero no ha acabado de recibir")

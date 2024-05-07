@@ -58,7 +58,10 @@ class XuILVQ(BasePrototypes, base.Classifier):
             alpha_runner: float = 0.1,
             age_old: int = 400,
             gamma: int = 10000000000,
-            n_prototypes: int = 5
+            n_prototypes: int = 5,
+            max_pset_size: int = 100,
+            target_size: tuple = (80, 90),
+            eps: float =  0.000001
     ):
         super().__init__()
         self.alpha_winner = alpha_winner
@@ -66,6 +69,9 @@ class XuILVQ(BasePrototypes, base.Classifier):
         self.age_old = age_old
         self.gamma = gamma
         self.n_prototypes = n_prototypes
+        self.max_pset_size = max_pset_size
+        self.target_size = target_size
+        self.eps = eps
 
     def learn_one(self, x: dict, y) -> base.Classifier:
         """
@@ -110,8 +116,14 @@ class XuILVQ(BasePrototypes, base.Classifier):
             self.alpha_winner = 1/(self.buffer.prototypes[s1]['m'])  # adaptive learning rate winner
             self.alpha_runner = 1/(100 * self.buffer.prototypes[s1]['m'])  # adaptive learning rate runner-up
 
+            if len(self.buffer) > self.max_pset_size:
+                self.eps = self.buffer.dbscan_prototypes(max_prototypes=self.max_pset_size, target_range=self.target_size, eps_initial=self.eps)
+                self.buffer.rebuild_neighborhoods()
+
+
             if current_epoch % self.gamma == 0:
                 self.buffer.denoise()
+            
 
         return self
 
