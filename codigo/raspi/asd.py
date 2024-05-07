@@ -2,14 +2,16 @@ import numpy as np
 
 
 def parsear_parametros(mensaje):
+    print(f"Se van a parsear los parametros: {mensaje}")
     partes = mensaje.split('_')
     
     dataset = partes[0]
     s_value = int(partes[1][1:])
     t_value = float(partes[2][1:])
     limite = int(partes[3][5:])
-    inf_range = float(partes[4][5:7])
-    sup_range = float(partes[4][8:10])
+    ranges = partes[4].split('-')
+    inf_range = float(ranges[0][5:])
+    sup_range = float(ranges[1][:])
     target_range = (inf_range, sup_range)
     lim_range_searched = (limite, target_range)
     iteracion = int(partes[5][2:])   
@@ -57,7 +59,7 @@ lim_range = [
         ] 
         
 
-mensaje = "COMENZAR elec_s1_T0.0_limit50_range50-60_it0"
+mensaje = "COMENZAR elec_s1_T0.0_limit500_range72.5-77.5_it0_nodo1"
 _, params = mensaje.split(' ', 1)
 parsed = parsear_parametros(params)
 

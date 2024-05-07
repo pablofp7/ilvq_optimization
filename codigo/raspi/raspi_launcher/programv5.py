@@ -210,7 +210,7 @@ def parsear_parametros(mensaje):
     t_value = float(partes[2][1:])
     limite = int(partes[3][5:])
     ranges = partes[4].split('-')
-    inf_range = float(ranges[0][5:7])
+    inf_range = float(ranges[0][5:])
     sup_range = float(ranges[1][:])
     target_range = (inf_range, sup_range)
     lim_range_searched = (limite, target_range)
