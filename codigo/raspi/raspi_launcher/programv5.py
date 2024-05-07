@@ -204,18 +204,22 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 def parsear_parametros(mensaje):
     partes = mensaje.split('_')
     
-    dataset = partes[0]
-    s_value = int(partes[1][1:])
-    t_value = float(partes[2][1:])
-    limit = int(partes[3][5:])
-    # Assume that target_range is sent as two separate float values joined by a hyphen
-    target_range_values = partes[4][6:].split('-')
+    dataset = partes[0]  # 'elec'
+    s_value = int(partes[1][1:])  # Extract '1' from 's1'
+    t_value = float(partes[2][1:])  # Extract '0.0' from 'T0.0'
+    limit = int(partes[3][5:])  # Extract '250' from 'limit250'
+    target_range_values = partes[4][6:].split('-')  # Split the 'range50-60' into ['50', '60']
     target_range = (float(target_range_values[0]), float(target_range_values[1]))
-    iteration = int(partes[5][2:])
+    iteration = int(partes[5][2:])  # Extract '31' from 'it31'
 
-    limit_target_index = lim_range.index((limit, tuple(target_range)))
+    # Find indices of the values in their respective lists
+    dataset_index = datasets.index(dataset)
+    s_index = S.index(s_value)
+    t_index = np.where(np.isclose(T, t_value))[0][0]
+    limit_target_index = lim_range.index((limit, target_range))  # Find index of limit and target_range tuple
 
-    return (iteration, dataset, s_value, t_value, limit, target_range)
+    return (iteration, dataset_index, s_index, t_index, limit_target_index)
+
 
 
 def indices_a_parametros(indices):
