@@ -205,20 +205,18 @@ def parsear_parametros(mensaje):
     partes = mensaje.split('_')
     
     dataset = partes[0]
-    s_value = int(partes[1][1:])  # Extract '1' from 's1'
-    t_value = float(partes[2][1:])  # Extract '0.0' from 'T0.0'
-    limit = int(partes[3][5:])  # Extract '250' from 'limit250'
-    target_range = tuple(map(float, partes[4][6:].split('-')))  # Extract and convert '(50, 60)' from 'range50-60'
-    iteration = int(partes[5][2:])  # Extract '31' from 'it31'
+    s_value = int(partes[1][1:])
+    t_value = float(partes[2][1:])
+    limit = int(partes[3][5:])
+    # Assume that target_range is sent as two separate float values joined by a hyphen
+    target_range_values = partes[4][6:].split('-')
+    target_range = (float(target_range_values[0]), float(target_range_values[1]))
+    iteration = int(partes[5][2:])
 
-    # Find indices of values in their respective lists
-    dataset_index = datasets.index(dataset)
-    s_index = S.index(s_value)
-    t_index = np.where(np.isclose(T, t_value))[0][0]
-    # Directly find the index for limit and target_range in lim_range
-    limit_target_index = lim_range.index((limit, target_range))
+    limit_target_index = lim_range.index((limit, tuple(target_range)))
 
-    return (iteration, dataset_index, s_index, t_index, limit_target_index)
+    return (iteration, dataset, s_value, t_value, limit, target_range)
+
 
 def indices_a_parametros(indices):
     iteration, dataset_index, s_index, t_index, limit_target_index = indices
