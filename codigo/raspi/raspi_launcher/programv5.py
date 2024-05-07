@@ -341,7 +341,7 @@ if __name__ == "__main__":
                             tiempo_inicio = time.perf_counter()
                             print(f"[ITERATION] Pre-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}, Limit: {limit}, Target: {target_range}")
 
-                            parametros = f"{dataset}_s{s}_T{t}_limit{limit}_target{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
+                            parametros = f"{dataset}_s{s}_T{t}_limit{limit}_range{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
                             nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
                             
                             if os.path.isfile(nombre_archivo):
@@ -356,7 +356,7 @@ if __name__ == "__main__":
                             t = T[t_idx]
                             limit, target_range = lim_range[lim_range_idx]
                                     
-                            new_parametros = f"{dataset}_s{s}_T{t}_limit{limit}_target{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
+                            new_parametros = f"{dataset}_s{s}_T{t}_limit{limit}_range{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
                             nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.txt"
 
                             print(f"[ITERATION] Post-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}, Limit: {limit}, Target: {target_range}")
