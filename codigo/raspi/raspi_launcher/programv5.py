@@ -202,6 +202,7 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
 
 def parsear_parametros(mensaje):
+    print(f"Se van a parsear los parametros: {mensaje}")
     partes = mensaje.split('_')
     
     dataset = partes[0]
