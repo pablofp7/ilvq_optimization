@@ -347,7 +347,7 @@ if __name__ == "__main__":
                                 continue
 
                             # Synchronize here
-                            i_iter, dataset_idx, s_idx, t_idx = sincronizar()
+                            i_iter, dataset_idx, s_idx, t_idx, lim_range_idx = sincronizar()
                             dataset = datasets[dataset_idx]
                             s = S[s_idx]
                             t = T[t_idx]
