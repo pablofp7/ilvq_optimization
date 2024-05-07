@@ -23,7 +23,7 @@ def send_command(hosts, command, username='pablo', password='123', sudo_password
                 session.send(sudo_password + '\n')  # Send the sudo password
 
             # Collect the output
-            output = buffer + session.recv(buff_size, timeout=timeout).decode('utf-8')
+            output = buffer + session.recv(buff_size).decode('utf-8')
             print(f"Output from {host}:")
             print(output)
 
