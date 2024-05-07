@@ -6,8 +6,8 @@ if ruta_directorio_main not in sys.path:
 
 import numpy as np
 import pandas as pd     
-from prototypes_mod import XuILVQ
-from sklearn.cluster import DBSCAN
+from prototypes_mod import XuILVQ as MiILVQ
+from prototypes import XuILVQ
 from tqdm import tqdm
 import time
 
@@ -42,9 +42,8 @@ for LIMIT in limit_values:
     for target_range in target_ranges:
         df = read_dataset()
         df_list = [(fila[:-1], fila[-1]) for fila in df.values]
-        # df_list = df_list[:20000]  # Using a subset for quicker runs
 
-        modelo = XuILVQ(max_pset_size=LIMIT, target_size=target_range)
+        modelo = MiILVQ(max_pset_size=LIMIT, target_size=target_range)
         matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         train_time = 0
         prediction_time = 0
@@ -116,7 +115,7 @@ for LIMIT in limit_values:
 df = read_dataset()
 df_list = [(fila[:-1], fila[-1]) for fila in df.values]
 
-modelo = XuILVQ(gamma=150)
+modelo = XuILVQ()
 matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
 train_time = 0
 prediction_time = 0
