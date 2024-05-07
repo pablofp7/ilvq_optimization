@@ -1,7 +1,7 @@
 import paramiko
 import sys
 
-def send_command(hosts, command, username='pi', password='your_password_here', sudo_password='your_sudo_password'):
+def send_command(hosts, command, username='pablo', password='123', sudo_password='123'):
     for host in hosts:
         try:
             client = paramiko.SSHClient()
