@@ -25,7 +25,7 @@ def read_dataset():
     dataset.replace('False', 0, inplace=True) 
 
 
-    return dataset[:1000]
+    return dataset
 
 
 
