@@ -209,6 +209,7 @@ def parsear_parametros(mensaje):
     t_value = float(partes[2][1:])  # Extract '0.0' from 'T0.0'
     limit = int(partes[3][5:])  # Extract '250' from 'limit250'
     target_range_values = partes[4][6:].split('-')  # Split the 'range50-60' into ['50', '60']
+    print(f"target range values splitted: {target_range_values}")
     target_range = (float(target_range_values[0]), float(target_range_values[1]))
     iteration = int(partes[5][2:])  # Extract '31' from 'it31'
 
