@@ -7,7 +7,7 @@ import os
 # Define un parser de argumentos
 parser = argparse.ArgumentParser(description='Controlador de versiones de programa.')
 # Agrega un argumento para la versión del programa, con opciones predefinidas
-parser.add_argument('-v', '--version', choices=['', '_mp', '4_1', '4_1_mp', '4_2', '4_2_mp'], default='', help='Especifica la versión del programa a ejecutar')
+parser.add_argument('-v', '--version', choices=['', '_mp', '4_1', '4_1_mp', '4_2', '4_2_mp', '5'], default='', help='Especifica la versión del programa a ejecutar')
 
 # Parsea los argumentos de la línea de comandos
 args = parser.parse_args()

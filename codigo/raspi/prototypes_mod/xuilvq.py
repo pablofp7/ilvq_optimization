@@ -57,7 +57,7 @@ class XuILVQ(BasePrototypes, base.Classifier):
             alpha_winner: float = 0.9,
             alpha_runner: float = 0.1,
             age_old: int = 400,
-            gamma: int = 10000000000,
+            gamma: int = 150,
             n_prototypes: int = 5,
             max_pset_size: int = 100,
             target_size: tuple = (80, 90),
@@ -121,8 +121,8 @@ class XuILVQ(BasePrototypes, base.Classifier):
                 self.buffer.rebuild_neighborhoods()
 
 
-            if current_epoch % self.gamma == 0:
-                self.buffer.denoise()
+            # if current_epoch % self.gamma == 0:
+            #     self.buffer.denoise()
             
 
         return self

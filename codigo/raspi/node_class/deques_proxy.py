@@ -28,7 +28,7 @@ class DequesProxy:
             deque.appendleft(item)
             self.log(f"[NODO {self.id}] - {call_method} - Released lock for APPENDLEFT deque at index {deque_index}")
 
-    def pop(self, deque_index, call_method = ""):
+    def pop(self, deque_index, item_index, call_method = ""):
         deque, lock = self.deques[deque_index]
         self.log(f"[NODO {self.id}] - {call_method} - Attempting to acquire lock for POP deque at index {deque_index}")
         item = None
@@ -78,6 +78,14 @@ class DequesProxy:
             self.log(f"[NODO {self.id}] - {call_method} - Acquired lock for EXTENDLEFT deque at index {deque_index}")
             deque.extendleft(item_list)
             self.log(f"[NODO {self.id}] - {call_method} - Released lock for EXTENDLEFT deque at index {deque_index}")
+            
+    def clear(self, deque_index, call_method = ""):
+        deque, lock = self.deques[deque_index]
+        self.log(f"[NODO {self.id}] - {call_method} - Attempting to acquire lock for CLEAR deque at index {deque_index}")
+        with lock:
+            self.log(f"[NODO {self.id}] - {call_method} - Acquired lock for CLEAR deque at index {deque_index}")
+            deque.clear()
+            self.log(f"[NODO {self.id}] - {call_method} - Released lock for CLEAR deque at index {deque_index}")
 
     def log(self, message):
         if not LOGGING:
@@ -199,7 +207,7 @@ class ListsProxy:
 class DequeManager(BaseManager):
     pass
 
-DequeManager.register('DequesProxy', DequesProxy, exposed=['append', 'appendleft', 'pop', 'popleft', 'get_length', 'extendleft', 'getleft'])
+DequeManager.register('DequesProxy', DequesProxy, exposed=['append', 'appendleft', 'pop', 'popleft', 'get_length', 'extendleft', 'getleft', 'clear'])
 DequeManager.register('ListsProxy', ListsProxy, exposed=['append', 'remove', 'pop', 'get_length', 'get_item', 'set_item', 'get_slice', 'clear', 'get_list'])
 
 @classmethod
