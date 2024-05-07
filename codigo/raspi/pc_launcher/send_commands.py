@@ -47,14 +47,11 @@ def main():
 
     if args.num_nodes is not None:
         hosts = hosts[:args.num_nodes]
-    elif args.specific_nodes is not None:
+    if args.specific_nodes is not None:
         specific_indices = [int(idx) for idx in args.specific_nodes.split(',')]
         hosts = [hosts[i] for i in specific_indices]
 
     send_command(hosts, args.command)
-
-if __name__ == "__main__":
-    main()
 
 if __name__ == "__main__":
     main()
