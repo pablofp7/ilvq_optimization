@@ -15,7 +15,7 @@ def send_command(hosts, command, username='pablo', password='123', sudo_password
 
             # Wait for a prompt which may require a password
             buff_size = 1024
-            timeout = 1  # timeout in seconds (adjust as necessary)
+            timeout = 5  # timeout in seconds (adjust as necessary)
             buffer = session.recv(buff_size, timeout=timeout).decode('utf-8')
 
             # Check if sudo is asking for a password

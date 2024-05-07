@@ -265,7 +265,7 @@ class RaspiNodev5:
                     compartidos.append(0, compartidos_local)
                     print(f"[NODO {id}] . Va a añadir {no_comp_jsd_local} a la lista de no_comp_jsd.")
                     no_comp_jsd.append(0, no_comp_jsd_local)
-                    print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
+                    # print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
                     tiempo_no_share.append(0, tiempo_no_share_local)
                     print(f"[NODO {id}] El hilo emisor ha terminado. ORDEN {fin_proceso_emisor} / {fin_proceso_emisor.is_set()}. Vuelve al join.")
                     return
