@@ -204,22 +204,22 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 def parsear_parametros(mensaje):
     partes = mensaje.split('_')
     
-    dataset = partes[0]  # 'elec'
-    s_value = int(partes[1][1:])  # Extract '1' from 's1'
-    t_value = float(partes[2][1:])  # Extract '0.0' from 'T0.0'
-    limit = int(partes[3][5:])  # Extract '250' from 'limit250'
-    target_range_values = partes[4][6:].split('-')  # Split the 'range50-60' into ['50', '60']
-    print(f"target range values splitted: {target_range_values}")
-    target_range = (float(target_range_values[0]), float(target_range_values[1]))
-    iteration = int(partes[5][2:])  # Extract '31' from 'it31'
-
-    # Find indices of the values in their respective lists
+    dataset = partes[0]
+    s_value = int(partes[1][1:])
+    t_value = float(partes[2][1:])
+    limite = int(partes[3][5:])
+    inf_range = float(partes[4][5:7])
+    sup_range = float(partes[4][8:10])
+    target_range = (inf_range, sup_range)
+    lim_range_searched = (limite, target_range)
+    iteracion = int(partes[5][2:])   
+    
     dataset_index = datasets.index(dataset)
     s_index = S.index(s_value)
     t_index = np.where(np.isclose(T, t_value))[0][0]
-    limit_target_index = lim_range.index((limit, target_range))  # Find index of limit and target_range tuple
-
-    return (iteration, dataset_index, s_index, t_index, limit_target_index)
+    target_index = lim_range.index(lim_range_searched)
+    
+    return (iteracion, dataset_index, s_index, t_index, target_index)
 
 
 
