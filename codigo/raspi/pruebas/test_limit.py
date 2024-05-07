@@ -15,8 +15,8 @@ import time
 
 
 def read_dataset():
-    # dataset = pd.read_csv(f"../dataset/electricity.csv")
-    dataset = pd.read_csv(f"../dataset/kdd99_http.csv")
+    dataset = pd.read_csv(f"../dataset/electricity.csv")
+    # dataset = pd.read_csv(f"../dataset/kdd99_http.csv")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True) 
@@ -25,7 +25,7 @@ def read_dataset():
     dataset.replace('False', 0, inplace=True) 
 
 
-    return dataset
+    return dataset[:1000]
 
 
 
@@ -72,9 +72,6 @@ for LIMIT in limit_values:
             modelo.learn_one(x, y)
             train_time += time.perf_counter_ns() - start_time
             train_operations += 1
-
-            if isinstance(prediction, dict):
-                prediction = prediction.get(1.0, 0.0)
 
             if prediction is not None and prediction == y:
                 if prediction == 1.0:

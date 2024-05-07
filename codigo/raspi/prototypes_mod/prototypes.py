@@ -158,11 +158,6 @@ class PrototypeBuffer:
             self._prototypes[s1]['neighbors'].remove(s2)
             self._prototypes[s2]['neighbors'].remove(s1)
     
-    
-            # if s2 in self._prototypes[s1]['neighbors']:
-                # self._prototypes[s1]['neighbors'].remove(s2)  # removes s2 as a neighbor of s1
-            # if s1 in self._prototypes[s2]['neighbors']:
-                # self._prototypes[s2]['neighbors'].remove(s1)  # removes s1 as a neighbor of s2
 
 
     def denoise(self) -> None:
