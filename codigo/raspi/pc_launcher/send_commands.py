@@ -12,7 +12,7 @@ def send_command(hosts, command, username='pablo', password='123', sudo_password
             session = client.get_transport().open_session()
             session.get_pty()  # Request a pseudo-terminal
             session.exec_command(command)
-            session.timeout(5)
+            # session.timeout(5)
 
             # Wait for a prompt which may require a password
             buff_size = 1024
