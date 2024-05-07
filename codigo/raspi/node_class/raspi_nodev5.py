@@ -198,7 +198,7 @@ class RaspiNodev5:
         while colas_revisadas < colas_a_revisar:
             
             if self.cola_protos.get_length(self.cola_index, call_method = "LEARNING QUEUE. Getting number of protos of neighbour.") > 0:
-                proto = self.cola_protos.popleft(self.cola_index, call_method = "LEARNING QUEUE. Popping proto from neighbour.")
+                proto = self.cola_protos.getleft(self.cola_index, call_method = "LEARNING QUEUE. Popping proto from neighbour.")
                 random_index = random.randint(0, len(proto) - 1)
                 proto = proto.pop(random_index) 
                 
