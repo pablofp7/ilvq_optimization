@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import re
 import os
+import argparse
 
 def get_results(test):
     directorio_resultados = f'/home/pablo/trabajo/codigo/raspi/{test}_resultados/'
@@ -98,7 +99,22 @@ def get_results(test):
                     if es_elec2:
                         datos_elec2.append(resultado)
                         
-    return pd.DataFrame(datos_elec), pd.DataFrame(datos_phis), pd.DataFrame(datos_elec2)
+    datos_elec_df = pd.DataFrame(datos_elec)
+    datos_phis_df = pd.DataFrame(datos_phis)
+    datos_elec2_df = pd.DataFrame(datos_elec2)
+
+    # Verificar si los DataFrames no están vacíos antes de intentar agruparlos
+    if not datos_elec_df.empty:
+        datos_elec_df = datos_elec_df.groupby(['s', 'T', 'limit', 'range_start', 'range_end']).mean().reset_index()
+
+    if not datos_phis_df.empty:
+        datos_phis_df = datos_phis_df.groupby(['s', 'T', 'limit', 'range_start', 'range_end']).mean().reset_index()
+
+    if not datos_elec2_df.empty:
+        datos_elec2_df = datos_elec2_df.groupby(['s', 'T', 'limit', 'range_start', 'range_end']).mean().reset_index()
+
+
+    return datos_elec_df, datos_phis_df, datos_elec2_df
                             
                         
                         
@@ -106,8 +122,20 @@ def get_results(test):
                         
                         
 def main():
+    datasets = ["elec"]
+    S = [1, 4]
+    T = np.array([0.0, 0.1, 1.0])
+    lim_range = [
+        (50, (50, 60)),
+        (150, (50, 60)),
+        (250, (50, 60)),
+        (500, (72.5, 77.5))
+    ] 
+    
     test = "test4"
     elec_res, phis_res, elec2_res = get_results(test)
+    
+    
     
     print(f"")
     print(f"Resultados de elec")
@@ -119,7 +147,7 @@ def main():
     print(f"Resultados de elec2")
     print(elec2_res)
     print(f"")
-        
+            
     
 if __name__ == '__main__':
     main()
