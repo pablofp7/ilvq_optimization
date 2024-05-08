@@ -13,19 +13,17 @@ def send_command(hosts, command, username='pablo', password='123', sudo_password
             session = client.get_transport().open_session()
             session.get_pty()  # Request a pseudo-terminal
             session.exec_command(command)
-            # session.timeout(5)
 
             # Wait for a prompt which may require a password
-            buff_size = 1024
-            timeout = 5  # timeout in seconds (adjust as necessary)
-            buffer = session.recv(buff_size).decode('utf-8')
+            # buff_size = 1024
+            buffer = session.recv().decode('utf-8')
 
             # Check if sudo is asking for a password
             if "password" in buffer.lower():
                 session.send(sudo_password + '\n')  # Send the sudo password
 
             # Collect the output
-            output = buffer + session.recv(buff_size).decode('utf-8')
+            output = buffer + session.recv().decode('utf-8')
             print(f"Output from {host}:")
             print(output)
 
