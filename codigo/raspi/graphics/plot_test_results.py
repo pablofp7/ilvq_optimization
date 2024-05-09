@@ -193,6 +193,8 @@ def plot_results(df, titulo_dataset, ax, metrica_seleccionada, not_gui: bool):
         print(resultados_imprimir.to_string())
         print("\n")
         
+        return
+        
             
     ax.legend(loc='best')
     ax.set_xlabel('T')
@@ -210,6 +212,7 @@ def get_metric_and_plot(metrica: str = None):
     else: 
         metrica_seleccionada = metrica
         not_gui=True
+        
     
     try:
         ancho = 20
