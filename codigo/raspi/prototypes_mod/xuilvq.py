@@ -161,12 +161,6 @@ class XuILVQ(BasePrototypes, base.Classifier):
         y_hat_p = softmax(y_hat)
         y_hat = max(y_hat_p, key=y_hat_p.get)
         
-        if isinstance(y_hat, dict):
-            if 1.0 in y_hat:
-                y_hat = y_hat[1.0]
-            else:
-                y_hat = 0.0  
-        
         
         return y_hat
 

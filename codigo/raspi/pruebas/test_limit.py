@@ -25,7 +25,7 @@ def read_dataset():
     dataset.replace('False', 0, inplace=True) 
 
 
-    return dataset[:100]
+    return dataset
 
 
 
@@ -71,6 +71,12 @@ for LIMIT in limit_values:
             modelo.learn_one(x, y)
             train_time += time.perf_counter_ns() - start_time
             train_operations += 1
+            
+            if isinstance(prediction, dict):
+                if 1.0 in prediction:
+                    prediction = prediction[1.0]
+                else:
+                    prediction = 0.0  
 
             if prediction is not None and prediction == y:
                 if prediction == 1.0:
@@ -82,9 +88,6 @@ for LIMIT in limit_values:
                     matriz_conf["FP"] += 1
                 else:
                     matriz_conf["FN"] += 1
-                    
-            print(f"Prediction: {prediction}")
-            print(f"Y: {y}")
                     
             iteration_time += time.perf_counter_ns() - start_iteration_time
             iteration_count += 1
@@ -111,6 +114,7 @@ for LIMIT in limit_values:
         })
         
         print(f"Finished: LIMIT={LIMIT}, Target={target_range}, Precision={precision}, Recall={recall}, F1={f1}, iteration time: {iteration_time / 1e9}")
+        print(f"Matriz de confusion: {matriz_conf}")
 
 
 #After that, make the BASE experiment with the base model
@@ -143,7 +147,10 @@ for i, (x, y) in enumerate(tqdm(df_list, desc=f"Processing with BASE, Target=ORI
 
 
     if isinstance(prediction, dict):
-        prediction = prediction.get(1.0, 0.0)
+        if 1.0 in prediction:
+            prediction = prediction[1.0]
+        else:
+            prediction = 0.0  
 
     if prediction is not None and prediction == y:
         if prediction == 1.0:
