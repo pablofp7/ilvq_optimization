@@ -15,8 +15,8 @@ import time
 
 
 def read_dataset():
-    dataset = pd.read_csv(f"../dataset/electricity.csv")
-    # dataset = pd.read_csv(f"../dataset/kdd99_http.csv")
+    # dataset = pd.read_csv(f"../dataset/electricity.csv")
+    dataset = pd.read_csv(f"../dataset/kdd99_http.csv")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)
     dataset.replace('DOWN', 0, inplace=True) 
@@ -25,7 +25,7 @@ def read_dataset():
     dataset.replace('False', 0, inplace=True) 
 
 
-    return dataset
+    return dataset[:50000]
 
 
 
