@@ -4,7 +4,7 @@ import re
 import os
 import argparse
 
-def get_results(test, filters):
+def get_results(test, filters, metric):
     directorio_resultados = f'/home/pablo/trabajo/codigo/raspi/{test}_resultados/'
     datos_elec = []
     datos_elec2 = []
@@ -123,11 +123,20 @@ def get_results(test, filters):
             datos_elec_df = datos_elec_df[datos_elec_df[param] == value]
             datos_phis_df = datos_phis_df[datos_phis_df[param] == value]
             datos_elec2_df = datos_elec2_df[datos_elec2_df[param] == value]
+    
+       # Sorting by specified metric in descending order after filtering
+    if not datos_elec_df.empty:
+        datos_elec_df = datos_elec_df.sort_values(by=[metric], ascending=False)
+
+    if not datos_phis_df.empty:
+        datos_phis_df = datos_phis_df.sort_values(by=[metric], ascending=False)
+
+    if not datos_elec2_df.empty:
+        datos_elec2_df = datos_elec2_df.sort_values(by=[metric], ascending=False)
 
     return datos_elec_df, datos_phis_df, datos_elec2_df
                             
                    
-                        
 def main():
     # List of full metric names
     metrics = [
@@ -170,7 +179,7 @@ def main():
     filters = {k: v for k, v in vars(args).items() if v is not None and k != 'metric'}
 
     test = "test4"
-    elec_res, phis_res, elec2_res = get_results(test, filters)
+    elec_res, phis_res, elec2_res = get_results(test, filters, full_metric_name)  # Include metric for sorting
 
     if full_metric_name not in elec_res.columns:
         print(f"Error: The specified metric '{full_metric_name}' is not valid.")
