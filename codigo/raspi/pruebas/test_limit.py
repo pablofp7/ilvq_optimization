@@ -85,14 +85,6 @@ for LIMIT in limit_values:
                     
             print(f"Prediction: {prediction}")
             print(f"Y: {y}")
-            
-            if modelo.dbscan_count != prev_eps:
-                dbscan_count += 1
-                prev_eps = modelo.dbscan_count
-                
-            if modelo.rebuild_count != aux_eps:
-                rebuild_count += 1
-                aux_eps = modelo.rebuild_count
                     
             iteration_time += time.perf_counter_ns() - start_iteration_time
             iteration_count += 1
