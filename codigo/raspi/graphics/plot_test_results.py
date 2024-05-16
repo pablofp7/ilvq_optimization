@@ -77,7 +77,7 @@ def get_results():
                         if match_entrenados:
                             prototipos_entrenados += int(match_entrenados.group(1))
                             
-                        match_compartidos = re.search(r'Ha compartido (\d+) prototipos', linea)
+                        match_compartidos = re.search(r'Ha compartido (\d+) (prototipos\.|en total\.)', linea)
                         if match_compartidos:
                             prototipos_compartidos += int(match_compartidos.group(1))
                             
