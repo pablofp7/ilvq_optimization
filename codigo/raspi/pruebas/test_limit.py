@@ -43,7 +43,7 @@ for LIMIT in limit_values:
         df = read_dataset()
         df_list = [(fila[:-1], fila[-1]) for fila in df.values]
 
-        modelo = MiILVQ(max_pset_size=LIMIT, target_size=target_range)
+        modelo = MiILVQ(max_pset_size=LIMIT, target_size=target_range, merge_mode="dbscan")
         matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         train_time = 0
         prediction_time = 0
