@@ -62,7 +62,8 @@ class XuILVQ(BasePrototypes, base.Classifier):
             max_pset_size: int = 100,
             target_size: tuple = (80, 90),
             eps: float =  0.000001,
-            merge_mode: str = "dbscan"
+            merge_mode: str = "dbscan", 
+            target_percentage: int = 50
     ):
         super().__init__()
         self.alpha_winner = alpha_winner
@@ -74,6 +75,7 @@ class XuILVQ(BasePrototypes, base.Classifier):
         self.target_size = target_size
         self.eps = eps
         self.merge_mode = merge_mode
+        self.target_percentage = target_percentage
 
     def learn_one(self, x: dict, y) -> base.Classifier:
         """
@@ -122,7 +124,7 @@ class XuILVQ(BasePrototypes, base.Classifier):
                 if "dbscan" in self.merge_mode:
                     self.eps = self.buffer.dbscan_prototypes(max_prototypes=self.max_pset_size, target_range=self.target_size, eps_initial=self.eps)
                 elif "kmeans" in self.merge_mode:
-                    self.buffer.kmeans_prototypes(max_prototypes=self.max_pset_size)
+                    self.buffer.kmeans_prototypes(max_prototypes=self.max_pset_size, target_percentage=self.target_percentage)
                     
                 self.buffer.rebuild_neighborhoods()
 

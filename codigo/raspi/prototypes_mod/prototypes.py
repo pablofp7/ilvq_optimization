@@ -291,23 +291,40 @@ class PrototypeBuffer:
     
     
         
-    def kmeans_prototypes(self, max_prototypes: int = 100):
+    def kmeans_prototypes(self, max_prototypes: int = 100, target_percentage: int = 90):
         original_count = len(self._prototypes)
         if original_count <= max_prototypes:
-            print("No need to run K-Means.")
+            print(f"No need to run K-Means. Original count: {original_count} is less than or equal to max prototypes: {max_prototypes}.")
             return
+
+        target_prototypes = int(max_prototypes * (target_percentage / 100))
+        # print(f"Running K-Means. Original count: {original_count}, max prototypes: {max_prototypes}, target prototypes: {target_prototypes}.")
 
         original_prototypes = self._prototypes.copy()
         new_prototypes = {}
         next_prototype_id = 1
 
-        # Cluster prototypes by label to keep label-specific clusters
-        for label in set(proto['y'] for proto in original_prototypes.values()):
+        # Determine the number of clusters per label
+        label_prototypes_count = {label: sum(1 for proto in original_prototypes.values() if proto['y'] == label)
+                                for label in set(proto['y'] for proto in original_prototypes.values())}
+        total_prototypes = sum(label_prototypes_count.values())
+
+        # Calculate the target number of clusters for each label
+        label_clusters = {label: max(1, int(count * target_prototypes / total_prototypes))
+                        for label, count in label_prototypes_count.items()}
+
+        # Apply K-Means clustering for each label
+        for label, num_clusters in label_clusters.items():
             label_prototypes = np.array([proto['x'] for proto in original_prototypes.values() if proto['y'] == label])
             if label_prototypes.size == 0:
                 continue
 
-            kmeans = KMeans(n_clusters=min(max_prototypes, len(label_prototypes)), random_state=42)
+            kmeans = KMeans(
+                n_clusters=min(num_clusters, len(label_prototypes)),
+                init='k-means++',
+                n_init='auto',
+                random_state=42
+            )
             labels = kmeans.fit_predict(label_prototypes)
 
             for cluster_id in range(kmeans.n_clusters):
@@ -324,11 +341,10 @@ class PrototypeBuffer:
                 }
                 next_prototype_id += 1
 
-        # Updating the prototype dictionary
+        # Update the prototype dictionary
         self.prototypes = new_prototypes
-
-        print(f"Updated prototypes to {len(new_prototypes)} clusters.")
-            
+        # print(f"Updated prototypes to {len(new_prototypes)} clusters (goal was {target_prototypes}).")
+    
         
     def rebuild_neighborhoods(self, num_neighbors=2):
         proto_ids = list(self._prototypes.keys())
