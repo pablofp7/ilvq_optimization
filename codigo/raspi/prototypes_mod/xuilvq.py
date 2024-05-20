@@ -61,7 +61,8 @@ class XuILVQ(BasePrototypes, base.Classifier):
             n_prototypes: int = 5,
             max_pset_size: int = 100,
             target_size: tuple = (80, 90),
-            eps: float =  0.000001
+            eps: float =  0.000001,
+            merge_mode: str = "dbscan"
     ):
         super().__init__()
         self.alpha_winner = alpha_winner
@@ -72,6 +73,7 @@ class XuILVQ(BasePrototypes, base.Classifier):
         self.max_pset_size = max_pset_size
         self.target_size = target_size
         self.eps = eps
+        self.merge_mode = merge_mode
 
     def learn_one(self, x: dict, y) -> base.Classifier:
         """
@@ -117,7 +119,11 @@ class XuILVQ(BasePrototypes, base.Classifier):
             self.alpha_runner = 1/(100 * self.buffer.prototypes[s1]['m'])  # adaptive learning rate runner-up
 
             if len(self.buffer) > self.max_pset_size:
-                self.eps = self.buffer.dbscan_prototypes(max_prototypes=self.max_pset_size, target_range=self.target_size, eps_initial=self.eps)
+                if "dbscan" in self.merge_mode:
+                    self.eps = self.buffer.dbscan_prototypes(max_prototypes=self.max_pset_size, target_range=self.target_size, eps_initial=self.eps)
+                elif "kmeans" in self.merge_mode:
+                    self.buffer.kmeans_prototypes(max_prototypes=self.max_pset_size)
+                    
                 self.buffer.rebuild_neighborhoods()
 
 

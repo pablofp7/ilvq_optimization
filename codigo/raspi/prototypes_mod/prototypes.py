@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.cluster import DBSCAN
+from sklearn.cluster import KMeans
 
 
 class PrototypeBuffer:
@@ -287,7 +288,47 @@ class PrototypeBuffer:
 
         self.prototypes = new_prototypes
         return eps 
+    
+    
         
+    def kmeans_prototypes(self, max_prototypes: int = 100):
+        original_count = len(self._prototypes)
+        if original_count <= max_prototypes:
+            print("No need to run K-Means.")
+            return
+
+        original_prototypes = self._prototypes.copy()
+        new_prototypes = {}
+        next_prototype_id = 1
+
+        # Cluster prototypes by label to keep label-specific clusters
+        for label in set(proto['y'] for proto in original_prototypes.values()):
+            label_prototypes = np.array([proto['x'] for proto in original_prototypes.values() if proto['y'] == label])
+            if label_prototypes.size == 0:
+                continue
+
+            kmeans = KMeans(n_clusters=min(max_prototypes, len(label_prototypes)), random_state=42)
+            labels = kmeans.fit_predict(label_prototypes)
+
+            for cluster_id in range(kmeans.n_clusters):
+                cluster_indices = np.where(labels == cluster_id)[0]
+                cluster_protos = [label_prototypes[i] for i in cluster_indices]
+                centroid = np.mean(cluster_protos, axis=0)
+                sum_m = sum(original_prototypes[list(original_prototypes.keys())[i]]['m'] for i in cluster_indices)
+
+                new_prototypes[next_prototype_id] = {
+                    'x': centroid,
+                    'y': label,
+                    'm': sum_m,
+                    'neighbors': []
+                }
+                next_prototype_id += 1
+
+        # Updating the prototype dictionary
+        self.prototypes = new_prototypes
+
+        print(f"Updated prototypes to {len(new_prototypes)} clusters.")
+            
         
     def rebuild_neighborhoods(self, num_neighbors=2):
         proto_ids = list(self._prototypes.keys())
@@ -308,7 +349,7 @@ class PrototypeBuffer:
             self._prototypes[pid1]['neighbours'] = closest_neighbors
 
         self.edges = temp_edges
-        
+            
 
     @prototypes.setter
     def prototypes(self, prototypes):
