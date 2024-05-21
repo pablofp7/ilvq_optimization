@@ -71,6 +71,15 @@ def get_results(test, filters, metric):
                                     tamaño_lotes_total += int(tamaño)
                                     cuenta_lotes += 1
                                     
+                        clust_time_match = re.search(r'Tiempo invertido en clustering: (\d+.\d+)', linea)
+                        if clust_time_match:
+                            clust_time_total += float(clust_time_match.group(1))
+
+                        clust_runs_match = re.search(r'Número de ejecuciones de clustering: (\d+)', linea)
+                        if clust_runs_match:
+                            clust_runs_total += int(clust_runs_match.group(1))
+
+                                    
                     # Calculamos los promedios después de leer todo el archivo
                     precision_prom = precision_total / cuenta_nodos if cuenta_nodos else 0
                     recall_prom = recall_total / cuenta_nodos if cuenta_nodos else 0
@@ -81,6 +90,9 @@ def get_results(test, filters, metric):
                     promedio_prototipos_entrenados = prototipos_entrenados / cuenta_nodos if cuenta_nodos else 0
                     promedio_prototipos_compartidos = prototipos_compartidos / cuenta_nodos if cuenta_nodos else 0
                     promedio_mensajes_enviados = mensajes_enviados / cuenta_nodos if cuenta_nodos else 0
+                    promedio_clust_time = clust_time_total / cuenta_nodos if cuenta_nodos else 0
+                    promedio_clust_runs = clust_runs_total / cuenta_nodos if cuenta_nodos else 0
+
 
                     resultado = {
                         's': int(s), 'T': float(T), 'limit': int(limit), 
@@ -90,7 +102,9 @@ def get_results(test, filters, metric):
                         'Prototipos_Entrenados': promedio_prototipos_entrenados, 
                         'Prototipos_Compartidos': promedio_prototipos_compartidos, 
                         'Capacidad_Ejecucion': capacidad_promedio, 
-                        'Tamaño_Promedio_Lotes': tamaño_promedio_lotes
+                        'Tamaño_Promedio_Lotes': tamaño_promedio_lotes,
+                        'Clust_Time': promedio_clust_time,
+                        'Clust_Runs': promedio_clust_runs
                     }
                     
                     if es_elec:
@@ -124,15 +138,22 @@ def get_results(test, filters, metric):
             datos_phis_df = datos_phis_df[datos_phis_df[param] == value]
             datos_elec2_df = datos_elec2_df[datos_elec2_df[param] == value]
     
-       # Sorting by specified metric in descending order after filtering
-    if not datos_elec_df.empty:
-        datos_elec_df = datos_elec_df.sort_values(by=[metric], ascending=False)
-
-    if not datos_phis_df.empty:
-        datos_phis_df = datos_phis_df.sort_values(by=[metric], ascending=False)
-
-    if not datos_elec2_df.empty:
-        datos_elec2_df = datos_elec2_df.sort_values(by=[metric], ascending=False)
+    # Sorting by specified metric in descending order after filtering
+    if metric == 'Clust':
+        # For the special case where the metric is 'Clust', sort by both Clust_Time and Clust_Runs
+        if not datos_elec_df.empty:
+            datos_elec_df = datos_elec_df.sort_values(by=['Clust_Runs', 'Clust_Time'], ascending=[False, False])
+        if not datos_phis_df.empty:
+            datos_phis_df = datos_phis_df.sort_values(by=['Clust_Runs', 'Clust_Time'], ascending=[False, False])
+        if not datos_elec2_df.empty:
+            datos_elec2_df = datos_elec2_df.sort_values(by=['Clust_Runs', 'Clust_Time'], ascending=[False, False])
+    else:
+        if not datos_elec_df.empty:
+            datos_elec_df = datos_elec_df.sort_values(by=[metric], ascending=False)
+        if not datos_phis_df.empty:
+            datos_phis_df = datos_phis_df.sort_values(by=[metric], ascending=False)
+        if not datos_elec2_df.empty:
+            datos_elec2_df = datos_elec2_df.sort_values(by=[metric], ascending=False)
 
     return datos_elec_df, datos_phis_df, datos_elec2_df
                             
@@ -147,7 +168,9 @@ def main():
         'Tamaño_Promedio_Lotes',
         'Precision',
         'Recall',
-        'F1'
+        'F1',
+        'Clust_Time',
+        'Clust_Runs'
     ]
 
     parser = argparse.ArgumentParser(description='Filter results based on parameters and output specific metrics along with parameter data.')
@@ -186,7 +209,10 @@ def main():
         return
 
     # Create a list of columns to display: parameter columns and the selected metric
-    columns_to_display = ['s', 'T', 'limit', 'range_start', 'range_end', full_metric_name]
+    if full_metric_name == 'Clust':
+        columns_to_display = ['s', 'T', 'limit', 'range_start', 'range_end', 'Clust_Time', 'Clust_Runs']
+    else:
+        columns_to_display = ['s', 'T', 'limit', 'range_start', 'range_end', full_metric_name]
 
     # Printing without the DataFrame index
     print(f"Filtered Results for the specified metric '{full_metric_name}':")

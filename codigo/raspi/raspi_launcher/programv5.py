@@ -63,6 +63,7 @@ def main(df: pd.DataFrame):
     precision = round(tp / (tp + fp), 3) if tp + fp != 0 else 0
     recall = round(tp / (tp + fn), 3) if tp + fn != 0 else 0
     f1 = round(2 * (precision * recall) / (precision + recall), 3) if precision + recall != 0 else 0
+    clust_time = round(nodo.clust_time, 1)
 
 
     if nodo.tiempo_learn_queue == 0:
@@ -78,7 +79,7 @@ def main(df: pd.DataFrame):
                     f"Se han descartado por limitación cola {nodo.protos_descartados_final} prototipos.\n"
                     f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
                     f"Número de ejecuciones de clustering: {nodo.clust_runs}\n"
-                    f"Tiempo invertido en clustering: {nodo.clust_time}\n"
+                    f"Tiempo invertido en clustering: {clust_time}\n"
                     f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
                     f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
                     f"Tiempo no compartiendo prototipos: {nodo.tiempo_no_share_final}\n" 
@@ -328,7 +329,7 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        i_iter = 20
+        i_iter = 40
         while i_iter < iteraciones:
             dataset_idx = 0
             while dataset_idx < len(datasets):
