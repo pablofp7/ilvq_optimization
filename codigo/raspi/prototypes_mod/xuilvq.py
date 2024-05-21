@@ -77,6 +77,9 @@ class XuILVQ(BasePrototypes, base.Classifier):
         self.eps = eps
         self.merge_mode = merge_mode
         self.target_percentage = target_percentage
+        self.clust_time = 0
+        self.clust_runs = 0
+        
 
     def learn_one(self, x: dict, y) -> base.Classifier:
         """
@@ -98,7 +101,7 @@ class XuILVQ(BasePrototypes, base.Classifier):
         self.epoch += 1
         x = dict2numpy(x)
         
-        time_purge = 0
+        time_clust = 0
         
         if len(self.buffer) <= 2:
             self.buffer.append(x, y)
@@ -129,16 +132,19 @@ class XuILVQ(BasePrototypes, base.Classifier):
                     self.eps = self.buffer.dbscan_prototypes(max_prototypes=self.max_pset_size, target_range=self.target_size, eps_initial=self.eps)
                 elif "kmeans" in self.merge_mode:
                     self.buffer.kmeans_prototypes(max_prototypes=self.max_pset_size, target_percentage=self.target_percentage)
-                    
+                else: 
+                    self.buffer.kmeans_prototypes(max_prototypes=self.max_pset_size, target_percentage=self.target_percentage)
+
                 self.buffer.rebuild_neighborhoods()
                 
-                time_purge += time.perf_counter() - start_time
+                self.clust_time += time.perf_counter() - start_time
+                self.clust_runs += 1
                 
             # if current_epoch % self.gamma == 0:
             #     self.buffer.denoise()
             
 
-        return self, time_purge
+        return self
 
     def predict_one(self, x: dict):
         """

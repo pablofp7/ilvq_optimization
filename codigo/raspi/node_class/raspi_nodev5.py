@@ -142,6 +142,9 @@ class RaspiNodev5:
         self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
         self.protos_descartados_final = self.protos_descartados.pop(0)  # Obtener el número de prototipos descartados.
+        
+        self.clust_runs = self.modelo_proto.clust_runs
+        self.clust_time = self.modelo_proto.clust_time
             
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
@@ -186,17 +189,11 @@ class RaspiNodev5:
             self.matriz_conf["FN"] += 1
 
         #TRAIN
-        _, clust_time = self.modelo_proto.learn_one(x, y)
-        if clust_time > 0:
-            self.clust_time += clust_time
-            self.clust_runs += 1
+        self.modelo_proto.learn_one(x, y)
         
         if not (self.modelo_pred is self.modelo_proto):
-            _, clust_time = self.modelo_proto.learn_one(x, y)
-            if clust_time > 0:
-                self.clust_time += clust_time
-                self.clust_runs += 1
-            
+            self.modelo_proto.learn_one(x, y)
+                        
         self.tiempo_learn_data += (time.perf_counter() - temp)
                         
             
@@ -224,16 +221,10 @@ class RaspiNodev5:
                 
                 temp = time.perf_counter()
                 #TRAIN
-                _, clust_time = self.modelo_proto.learn_one(x, y)
-                if clust_time > 0:
-                    self.clust_time += clust_time
-                    self.clust_runs += 1
+                self.modelo_proto.learn_one(x, y)
                 
                 if not (self.modelo_pred is self.modelo_proto):
-                    _, clust_time = self.modelo_proto.learn_one(x, y)
-                    if clust_time > 0:
-                        self.clust_time += clust_time
-                        self.clust_runs += 1
+                    self.modelo_proto.learn_one(x, y)
 
                 self.tiempo_learn_queue += (time.perf_counter() - temp)
                 
