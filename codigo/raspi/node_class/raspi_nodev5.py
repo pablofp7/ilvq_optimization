@@ -186,13 +186,13 @@ class RaspiNodev5:
             self.matriz_conf["FN"] += 1
 
         #TRAIN
-        clust_time = self.modelo_proto.learn_one(x, y)
+        clust_time = self.modelo_proto.learn_one(x, y)[1]
         if clust_time > 0:
             self.clust_time += clust_time
             self.clust_runs += 1
         
         if not (self.modelo_pred is self.modelo_proto):
-            clust_time = self.modelo_proto.learn_one(x, y)
+            clust_time = self.modelo_proto.learn_one(x, y)[1]
             if clust_time > 0:
                 self.clust_time += clust_time
                 self.clust_runs += 1
@@ -224,13 +224,13 @@ class RaspiNodev5:
                 
                 temp = time.perf_counter()
                 #TRAIN
-                clust_time = self.modelo_proto.learn_one(x, y)
+                clust_time = self.modelo_proto.learn_one(x, y)[1]
                 if clust_time > 0:
                     self.clust_time += clust_time
                     self.clust_runs += 1
                 
                 if not (self.modelo_pred is self.modelo_proto):
-                    clust_time = self.modelo_proto.learn_one(x, y)
+                    clust_time = self.modelo_proto.learn_one(x, y)[1]
                     if clust_time > 0:
                         self.clust_time += clust_time
                         self.clust_runs += 1
