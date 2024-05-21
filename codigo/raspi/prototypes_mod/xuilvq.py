@@ -97,7 +97,9 @@ class XuILVQ(BasePrototypes, base.Classifier):
         current_epoch = self.epoch #next(self.epoch)
         self.epoch += 1
         x = dict2numpy(x)
-
+        
+        time_purge = 0
+        
         if len(self.buffer) <= 2:
             self.buffer.append(x, y)
 
@@ -122,7 +124,6 @@ class XuILVQ(BasePrototypes, base.Classifier):
             self.alpha_runner = 1/(100 * self.buffer.prototypes[s1]['m'])  # adaptive learning rate runner-up
 
             start_time = time.perf_counter()
-            time_purge = 0
             if len(self.buffer) > self.max_pset_size:
                 if "dbscan" in self.merge_mode:
                     self.eps = self.buffer.dbscan_prototypes(max_prototypes=self.max_pset_size, target_range=self.target_size, eps_initial=self.eps)
