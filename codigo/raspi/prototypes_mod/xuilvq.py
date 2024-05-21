@@ -7,6 +7,7 @@ from river.utils import dict2numpy
 from itertools import chain
 from river.utils.math import softmax
 from .base_prototypes import BasePrototypes
+import time
 
 
 class XuILVQ(BasePrototypes, base.Classifier):
@@ -120,6 +121,8 @@ class XuILVQ(BasePrototypes, base.Classifier):
             self.alpha_winner = 1/(self.buffer.prototypes[s1]['m'])  # adaptive learning rate winner
             self.alpha_runner = 1/(100 * self.buffer.prototypes[s1]['m'])  # adaptive learning rate runner-up
 
+            start_time = time.perf_counter()
+            time_purge = 0
             if len(self.buffer) > self.max_pset_size:
                 if "dbscan" in self.merge_mode:
                     self.eps = self.buffer.dbscan_prototypes(max_prototypes=self.max_pset_size, target_range=self.target_size, eps_initial=self.eps)
@@ -127,13 +130,14 @@ class XuILVQ(BasePrototypes, base.Classifier):
                     self.buffer.kmeans_prototypes(max_prototypes=self.max_pset_size, target_percentage=self.target_percentage)
                     
                 self.buffer.rebuild_neighborhoods()
-
-
+                
+                time_purge += time.perf_counter() - start_time
+                
             # if current_epoch % self.gamma == 0:
             #     self.buffer.denoise()
             
 
-        return self
+        return self, time_purge
 
     def predict_one(self, x: dict):
         """

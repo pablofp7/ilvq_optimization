@@ -69,7 +69,7 @@ def main(df: pd.DataFrame):
         cap_ejec = 0
     else:
         cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
-    
+        
     to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
                     f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
                     f"Ha compartido {nodo.shared_times_final} veces.\n"
@@ -77,6 +77,8 @@ def main(df: pd.DataFrame):
                     f"Se ha ahorrado compartir {nodo.no_comp_jsd_final} prototipos.\n"
                     f"Se han descartado por limitación cola {nodo.protos_descartados_final} prototipos.\n"
                     f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
+                    f"Número de ejecuciones de clustering: {nodo.clust_runs}\n"
+                    f"Tiempo invertido en clustering: {nodo.clust_time}\n"
                     f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
                     f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
                     f"Tiempo no compartiendo prototipos: {nodo.tiempo_no_share_final}\n" 
@@ -87,8 +89,9 @@ def main(df: pd.DataFrame):
                     f"Tamaño conjunto de prototipos: {nodo.tam_conj_prot}\n"
                     f"\n")
 
-
     print("Se ha terminado de ejecutar todo.")
+
+
 
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)

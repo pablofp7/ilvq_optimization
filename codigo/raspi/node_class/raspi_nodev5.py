@@ -46,6 +46,8 @@ class RaspiNodev5:
         self.muestras_train = 0
         self.protos_train = 0
         self.tam_conj_prot = []
+        self.clust_time = 0
+        self.clust_runs = 0
         
         #Medidores de tiempo
         self.tiempo_learn_data = 0
@@ -108,7 +110,7 @@ class RaspiNodev5:
 
             # Después de esperar, procesamos la muestra actual del dataset.
             inicio_learn_data = time.perf_counter()
-            self.learn_from_data() 
+            self.learn_from_data()
             self.tiempo_learn_data += time.perf_counter() - inicio_learn_data
             self.save_tam_conj()  # Guardar el tamaño del conjunto de prototipos.
 
@@ -168,6 +170,11 @@ class RaspiNodev5:
 
         #TEST
         prediccion = self.modelo_pred.predict_one(x)
+        if isinstance(prediccion, dict):
+            if 1.0 in prediccion:
+                prediccion = prediccion[1.0]
+            else:
+                prediccion = 0.0      
 
         if prediccion == 0 and y == 0:
             self.matriz_conf["TN"] += 1
@@ -177,11 +184,18 @@ class RaspiNodev5:
             self.matriz_conf["FP"] += 1
         else:
             self.matriz_conf["FN"] += 1
-        
+
         #TRAIN
-        self.modelo_proto.learn_one(x, y)
+        clust_time = self.modelo_proto.learn_one(x, y)
+        if clust_time > 0:
+            self.clust_time += clust_time
+            self.clust_runs += 1
+        
         if not (self.modelo_pred is self.modelo_proto):
-            self.modelo_pred.learn_one(x, y)
+            clust_time = self.modelo_proto.learn_one(x, y)
+            if clust_time > 0:
+                self.clust_time += clust_time
+                self.clust_runs += 1
             
         self.tiempo_learn_data += (time.perf_counter() - temp)
                         
@@ -210,9 +224,16 @@ class RaspiNodev5:
                 
                 temp = time.perf_counter()
                 #TRAIN
-                self.modelo_proto.learn_one(x, y)
+                clust_time = self.modelo_proto.learn_one(x, y)
+                if clust_time > 0:
+                    self.clust_time += clust_time
+                    self.clust_runs += 1
+                
                 if not (self.modelo_pred is self.modelo_proto):
-                    self.modelo_pred.learn_one(x, y)
+                    clust_time = self.modelo_proto.learn_one(x, y)
+                    if clust_time > 0:
+                        self.clust_time += clust_time
+                        self.clust_runs += 1
 
                 self.tiempo_learn_queue += (time.perf_counter() - temp)
                 
