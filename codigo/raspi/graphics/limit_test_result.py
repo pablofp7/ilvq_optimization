@@ -31,6 +31,7 @@ def get_results(test, filters, metric):
                     mensajes_enviados = 0
                     cuenta_nodos = 0
                     capacidad_ejecucion_total, tamaño_lotes_total, cuenta_lotes = 0, 0, 0
+                    clust_time_total, clust_runs_total = 0, 0
 
                     for linea in contenido:
                         precision_match = re.search(r'Precision: (\d.\d+)', linea)
@@ -142,11 +143,11 @@ def get_results(test, filters, metric):
     if metric == 'Clust':
         # For the special case where the metric is 'Clust', sort by both Clust_Time and Clust_Runs
         if not datos_elec_df.empty:
-            datos_elec_df = datos_elec_df.sort_values(by=['Clust_Runs', 'Clust_Time'], ascending=[False, False])
+            datos_elec_df = datos_elec_df.sort_values(by=['Clust_Time', 'Clust_Runs'], ascending=[False, False])
         if not datos_phis_df.empty:
-            datos_phis_df = datos_phis_df.sort_values(by=['Clust_Runs', 'Clust_Time'], ascending=[False, False])
+            datos_phis_df = datos_phis_df.sort_values(by=['Clust_Time', 'Clust_Runs'], ascending=[False, False])
         if not datos_elec2_df.empty:
-            datos_elec2_df = datos_elec2_df.sort_values(by=['Clust_Runs', 'Clust_Time'], ascending=[False, False])
+            datos_elec2_df = datos_elec2_df.sort_values(by=['Clust_Time', 'Clust_Runs'], ascending=[False, False])
     else:
         if not datos_elec_df.empty:
             datos_elec_df = datos_elec_df.sort_values(by=[metric], ascending=False)
@@ -185,6 +186,8 @@ def main():
 
     # Function to find the full metric name from the inserted abbreviation
     def find_metric_name(abbreviation, metric_list):
+        if abbreviation.lower() == 'clust':
+            return 'Clust'
         matches = [metric for metric in metric_list if abbreviation.lower() in metric.lower()]
         if len(matches) == 1:
             return matches[0]
@@ -201,18 +204,20 @@ def main():
 
     filters = {k: v for k, v in vars(args).items() if v is not None and k != 'metric'}
 
-    test = "test4"
-    elec_res, phis_res, elec2_res = get_results(test, filters, full_metric_name)  # Include metric for sorting
-
-    if full_metric_name not in elec_res.columns:
-        print(f"Error: The specified metric '{full_metric_name}' is not valid.")
-        return
-
-    # Create a list of columns to display: parameter columns and the selected metric
+    test = "test" + input("Test? (4 o 5):\n")
     if full_metric_name == 'Clust':
+        if "4" in test:
+            print(f"Clustering metrics only available on Test 5.\n")
+            return
         columns_to_display = ['s', 'T', 'limit', 'range_start', 'range_end', 'Clust_Time', 'Clust_Runs']
+
     else:
         columns_to_display = ['s', 'T', 'limit', 'range_start', 'range_end', full_metric_name]
+    
+    
+    elec_res, phis_res, elec2_res = get_results(test, filters, full_metric_name)  # Include metric for sorting
+
+
 
     # Printing without the DataFrame index
     print(f"Filtered Results for the specified metric '{full_metric_name}':")
