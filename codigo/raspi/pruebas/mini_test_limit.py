@@ -1,15 +1,15 @@
 import sys
 import os
+ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if ruta_directorio_main not in sys.path:
+    sys.path.append(ruta_directorio_main)
+
 import numpy as np
 import pandas as pd     
 from prototypes_mod import XuILVQ as MiILVQ
 from prototypes import XuILVQ
 from tqdm import tqdm
 import time
-
-ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-if ruta_directorio_main not in sys.path:
-    sys.path.append(ruta_directorio_main)
 
 # Function to read the dataset
 def read_dataset():
