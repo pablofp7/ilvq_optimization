@@ -6,6 +6,7 @@ from sklearn.neighbors import KernelDensity
 
 
 def read_dataset():
+    pd.set_option('future.no_silent_downcasting', True)
     filename = "electricity.csv"
     dataset = pd.read_csv(f"../dataset/{filename}")
     dataset.replace('UP', 1, inplace=True)

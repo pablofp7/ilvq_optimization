@@ -71,6 +71,7 @@ def preprocess_dataset():
 
     
 def read_dataset():
+    pd.set_option('future.no_silent_downcasting', True)
     http, movie = None, None
     
     http = pd.read_csv("../dataset/http_proc.csv", low_memory=False)

@@ -14,6 +14,7 @@ from scipy.interpolate import UnivariateSpline
 
 
 def read_dataset():
+    pd.set_option('future.no_silent_downcasting', True)
     dataset = pd.read_csv(f"../dataset/electricity.csv")
     # Se cambia el 'UP' por 1 y el 'DOWN' por 0
     dataset.replace('UP', 1, inplace=True)

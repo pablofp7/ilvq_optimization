@@ -13,6 +13,7 @@ import time
 
 # Function to read the dataset
 def read_dataset():
+    pd.set_option('future.no_silent_downcasting', True)
     dataset = pd.read_csv(f"../dataset/electricity.csv")
     dataset.replace('UP', 1, inplace=True)
     dataset.infer_objects(copy=False)
