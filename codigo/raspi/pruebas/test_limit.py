@@ -124,7 +124,7 @@ for limit_size in kmeans_limit_sizes:
         df = read_dataset()
         df_list = [(fila[:-1], fila[-1]) for fila in df.values]
 
-        modelo = MiILVQ(max_pset_size=limit_size, merge_mode="kmeans")
+        modelo = MiILVQ(max_pset_size=limit_size, target_percentage=goal_percentage, merge_mode="kmeans")
         matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         train_time = 0
         prediction_time = 0
