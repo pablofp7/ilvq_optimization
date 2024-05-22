@@ -13,6 +13,8 @@ def read_dataset():
     dataset.replace('True', 1, inplace=True)
     dataset.replace('False', 0, inplace=True)
     
+      
+    dataset.infer_objects(copy=False)
     return dataset
 
 def kde_est(columna, bandwidths=[0.01, 0.05, 0.1, 0.25, 0.5]):

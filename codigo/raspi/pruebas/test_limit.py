@@ -21,6 +21,8 @@ def read_dataset():
     dataset.replace('DOWN', 0, inplace=True) 
     dataset.replace('True', 1, inplace=True)
     dataset.replace('False', 0, inplace=True) 
+       
+    dataset.infer_objects(copy=False)
     return dataset
 
 # Define parameters

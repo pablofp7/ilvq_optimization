@@ -20,8 +20,7 @@ def read_dataset(name: str):
 
     dataset.replace('True', 1, inplace=True)
     dataset.replace('False', 0, inplace=True) 
-
-
+    dataset.infer_objects(copy=False)
     return dataset
 
 

@@ -19,7 +19,11 @@ def read_dataset(name: str):
     dataset.replace({'UP': 1, 'DOWN': 0, 'True': 1, 'False': 0}, inplace=True)
     
     if "2" in name:
-        return dataset.iloc[::5].iloc[:1000]
+       
+ dataset.infer_objects(copy=False)t
+    return dataset.iloc[::5].iloc[:1000]
+      
+    dataset.infer_objects(copy=False)
     return dataset
 
 def main():

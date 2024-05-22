@@ -23,6 +23,8 @@ def read_dataset(name: str):
     dataset.replace('False', 0, inplace=True) 
 
 
+      
+    dataset.infer_objects(copy=False)
     return dataset
 
 def nodo_run_wrapper(args: list, cola_resultados: multiprocessing.Queue):
