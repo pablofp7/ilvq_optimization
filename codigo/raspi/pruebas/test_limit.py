@@ -18,9 +18,13 @@ import time
 def read_dataset():
     dataset = pd.read_csv(f"../dataset/electricity.csv")
     dataset.replace('UP', 1, inplace=True)
+    dataset.infer_objects(copy=False)
     dataset.replace('DOWN', 0, inplace=True) 
+    dataset.infer_objects(copy=False)
     dataset.replace('True', 1, inplace=True)
+    dataset.infer_objects(copy=False)
     dataset.replace('False', 0, inplace=True) 
+    dataset.infer_objects(copy=False)
        
     dataset.infer_objects(copy=False)
     return dataset

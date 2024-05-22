@@ -17,6 +17,7 @@ def read_dataset(name: str):
     dataset_path = f"../dataset/{name.strip('2')}"
     dataset = pd.read_csv(dataset_path)
     dataset.replace({'UP': 1, 'DOWN': 0, 'True': 1, 'False': 0}, inplace=True)
+    dataset.infer_objects(copy=False)
     
     if "2" in name:
        
