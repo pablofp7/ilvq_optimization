@@ -98,7 +98,7 @@ for LIMIT, target_range in dbscan_configs:
 
     results.append({
         "Method": "DBSCAN",
-        "LIMIT": LIMIT,
+        "Limit Size": LIMIT,
         "Target Range": target_range,
         "F1 Score": round(f1, 4),
         "Avg Time Iteration": avg_iteration_time,
@@ -184,7 +184,7 @@ for limit_size, goal_percentage in kmeans_configs_with_75:
     results.append({
         "Method": "K-Means",
         "Limit Size": limit_size,
-        "Goal Percentage": goal_percentage,
+        "Target Range": goal_percentage,
         "F1 Score": round(f1, 4),
         "Avg Time Iteration": avg_iteration_time,
         "Avg Time Train": avg_train_time,
@@ -255,7 +255,7 @@ avg_iteration_time = avg_iteration_time / 1e9
 
 results.append({
     "Method": "BASE",
-    "LIMIT": "ORIGINAL",
+    "Limit Size": "ORIGINAL",
     "Target Range": "BASE",
     "F1 Score": round(f1, 4),
     "Avg Time Iteration": avg_iteration_time,
