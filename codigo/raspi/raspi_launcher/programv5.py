@@ -335,7 +335,7 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        i_iter = 40
+        i_iter = 0
         while i_iter < iteraciones:
             dataset_idx = 0
             while dataset_idx < len(datasets):
