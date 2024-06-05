@@ -402,10 +402,10 @@ if __name__ == "__main__":
     df = pd.DataFrame(data)
 
     # Apply rolling mean to smooth the 'Times' columns
-    df['Smoothed Learning Times Movies'] = df['Learning Times Movies'].rolling(window=3, min_periods=1).mean() 
-    df['Smoothed Learning Times HTTP'] = df['Learning Times HTTP'].rolling(window=3, min_periods=1).mean()
-    df['Smoothed Prediction Times Movies'] = df['Prediction Times Movies'].rolling(window=3, min_periods=1).mean()
-    df['Smoothed Prediction Times HTTP'] = df['Prediction Times HTTP'].rolling(window=3, min_periods=1).mean()
+    df['Smoothed Learning Times Movies'] = df['Learning Times Movies'].rolling(window=10, min_periods=1).mean() 
+    df['Smoothed Learning Times HTTP'] = df['Learning Times HTTP'].rolling(window=10, min_periods=1).mean()
+    df['Smoothed Prediction Times Movies'] = df['Prediction Times Movies'].rolling(window=10, min_periods=1).mean()
+    df['Smoothed Prediction Times HTTP'] = df['Prediction Times HTTP'].rolling(window=10, min_periods=1).mean()
 
     # Unpack the list of tuples for HTTP
     x_http, y_http = zip(*lista_tam_conj_http)
