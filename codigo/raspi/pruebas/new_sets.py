@@ -401,10 +401,10 @@ if __name__ == "__main__":
     df = pd.DataFrame(data)
 
     # Apply rolling mean to smooth the 'Times' columns
-    df['Smoothed Learning Times Movies'] = df['Learning Times Movies'].rolling(window=3, min_periods=1).mean() 
-    df['Smoothed Learning Times HTTP'] = df['Learning Times HTTP'].rolling(window=3, min_periods=1).mean()
-    df['Smoothed Prediction Times Movies'] = df['Prediction Times Movies'].rolling(window=3, min_periods=1).mean()
-    df['Smoothed Prediction Times HTTP'] = df['Prediction Times HTTP'].rolling(window=3, min_periods=1).mean()
+    df['Smoothed Learning Times Movies'] = df['Learning Times Movies'].rolling(window=20, min_periods=1).mean() 
+    df['Smoothed Learning Times HTTP'] = df['Learning Times HTTP'].rolling(window=20, min_periods=1).mean()
+    df['Smoothed Prediction Times Movies'] = df['Prediction Times Movies'].rolling(window=20, min_periods=1).mean()
+    df['Smoothed Prediction Times HTTP'] = df['Prediction Times HTTP'].rolling(window=20, min_periods=1).mean()
 
     # Unpack the list of tuples for HTTP
     x_http, y_http = zip(*lista_tam_conj_http)
@@ -463,7 +463,7 @@ if __name__ == "__main__":
     # Adjust layout to prevent overlap
     plt.tight_layout()
     plt.subplots_adjust(hspace=0.4)  # Adjust horizontal spacing if needed 
-    plt.savefig("grafica_newset.png")
+    plt.savefig("grafica_newset_bigger_window.png")
     # plt.show()
     
     
