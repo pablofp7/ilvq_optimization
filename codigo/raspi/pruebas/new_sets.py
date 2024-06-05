@@ -419,13 +419,13 @@ if __name__ == "__main__":
     ax1.plot(x_http, y_http, color='b')
     ax1.set_title('Evolution of Protoype Set Size. HTTP')
     ax1.set_xlabel('Sample Number')
-    ax1.set_ylabel('Tamaño del Conjunto de Prototipos')
+    ax1.set_ylabel('Prototype Set Size')
     ax1.grid(True)
 
     ax2.plot(x_movies, y_movies, color='r')
     ax2.set_title('Evolution of Protoype Set Size. Movies')
     ax2.set_xlabel('Sample Number')
-    ax2.set_ylabel('Tamaño del Conjunto de Prototipos')
+    ax2.set_ylabel('Prototype Set Size')
     ax2.grid(True)
 
     plt.tight_layout()
