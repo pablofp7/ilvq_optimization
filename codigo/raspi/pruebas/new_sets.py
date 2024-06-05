@@ -157,6 +157,7 @@ if __name__ == "__main__":
 
     # Cargar los datasets
     http, movie = read_dataset()
+    
 
     predict_times_movie = []
     learn_times_movie = []
@@ -412,58 +413,57 @@ if __name__ == "__main__":
     # Unpack the list of tuples for Movies
     x_movies, y_movies = zip(*lista_tam_conj_movie)
 
-    # Creating the figure and axes for the subplots
-    plt.figure(figsize=(12, 15))  # Increased figure size to accommodate more subplots
 
-    # First row: Evolution of the prototype set sizes
-    ax1 = plt.subplot(3, 2, 1)
+    # Plot for the first row: Evolution of the prototype set sizes
+    fig1, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
     ax1.plot(x_http, y_http, color='b')
     ax1.set_title('Evolution of Protoype Set Size. HTTP')
-    ax1.set_xlabel('Índice de Muestra')
+    ax1.set_xlabel('Sample Number')
     ax1.set_ylabel('Tamaño del Conjunto de Prototipos')
     ax1.grid(True)
 
-    ax2 = plt.subplot(3, 2, 2)
     ax2.plot(x_movies, y_movies, color='r')
     ax2.set_title('Evolution of Protoype Set Size. Movies')
-    ax2.set_xlabel('Índice de Muestra')
+    ax2.set_xlabel('Sample Number')
     ax2.set_ylabel('Tamaño del Conjunto de Prototipos')
     ax2.grid(True)
 
-    # Second row: Smoothed prediction times
-    ax3 = plt.subplot(3, 2, 3)
+    plt.tight_layout()
+    plt.savefig("grafica_newset_size.png")
+
+    # Plot for the second row: Smoothed prediction times
+    fig2, (ax3, ax4) = plt.subplots(1, 2, figsize=(10, 5))
     ax3.plot(df['Smoothed Prediction Times Movies'], label='Smoothed Prediction Times (Movies)')
     ax3.set_title('Smoothed Movie Model Prediction Performance')
     ax3.set_xlabel('Sample Number')
     ax3.set_ylabel('Time (seconds)')
     ax3.legend()
 
-    ax4 = plt.subplot(3, 2, 4)
     ax4.plot(df['Smoothed Prediction Times HTTP'], label='Smoothed Prediction Times (HTTP)')
     ax4.set_title('Smoothed HTTP Model Prediction Performance')
     ax4.set_xlabel('Sample Number')
     ax4.set_ylabel('Time (seconds)')
     ax4.legend()
 
-    # Third row: Smoothed learning times
-    ax5 = plt.subplot(3, 2, 5)
+    plt.tight_layout()
+    plt.savefig("grafica_newset_prediction.png")
+
+    # Plot for the third row: Smoothed learning times
+    fig3, (ax5, ax6) = plt.subplots(1, 2, figsize=(10, 5))
     ax5.plot(df['Smoothed Learning Times Movies'], label='Smoothed Learning Times (Movies)', linestyle='--')
     ax5.set_title('Smoothed Movie Model Learning Timing')
     ax5.set_xlabel('Sample Number')
     ax5.set_ylabel('Time (seconds)')
     ax5.legend()
 
-    ax6 = plt.subplot(3, 2, 6)
     ax6.plot(df['Smoothed Learning Times HTTP'], label='Smoothed Learning Times (HTTP)', linestyle='--')
     ax6.set_title('Smoothed HTTP Model Learning Timing')
     ax6.set_xlabel('Sample Number')
     ax6.set_ylabel('Time (seconds)')
     ax6.legend()
 
-    # Adjust layout to prevent overlap
     plt.tight_layout()
-    plt.subplots_adjust(hspace=0.4)  # Adjust horizontal spacing if needed 
-    plt.savefig("grafica_newset.png")
-    # plt.show()
+    plt.savefig("grafica_newset_training.png")
+        # plt.show()
     
     
