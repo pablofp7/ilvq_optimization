@@ -418,14 +418,14 @@ if __name__ == "__main__":
     # First row: Evolution of the prototype set sizes
     ax1 = plt.subplot(3, 2, 1)
     ax1.plot(x_http, y_http, color='b')
-    ax1.set_title('Evolución del Tamaño del Conjunto de Prototipos HTTP')
+    ax1.set_title('Evolution of Protoype Set Size. HTTP')
     ax1.set_xlabel('Índice de Muestra')
     ax1.set_ylabel('Tamaño del Conjunto de Prototipos')
     ax1.grid(True)
 
     ax2 = plt.subplot(3, 2, 2)
     ax2.plot(x_movies, y_movies, color='r')
-    ax2.set_title('Evolución del Tamaño del Conjunto de Prototipos Películas')
+    ax2.set_title('Evolution of Protoype Set Size. Movies')
     ax2.set_xlabel('Índice de Muestra')
     ax2.set_ylabel('Tamaño del Conjunto de Prototipos')
     ax2.grid(True)
