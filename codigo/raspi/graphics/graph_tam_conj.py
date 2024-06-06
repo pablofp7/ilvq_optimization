@@ -48,7 +48,7 @@ def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico, g_e
     plt.figure(figsize=(10, 6))
     
     # Plotear los datos originales
-    plt.plot(x_vals, y_proms, 'o-', color='b', label='Datos Originales')  # 'o-' crea puntos con líneas
+    plt.plot(x_vals, y_proms, 'o-', color='b', label='Original Data')  # 'o-' crea puntos con líneas
     
     # Ajuste polinomial de grado 3 (puedes cambiar el grado para experimentar)
     coeficientes = np.polyfit(x_vals, y_proms, 3)
@@ -57,17 +57,17 @@ def plotear(x_vals, y_proms, dataset_especifico, s_especifico, T_especifico, g_e
     y_linea = polinomio(x_linea)
     
     # Plotear la curva ajustada
-    plt.plot(x_linea, y_linea, color='r', label='Ajuste Polinomial')
+    plt.plot(x_linea, y_linea, color='r', label='Polynomial Fitting')
     
-    title = f'Tamaño del conjunto de prototipos para '
+    title = f'Size of the prototype set for '
     if g_especifico:
         title += f'\u03B3={g_especifico}'  # Usando el símbolo Unicode de gamma
     else:
         title += f'{dataset_especifico}, s={s_especifico} y T={T_especifico}'
         
     plt.title(title)
-    plt.xlabel('Número de muestras/prototipos entrenados')
-    plt.ylabel('Tamaño del conjunto de prototipos del modelo')
+    plt.xlabel('Number of samples/prototypes trained')
+    plt.ylabel('Size of the model\'s prototype set')
     plt.legend()
     plt.grid(True)
     if g_especifico:
