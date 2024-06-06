@@ -57,66 +57,79 @@ data2_array = np.array(data2_list)
 
 # print(len(data1_list))
 
+# Methods to test
+methods = {
+    "multidimensional": jsd.compute_js_distance_multidimensional,
+    "monte_carlo": jsd.monte_carlo_jsd,
+    "adaptive_sampling": jsd.adaptive_sampling_jsd
+}
+
 num_samples_values = [500, 1000, 1500, 2000, 2500, 4000, 10000, 25000, 50000]
 n_iterations = 250  # Number of iterations per num_samples value for averaging
 
-# Initialize lists to store the metrics
-times = []
-means = []
-std_devs = []
+# Loop over each method
+for method_name, method in methods.items():
+    # Initialize lists to store the metrics
+    times = []
+    means = []
+    std_devs = []
 
-# Loop over each num_samples value
-for num_samples in num_samples_values:
-    iteration_times = []
-    distances = []
-    print(f"Calculating for num_samples = {num_samples} ...")
-    # Run the Monte Carlo simulation n_iterations times for each num_samples
-    for _ in range(n_iterations):
-        start_time = time.perf_counter_ns()
-        distance = jsd.monte_carlo_jsd(data1_array, data2_array, num_samples=num_samples)
-        iteration_time = time.perf_counter_ns() - start_time
-        
-        iteration_times.append(iteration_time / 1e9)
-        distances.append(distance)
-    
-    # Calculate the mean of the metrics for the current num_samples
-    avg_time = np.mean(iteration_times)
-    mean_distance = np.mean(distances)
-    std_dev_distance = np.std(distances)
-    
-    # Append the calculated metrics to their respective lists
-    times.append(avg_time)
-    means.append(mean_distance)
-    std_devs.append(std_dev_distance)
+    # Loop over each num_samples value
+    for num_samples in num_samples_values:
+        iteration_times = []
+        distances = []
+        print(f"Calculating for {method_name} with num_samples = {num_samples} ...")
 
-# Plotting
-plt.figure(figsize=(10, 15))
+        # Run the simulation n_iterations times for each num_samples
+        for _ in range(n_iterations):
+            start_time = time.perf_counter_ns()
+            if method_name == "adaptive_sampling":
+                distance = method(data1_array, data2_array, num_samples=num_samples)
+            else:
+                distance = method(data1_array, data2_array, num_points=num_samples)
+            iteration_time = time.perf_counter_ns() - start_time
 
-# Plot for average time per calculation
-plt.subplot(3, 1, 1)
-plt.plot(num_samples_values, times, marker='o')
-plt.xlabel('Number of Samples')
-plt.ylabel('Average Time per Calculation (s)')
-plt.xscale('log')
-plt.title('Time vs. Number of Samples')
+            iteration_times.append(iteration_time / 1e9)
+            distances.append(distance)
 
-# Plot for mean distance
-plt.subplot(3, 1, 2)
-plt.plot(num_samples_values, means, marker='o')
-plt.xlabel('Number of Samples')
-plt.ylabel('Mean Distance')
-plt.xscale('log')
-plt.title('Mean Distance vs. Number of Samples')
+        # Calculate the mean of the metrics for the current num_samples
+        avg_time = np.mean(iteration_times)
+        mean_distance = np.mean(distances)
+        std_dev_distance = np.std(distances)
 
-# Plot for standard deviation of distance
-plt.subplot(3, 1, 3)
-plt.plot(num_samples_values, std_devs, marker='o')
-plt.xlabel('Number of Samples')
-plt.ylabel('Standard Deviation of Distance')
-plt.xscale('log')
-plt.title('Std Dev vs. Number of Samples')
+        # Append the calculated metrics to their respective lists
+        times.append(avg_time)
+        means.append(mean_distance)
+        std_devs.append(std_dev_distance)
 
-plt.tight_layout()
-plt.savefig("./dens0_test.png")
-# plt.show()
+    # Plotting
+    plt.figure(figsize=(10, 15))
+
+    # Plot for average time per calculation
+    plt.subplot(3, 1, 1)
+    plt.plot(num_samples_values, times, marker='o')
+    plt.xlabel('Number of Samples')
+    plt.ylabel('Average Time per Calculation (s)')
+    plt.xscale('log')
+    plt.title(f'{method_name.capitalize()} - Time vs. Number of Samples')
+
+    # Plot for mean distance
+    plt.subplot(3, 1, 2)
+    plt.plot(num_samples_values, means, marker='o')
+    plt.xlabel('Number of Samples')
+    plt.ylabel('Mean Distance')
+    plt.xscale('log')
+    plt.title(f'{method_name.capitalize()} - Mean Distance vs. Number of Samples')
+
+    # Plot for standard deviation of distance
+    plt.subplot(3, 1, 3)
+    plt.plot(num_samples_values, std_devs, marker='o')
+    plt.xlabel('Number of Samples')
+    plt.ylabel('Standard Deviation of Distance')
+    plt.xscale('log')
+    plt.title(f'{method_name.capitalize()} - Std Dev vs. Number of Samples')
+
+    plt.tight_layout()
+    plt.savefig(f"./{method_name}_test.png")
+    # plt.show()
 
