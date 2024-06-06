@@ -32,6 +32,7 @@ def get_results(test, filters, metric):
                     cuenta_nodos = 0
                     capacidad_ejecucion_total, tamaño_lotes_total, cuenta_lotes = 0, 0, 0
                     clust_time_total, clust_runs_total = 0, 0
+                    tiempo_total = 0
 
                     for linea in contenido:
                         precision_match = re.search(r'Precision: (\d.\d+)', linea)
@@ -79,6 +80,10 @@ def get_results(test, filters, metric):
                         clust_runs_match = re.search(r'Número de ejecuciones de clustering: (\d+)', linea)
                         if clust_runs_match:
                             clust_runs_total += int(clust_runs_match.group(1))
+                            
+                        match_tiempo = re.search(r"Tiempo total: ([\d\.]+)", linea)
+                        if match_tiempo:
+                            tiempo_total = float(match_tiempo.group(1))
 
                                     
                     # Calculamos los promedios después de leer todo el archivo
@@ -93,6 +98,10 @@ def get_results(test, filters, metric):
                     promedio_mensajes_enviados = mensajes_enviados / cuenta_nodos if cuenta_nodos else 0
                     promedio_clust_time = clust_time_total / cuenta_nodos if cuenta_nodos else 0
                     promedio_clust_runs = clust_runs_total / cuenta_nodos if cuenta_nodos else 0
+                    
+                    tiempo_total_prom = tiempo_total / cuenta_nodos
+                    ancho_banda_prom = (105 * promedio_prototipos_compartidos) / tiempo_total_prom
+
 
 
                     resultado = {
@@ -105,7 +114,8 @@ def get_results(test, filters, metric):
                         'Capacidad_Ejecucion': capacidad_promedio, 
                         'Tamaño_Promedio_Lotes': tamaño_promedio_lotes,
                         'Clust_Time': promedio_clust_time,
-                        'Clust_Runs': promedio_clust_runs
+                        'Clust_Runs': promedio_clust_runs,
+                        'Ancho_Banda': ancho_banda_prom
                     }
                     
                     if es_elec:
@@ -171,7 +181,8 @@ def main():
         'Recall',
         'F1',
         'Clust_Time',
-        'Clust_Runs'
+        'Clust_Runs',
+        'Ancho_Banda'
     ]
 
     parser = argparse.ArgumentParser(description='Filter results based on parameters and output specific metrics along with parameter data.')

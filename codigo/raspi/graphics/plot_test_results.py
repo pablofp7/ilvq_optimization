@@ -58,6 +58,7 @@ def get_results():
                     mensajes_enviados = 0
                     cuenta_nodos = 0
                     capacidad_ejecucion_total, tamaño_lotes_total, cuenta_lotes = 0, 0, 0
+                    tiempo_total = 0
 
                     for linea in contenido:
                         precision_match = re.search(r'Precision: (\d.\d+)', linea)
@@ -91,7 +92,11 @@ def get_results():
                         capacidad_match = re.search(r'Capacidad de ejecución: (\d+)', linea)
                         if capacidad_match:
                             capacidad_ejecucion_total += float(capacidad_match.group(1))
-                                    
+                            
+                        match_tiempo = re.search(r"Tiempo total: ([\d\.]+)", linea)
+                        if match_tiempo:
+                            tiempo_total = float(match_tiempo.group(1))
+
                         lotes_match = re.search(r'ID, Tamaño de lotes recibidos: \[(.*?)\]', linea)
                         if lotes_match:
                             lotes = lotes_match.group(1).split('), (')
@@ -111,10 +116,14 @@ def get_results():
                         tamaño_promedio_lotes = 0
                     else:
                         tamaño_promedio_lotes = tamaño_lotes_total / cuenta_lotes if cuenta_lotes else 0
+                        
 
                     promedio_prototipos_entrenados = prototipos_entrenados / cuenta_nodos
                     promedio_prototipos_compartidos = prototipos_compartidos / cuenta_nodos
                     promedio_mensajes_enviados = mensajes_enviados / cuenta_nodos
+                    
+                    tiempo_total_prom = tiempo_total / cuenta_nodos
+                    ancho_banda_prom = (105 * promedio_prototipos_compartidos) / tiempo_total_prom
                     
                     if es_elec:
                         datos_elec.append({'s': int(s), 'T': float(T), 'it': int(it), 
@@ -125,7 +134,8 @@ def get_results():
                                     'Prototipos_Entrenados': promedio_prototipos_entrenados, 
                                     'Prototipos_Compartidos': promedio_prototipos_compartidos,
                                     'Capacidad_Ejecucion': capacidad_promedio, 
-                                    'Tamaño_Promedio_Lotes': tamaño_promedio_lotes})
+                                    'Tamaño_Promedio_Lotes': tamaño_promedio_lotes,
+                                    'Ancho_Banda': ancho_banda_prom})
 
                     if es_phis:
                         datos_phis.append({'s': int(s), 'T': float(T), 'it': int(it), 
@@ -136,7 +146,8 @@ def get_results():
                                     'Prototipos_Entrenados': promedio_prototipos_entrenados, 
                                     'Prototipos_Compartidos': promedio_prototipos_compartidos,
                                     'Capacidad_Ejecucion': capacidad_promedio, 
-                                    'Tamaño_Promedio_Lotes': tamaño_promedio_lotes})
+                                    'Tamaño_Promedio_Lotes': tamaño_promedio_lotes,
+                                    'Ancho_Banda': ancho_banda_prom})
                         
                     if es_elec2:
                         datos_elec2.append({'s': int(s), 'T': float(T), 'it': int(it), 
@@ -147,7 +158,8 @@ def get_results():
                                     'Prototipos_Entrenados': promedio_prototipos_entrenados, 
                                     'Prototipos_Compartidos': promedio_prototipos_compartidos,
                                     'Capacidad_Ejecucion': capacidad_promedio, 
-                                    'Tamaño_Promedio_Lotes': tamaño_promedio_lotes})
+                                    'Tamaño_Promedio_Lotes': tamaño_promedio_lotes,
+                                    'Ancho_Banda': ancho_banda_prom})
     
     return pd.DataFrame(datos_elec), pd.DataFrame(datos_phis), pd.DataFrame(datos_elec2)
 
@@ -241,7 +253,7 @@ def parse_args():
         type=str,
         default=None,  # Esto asegura que si no hay una métrica, se inicie la GUI.
         help="Especifica la métrica para trazar. Si no se especifica, se iniciará la interfaz gráfica. \
-              Opciones válidas son: precision, recall, f1, mensajes, entrenados, compartidos."
+              Opciones válidas son: precision, recall, f1, mensajes, entrenados, compartidos, banda."
     )
 
     # Define a custom type for checking the format "testX" or "testX.Y" where X is 1 to 10 and Y is 0 to 9
@@ -289,7 +301,8 @@ def find_matching_metric(input_metric):
         'entrenados': 'Prototipos_Entrenados',
         'compartidos': 'Prototipos_Compartidos',
         'capacidad': 'Capacidad_Ejecucion',
-        'lotes': 'Tamaño_Promedio_Lotes'
+        'lotes': 'Tamaño_Promedio_Lotes',
+        'banda': 'Ancho_Banda'
     }
 
     matching_metrics = [metric for metric in metricas if metric.startswith(input_metric)]
@@ -317,7 +330,8 @@ if __name__ == '__main__':
             'entrenados': 'Prototipos_Entrenados',
             'compartidos': 'Prototipos_Compartidos',
             'capacidad': 'Capacidad_Ejecucion',
-            'lotes': 'Tamaño_Promedio_Lotes'
+            'lotes': 'Tamaño_Promedio_Lotes',
+            'banda': 'Ancho_Banda'
         }
         # Si la métrica está en el diccionario, la seleccionamos. Si no, por defecto es 'F1'.
         metrica_seleccionada = find_matching_metric(args.metrica)
@@ -348,7 +362,7 @@ if __name__ == '__main__':
     metric_var = tk.StringVar()
     combo_metrics = ttk.Combobox(frame, textvariable=metric_var)
     combo_metrics['values'] = ('F1', 'Prototipos_Entrenados', 'Precisión', 'Recall', 'Mensajes_Enviados', 'Prototipos_Compartidos', 
-                               'Capacidad_Ejecucion', 'Tamaño_Promedio_Lotes')
+                               'Capacidad_Ejecucion', 'Tamaño_Promedio_Lotes', 'Ancho_Banda')
     combo_metrics.grid(column=1, row=1, sticky=(tk.W, tk.E), pady=20)
 
     frame_botones = ttk.Frame(frame)
