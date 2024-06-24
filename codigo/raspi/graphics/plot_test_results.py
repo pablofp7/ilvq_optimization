@@ -207,12 +207,18 @@ def plot_results(df, titulo_dataset, ax, metrica_seleccionada, not_gui: bool):
         
         return
         
-            
+    text_metrica_seleccionada = ""
+    if "totipo" in metrica_seleccionada:
+        text_metrica_seleccionada = "Number of Trained Prototypes"
+    elif "ncho" in metrica_seleccionada:
+        text_metrica_seleccionada = "Bandwidth"
+    else:
+        text_metrica_seleccionada = metrica_seleccionada
+        
     ax.legend(loc='best')
     ax.set_xlabel('T')
-    ax.set_ylabel(metrica_seleccionada)
-    ax.set_title(f'{titulo_dataset} - {metrica_seleccionada}=f(T,s). En función de T, para distintos valores de s.')
-
+    ax.set_ylabel(text_metrica_seleccionada)
+    ax.set_title(f"{titulo_dataset} - {text_metrica_seleccionada}=f(T,s). As a function of T, for different values of s.")
 
 def get_metric_and_plot(metrica: str = None):
 
