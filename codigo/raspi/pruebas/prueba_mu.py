@@ -41,7 +41,7 @@ target_size = (75, 85)
 
 # Estructuras para guardar resultados
 tiempos_entrenamiento = {size: [] for size in lista_pset_size}
-tiempos_prediccion = {size: [] for size in lista_pset_size}
+tiempos_prediccion = {size:  [] for size in lista_pset_size}
 tamaños_prototipos = {size: [] for size in lista_pset_size}
 f1_scores = {size: [] for size in lista_pset_size}
 
@@ -121,13 +121,16 @@ nombres_metricas = ['Tiempo de entrenamiento', 'Tiempo de predicción']
 for metric, name in zip(metricas, nombres_metricas):
     medias = [np.mean(metric[size]) for size in lista_pset_size]
     cvs = [np.std(metric[size]) / np.mean(metric[size]) if np.mean(metric[size]) > 0 else 0 for size in lista_pset_size]
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(10, 10))
+    plt.subplot(2, 1, 1)
     plt.plot(lista_pset_size, medias, '-o', label='Media')
+    plt.title(f'Media de {name}')
+    plt.ylabel('Tiempo medio (s)')
+    plt.subplot(2, 1, 2)
     plt.plot(lista_pset_size, cvs, '-o', label='Coef. de Variación')
+    plt.title(f'Coeficiente de Variación para {name}')
     plt.xlabel('pset size')
-    plt.ylabel('Tiempo (s)' if 'Tiempo' in name else 'Coeficiente de Variación')
-    plt.title(name)
-    plt.legend()
+    plt.ylabel('Coeficiente de Variación')
     plt.tight_layout()
     plt.savefig(f'{name.replace(" ", "_").lower()}_metrics.png')
     plt.close()
@@ -135,19 +138,22 @@ for metric, name in zip(metricas, nombres_metricas):
 # Suma de tiempos
 tiempos_sumados = [np.mean(np.array(tiempos_entrenamiento[size]) + np.array(tiempos_prediccion[size])) for size in lista_pset_size]
 cv_sumados = [np.std(np.array(tiempos_entrenamiento[size]) + np.array(tiempos_prediccion[size])) / np.mean(np.array(tiempos_entrenamiento[size]) + np.array(tiempos_prediccion[size])) for size in lista_pset_size]
-plt.figure(figsize=(10, 5))
+plt.figure(figsize=(10, 10))
+plt.subplot(2, 1, 1)
 plt.plot(lista_pset_size, tiempos_sumados, '-o', label='Tiempo Total Medio')
-plt.plot(lista_pset_size, cv_sumados, '-o', label='Coef. de Variación Total')
-plt.xlabel('pset size')
+plt.title('Tiempo Total Medio')
 plt.ylabel('Tiempo (s)')
-plt.title('Suma de Tiempos de Entrenamiento y Predicción')
-plt.legend()
+plt.subplot(2, 1, 2)
+plt.plot(lista_pset_size, cv_sumados, '-o', label='Coef. de Variación Total')
+plt.title('Coeficiente de Variación Total')
+plt.xlabel('pset size')
+plt.ylabel('Coeficiente de Variación')
 plt.tight_layout()
 plt.savefig('tiempos_sumados_metrics.png')
 plt.close()
 
 # Evolución del tamaño de los prototipos
-num_plots = 5
+num_plots = len(lista_pset_size) // 2 + len(lista_pset_size) % 2
 for i in range(num_plots):
     plt.figure(figsize=(10, 10))
     for j in range(2):
@@ -164,6 +170,10 @@ for i in range(num_plots):
     plt.tight_layout()
     plt.savefig(f'prototipos_evolucion_plot_{i + 1}.png')
     plt.close()
+    
+    
+    
+    
 # # Generar gráficos
 # for pset_size in lista_pset_size:
 #     plt.figure(figsize=(10, 15))
