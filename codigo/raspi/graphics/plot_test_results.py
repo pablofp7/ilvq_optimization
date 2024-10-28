@@ -265,7 +265,7 @@ def parse_args():
     # Define a custom type for checking the format "testX" or "testX.Y" where X is 1 to 10 and Y is 0 to 9
     def test_type(value):
         if not value.startswith("test"):
-            raise argparse.ArgumentTypeError(f"Value must start with 'test'. You entered: {value}")
+            raise argparse.ArgumentTypeError(f"Value must start with 'test' or 'all'. You entered: {value}")
         
         number_part = value[4:]  # Extract the number part after "test"
 
