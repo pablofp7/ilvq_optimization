@@ -539,7 +539,7 @@ def get_all(metrica:str = None):
     y_min -= y_max * 0.1 if y_min == 0 else y_min + y_min * min_mod
     
     y_min = -1e3
-    y_max = 8.75e3
+    y_max = 9e3
     y_min2 = y_min
     y_max2 = y_max   
         
