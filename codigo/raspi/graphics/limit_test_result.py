@@ -8,7 +8,7 @@ import os
 import argparse
 
 def get_results(test, filters, metric):
-    directorio_resultados = f'/home/pablo/trabajo/codigo/raspi/{test}_resultados/'
+    directorio_resultados = os.path.expanduser(f'~/ilvq_optimization/codigo/raspi/{test}_resultados/')
     datos_elec = []
     datos_elec2 = []
     datos_phis = []

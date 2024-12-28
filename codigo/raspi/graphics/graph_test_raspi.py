@@ -32,7 +32,7 @@ def ajustar_tamaño_ventana():
 
 def get_results():
         
-    directorio_resultados = '/home/pablo/trabajo/codigo/raspi/resultados_servidor/old_resultados_raspi/'
+    directorio_resultados = os.path.expanduser('~/ilvq_optimization/codigo/raspi/resultados_servidor/old_resultados_raspi/')
 
     datos_elec = []
     datos_elec2 = []

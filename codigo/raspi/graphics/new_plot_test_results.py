@@ -32,7 +32,7 @@ def ajustar_tamaño_ventana():
 
 def get_results(test: str = "test1"):
 
-    directorio_resultados = f'/home/pablo/trabajo/codigo/raspi/{test}_resultados/'
+    directorio_resultados = os.path.expanduser(f'~/ilvq_optimization/codigo/raspi/{test}_resultados/')
 
     datos_elec = []
     datos_elec2 = []
@@ -165,7 +165,7 @@ def get_results(test: str = "test1"):
 
 
 def get_results_4(test, filters, metric):
-    directorio_resultados = f'/home/pablo/trabajo/codigo/raspi/{test}_resultados/'
+    directorio_resultados = os.path.expanduser(f'~/ilvq_optimization/codigo/raspi/{test}_resultados/')
     datos_elec = []
     datos_elec2 = []
     datos_phis = []

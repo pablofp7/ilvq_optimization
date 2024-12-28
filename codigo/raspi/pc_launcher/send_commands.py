@@ -2,7 +2,7 @@ import paramiko
 import sys
 import argparse
 
-def send_command(hosts, command, username='pablo', password='123', sudo_password='123'):
+def send_command(hosts, command, username='prueba', password='123', sudo_password='123'):
     for host in hosts:
         try:
             client = paramiko.SSHClient()
