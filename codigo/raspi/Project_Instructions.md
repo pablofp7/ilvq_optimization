@@ -13,7 +13,6 @@
   - Para los rangos de los valores del eje y, ajustar manualmente para que se ajuste bien dentro de cada opción.
 
 
-
 ## Unir Resultados CSV
 - unir_csv.py
 - Cada nodo genera sus resultados en un csv estos hay que unirlos agrupados según parametros (dataset,ejecucion,s,T,it...).
