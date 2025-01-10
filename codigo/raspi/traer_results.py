@@ -3,8 +3,8 @@ import os
 
 # Configuración
 raspis = {
-    "nodo0": "192.168.1.101",  # Cambia por la IP del nodo 0
-    "nodo1": "192.168.1.102",  # Cambia por la IP del nodo 1
+    "nodo0": "192.168.1.145",  # Cambia por la IP del nodo 0
+    # "nodo1": "192.168.1.102",  # Cambia por la IP del nodo 1
 }
 
 usuario = "pablo"  # Usuario en las Raspberry Pis
