@@ -497,80 +497,71 @@ def get_all(metrica:str = None):
         metrica_seleccionada = metricas['f1']
     
 
-    datos_elec, datos_phis, datos_elec2 = dict(), dict(), dict()
-    all_tests = [f'test{i}' for i in range(1, 4)]
-    for i, test in enumerate(all_tests):
-        datos_elec[f"test{i+1}"], datos_phis[f"test{i+1}"], datos_elec2[f"test{i+1}"] = get_results(test)
 
-    # filters = {'limit': 500, 'range_start': 72.5, 'range_end': 77.5}
-    # datos_elec['test4'] = get_results_4('test4', filters, metrica_seleccionada)
-
-    # Calculate the global y_min and y_max across all tests
-    y_min = float('inf')
-    y_max = float('-inf')
-
-    # for key in ['test1', 'test2', 'test3', 'test4']:
-    for key in ['test1', 'test2', 'test3']:
-        df = datos_phis[key]
-        if not df.empty:
-            current_min = df[metrica_seleccionada].min()
-            current_max = df[metrica_seleccionada].max()
-            y_min = min(y_min, current_min)
-            y_max = max(y_max, current_max)
-
-    min_mod = 0.05
-    max_mod = 0.02
-    y_max += y_max * max_mod
-    y_min -= y_max * 0.1 if y_min == 0 else y_min + y_min * min_mod
+    opcion = 1 # Podria ser 1 o 2
     
-    
-    # for key in ['test1', 'test2', 'test3', 'test4']:
-    for key in ['test1', 'test2', 'test3']:
-        df = datos_elec2[key]
-        if not df.empty:
-            current_min = df[metrica_seleccionada].min()
-            current_max = df[metrica_seleccionada].max()
-            y_min2 = min(y_min, current_min)
-            y_max2 = max(y_max, current_max)
-
-    min_mod = 0.05
-    max_mod = 0.02
-    y_max += y_max * max_mod
-    y_min -= y_max * 0.1 if y_min == 0 else y_min + y_min * min_mod
-    
-    y_min = -1e3
-    y_max = 9e3
-    y_min2 = y_min
-    y_max2 = y_max   
+    if opcion == 1 or opcion < 2:
         
-            
-    ancho = 20
-    alto = 15  # Adjust height for better spacing if needed
-    fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2, figsize=(ancho, alto))
+        y_min = -0.5
+        y_max = 1.25
 
-    # Pass the global y_min and y_max to ensure all subplots have the same Y-axis range
-    # plot_results_all(datos_elec['test1'], "Base Test", ax1, metrica_seleccionada, y_min, y_max)
-    # plot_results_all(datos_elec['test2'], "JSD Test", ax2, metrica_seleccionada, y_min, y_max)
-    # plot_results_all(datos_elec['test3'], "Limit Queue Size Test", ax3, metrica_seleccionada, y_min, y_max)
-    # plot_results_all(datos_elec['test4'], "Clustering Test", ax4, metrica_seleccionada, y_min, y_max)
+        datos_elec = {}
+        filters = {'limit': 500, 'range_start': 72.5, 'range_end': 77.5}
+        all_tests = [f'test{i}' for i in range(1, 4)]
+        for test in all_tests:
+            datos_elec[test], _, _ = get_results(test)   
+                     
+        datos_elec['test4'] = get_results_4('test4', filters, metrica_seleccionada)
+
+        y_min = -0.5
+        y_max = 1.25
+                
+        ancho = 20
+        alto = 15  # Adjust height for better spacing if needed
+        fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(ancho, alto))
+
+        # Pass the global y_min and y_max to ensure all subplots have the same Y-axis range
+        plot_results_all(datos_elec['test1'], "Base Test", ax1, metrica_seleccionada, y_min, y_max)
+        plot_results_all(datos_elec['test2'], "JSD Test", ax2, metrica_seleccionada, y_min, y_max)
+        plot_results_all(datos_elec['test3'], "Limit Queue Size Test", ax3, metrica_seleccionada, y_min, y_max)
+        plot_results_all(datos_elec['test4'], "Clustering Test", ax4, metrica_seleccionada, y_min, y_max)
+  
+    else:
+        
+        y_min = -1e3
+        y_max = 9e3
+        y_min2 = y_min
+        y_max2 = y_max   
+        
+        datos_elec, datos_phis, datos_elec2 = dict(), dict(), dict()
+        all_tests = [f'test{i}' for i in range(1, 4)]
+        for i, test in enumerate(all_tests):
+            datos_elec[f"test{i+1}"], datos_phis[f"test{i+1}"], datos_elec2[f"test{i+1}"] = get_results(test)
+    
+            
+                
+        ancho = 20
+        alto = 15  # Adjust height for better spacing if needed
+        fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2, figsize=(ancho, alto))
 
     
-    plot_results_all(datos_phis['test1'], "Base Test", ax1, metrica_seleccionada, y_min, y_max)
-    plot_results_all(datos_phis['test2'], "JSD Test", ax3, metrica_seleccionada, y_min2, y_max2)
-    plot_results_all(datos_phis['test3'], "Limit Queue Size Test", ax5, metrica_seleccionada, y_min2, y_max2)
-    plot_results_all(datos_elec2['test1'], "Base Test", ax2, metrica_seleccionada, y_min, y_max)
-    plot_results_all(datos_elec2['test2'], "JSD Test", ax4, metrica_seleccionada, y_min2, y_max2) 
-    plot_results_all(datos_elec2['test3'], "Limit Queue Size Test", ax6, metrica_seleccionada, y_min2, y_max2)  
+        plot_results_all(datos_phis['test1'], "Base Test", ax1, metrica_seleccionada, y_min, y_max)
+        plot_results_all(datos_phis['test2'], "JSD Test", ax3, metrica_seleccionada, y_min2, y_max2)
+        plot_results_all(datos_phis['test3'], "Limit Queue Size Test", ax5, metrica_seleccionada, y_min2, y_max2)
+        plot_results_all(datos_elec2['test1'], "Base Test", ax2, metrica_seleccionada, y_min, y_max)
+        plot_results_all(datos_elec2['test2'], "JSD Test", ax4, metrica_seleccionada, y_min2, y_max2) 
+        plot_results_all(datos_elec2['test3'], "Limit Queue Size Test", ax6, metrica_seleccionada, y_min2, y_max2)  
 
 
-    # Añadir títulos de columna con texto
-    fig.text(0.26, 0.95, 'Phishing Dataset', ha='center', va='center', fontsize=12, fontweight='bold')
-    fig.text(0.76, 0.95, 'Electricity Random', ha='center', va='center', fontsize=12, fontweight='bold')
+        # Añadir títulos de columna con texto
+        fig.text(0.26, 0.95, 'Phishing Dataset', ha='center', va='center', fontsize=12, fontweight='bold')
+        fig.text(0.76, 0.95, 'Electricity Random', ha='center', va='center', fontsize=12, fontweight='bold')
 
 
-    # Ajustes adicionales
-    plt.subplots_adjust(top=0.85, hspace=0.5, wspace=0.3)  # Aumento de hspace para mejor visualización
-    plt.tight_layout(rect=[0, 0, 1, 0.9])  # Ajuste para acomodar el texto superior
+        # Ajustes adicionales
+        plt.subplots_adjust(top=0.85, hspace=0.5, wspace=0.3)  # Aumento de hspace para mejor visualización
+        plt.tight_layout(rect=[0, 0, 1, 0.9])  # Ajuste para acomodar el texto superior
+        
     plt.show()
     exit()
 
@@ -658,7 +649,8 @@ if __name__ == '__main__':
     test = args.t
     if "all" in test:
         get_all(args.metrica)
-    datos_elec, datos_phis, datos_elec2 = get_results(test)
+    else: 
+        datos_elec, datos_phis, datos_elec2 = get_results(test)
 
 
     if args.metrica:
