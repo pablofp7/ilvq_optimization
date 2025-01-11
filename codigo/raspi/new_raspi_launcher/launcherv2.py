@@ -6,7 +6,7 @@ if ruta_directorio_main not in sys.path:
 
 from prototypes import XuILVQ
 import pandas as pd
-from node_class.raspi_nodev2_mp import RaspiNodev2_mp
+from node_class.nodev2 import Nodev2
 import time
 import threading
 import numpy as np
@@ -49,7 +49,7 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
 
-    nodo = RaspiNodev2_mp(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = Nodev2(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
@@ -75,11 +75,12 @@ def main(df: pd.DataFrame):
         cap_ejec = 0
     else:
         cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
-
+    
     to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
                     f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
                     f"Ha compartido {nodo.shared_times_final} veces.\n"
-                    f"Ha compartido {nodo.compartidos_final} en total.\n"
+                    f"Ha compartido {nodo.compartidos_final} prototipos.\n"
+                    f"Se ha ahorrado compartir {nodo.no_comp_jsd_final} prototipos.\n"
                     f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
                     f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
                     f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
@@ -97,9 +98,6 @@ def main(df: pd.DataFrame):
     with open(nombre_archivo, "w") as f:
         f.writelines(to_write)
 
-
-              
-        
 def sincronizar():
 
     print("Comienza la sincronización...")
@@ -284,6 +282,7 @@ def check_availability(nodo_id, nodos, puerto):
 
         
 
+
 if __name__ == "__main__":
 
     try:
@@ -310,7 +309,7 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        i_iter = 17
+        i_iter = 46
         while i_iter < iteraciones:
             dataset_idx = 0
             while dataset_idx < len(datasets):

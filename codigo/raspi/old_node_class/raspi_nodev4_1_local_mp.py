@@ -10,13 +10,13 @@ import os
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
-from node_class.deques_proxy import DequeManager
+from old_node_class.deques_proxy import DequeManager
 from prototypes import XuILVQ
 
 
-class RaspiNodev4_2local_mp:
+class RaspiNodev4_1local_mp:
     
-    def __init__(self, id, dataset, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000, tam_colas = 500):
+    def __init__(self, id, dataset, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000):
         
         self.id = id
         self.modelo_proto = XuILVQ()
@@ -31,9 +31,9 @@ class RaspiNodev4_2local_mp:
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
         self.puerto_base = puerto_base
         manager = DequeManager().start_manager()
-        self.tam_colas = tam_colas
+        tam_colas = 500000
         self.manager = manager
-        self.cola_protos = manager.DequesProxy(num_deques = self.nodos, maxlen = self.tam_colas, id = self.id)        
+        self.cola_protos = manager.DequesProxy(num_deques = self.nodos, maxlen = tam_colas, id = self.id)        
         self.cola_index = 0
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         
@@ -64,7 +64,7 @@ class RaspiNodev4_2local_mp:
         self.tiempo_espera_total = 0
         
         #Atributos para gestionar hilos
-        self.last_set = manager.DequesProxy(num_deques = self.nodos, maxlen = self.tam_colas, id = self.id)
+        self.last_set = manager.DequesProxy(num_deques = self.nodos, maxlen = 1, id = self.id)
         self.tam_lotes_recibidos = manager.ListsProxy(num_lists = 1, id = self.id)
         self.compartidos = manager.ListsProxy(num_lists = 1, id = self.id)
         self.shared_times = manager.ListsProxy(num_lists = 1, id = self.id)
@@ -337,7 +337,7 @@ class RaspiNodev4_2local_mp:
             print(f"[NODO {id}] Conjunto NODO {destino}: {len(dest_conj)}.") if id == 0 else None
             distancia = jsd.monte_carlo_jsd(mi_conj, dest_conj)
             print(f"Distancia entre conjuntos de prototipos del nodo {id} y el nodo {destino}: {distancia}.")  if id == 0 else None
-            if distancia > 0.5:
+            if distancia > 0.2:
                 # print(f"Es eficiente compartirle al nodo {destino}.") if id == 0 else None
                 destinos_eficiente.append(destino)
             

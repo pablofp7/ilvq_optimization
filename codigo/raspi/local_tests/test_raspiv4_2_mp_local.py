@@ -5,7 +5,7 @@ if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
 
 import pandas as pd
-from node_class.raspi_nodev4_2_local_mp import RaspiNodev4_2local_mp
+from old_node_class.raspi_nodev4_2_local_mp import RaspiNodev4_2local_mp
 import time
 import numpy as np
 import multiprocessing

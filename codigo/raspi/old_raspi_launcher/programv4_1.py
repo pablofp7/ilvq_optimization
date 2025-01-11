@@ -6,7 +6,7 @@ if ruta_directorio_main not in sys.path:
 
 from prototypes import XuILVQ
 import pandas as pd
-from node_class.raspi_nodev4_1 import RaspiNodev4_1
+from old_node_class.raspi_nodev4_1 import RaspiNodev4_1
 import time
 import threading
 import numpy as np

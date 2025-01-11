@@ -4,7 +4,7 @@ ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
     
-from node_class.deques_proxy import DequeManager
+from old_node_class.deques_proxy import DequeManager
 import multiprocessing
 import time
 import random

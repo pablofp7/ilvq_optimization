@@ -1,6 +1,15 @@
 
 # Instrucciones del Proyecto
 
+## Clases de modelos
+  - En new_node_class están seleccionados las versiones importantes donde cada una corresponde a cada test:
+  1. nodev1 -> BaseTest
+  2. nodev2 -> JSDTest
+  3. nodev3 -> LimitQueueSizeTest
+  4. nodev4 -> ClusteringTest
+
+  - En new_raspi_launcher están los lanzadores de cada una de las versiones.
+
 ## Generación de Gráficos (Todos los Tests)
 **Objetivo**: Crear gráficos para el dataset de electricidad y otros datasets.
 

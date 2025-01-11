@@ -6,11 +6,11 @@ import multiprocessing
 import time
 from collections import deque
 from entropia import jsd
-from node_class.deques_proxy import DequeManager
+from old_node_class.deques_proxy import DequeManager
 
-class RaspiNodev5:
+class Nodev3:
     
-    def __init__(self, id, dataset, modelo_proto, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000, tam_colas = 1):
+    def __init__(self, id, dataset, modelo_proto, modelo_pred=None, share_protocol=None, recomendador=None, nodos=5, s=4, T=0.1, media_llegadas=0.1, puerto_base=10000, tam_colas = 10000):
         
         self.id = id
         self.modelo_proto = modelo_proto
@@ -46,8 +46,6 @@ class RaspiNodev5:
         self.muestras_train = 0
         self.protos_train = 0
         self.tam_conj_prot = []
-        self.clust_time = 0
-        self.clust_runs = 0
         
         #Medidores de tiempo
         self.tiempo_learn_data = 0
@@ -80,6 +78,7 @@ class RaspiNodev5:
                                                                                 self.tiempo_no_share, self.no_comp_jsd), name=f"Emisor_{self.id}")
         
 
+            
         
     def run(self):
         
@@ -110,7 +109,7 @@ class RaspiNodev5:
 
             # Después de esperar, procesamos la muestra actual del dataset.
             inicio_learn_data = time.perf_counter()
-            self.learn_from_data()
+            self.learn_from_data() 
             self.tiempo_learn_data += time.perf_counter() - inicio_learn_data
             self.save_tam_conj()  # Guardar el tamaño del conjunto de prototipos.
 
@@ -123,14 +122,19 @@ class RaspiNodev5:
         self.tiempo_final_total = time.perf_counter() - tiempo_inicio_total  # Calcular el tiempo total de ejecución.
         
         
+        join_timeout = 5
         self.fin_proceso.set()
         self.fin_proceso_emisor.set()
+        # self.proceso_receptor.join(timeout=join_timeout)
         self.proceso_receptor.join()
         if self.proceso_receptor.is_alive():
+            # self.proceso_receptor.terminate()
             print(f"El hilo RECEPTOR no ha terminado. Nodo: {self.id}.")
 
+        # self.proceso_emisor.join(timeout=join_timeout)
         self.proceso_emisor.join()        
         if self.proceso_emisor.is_alive():
+            # self.proceso_emisor.terminate()
             print(f"El hilo EMISOR ha terminado. Nodo: {self.id}.")
         
         self.tam_conj_prot = self.diezmar()  # Diezmar la lista de tamaños de conjuntos de prototipos.
@@ -142,9 +146,6 @@ class RaspiNodev5:
         self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
         self.protos_descartados_final = self.protos_descartados.pop(0)  # Obtener el número de prototipos descartados.
-        
-        self.clust_runs = self.modelo_proto.clust_runs
-        self.clust_time = self.modelo_proto.clust_time
             
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
@@ -187,13 +188,12 @@ class RaspiNodev5:
             self.matriz_conf["FP"] += 1
         else:
             self.matriz_conf["FN"] += 1
-
+        
         #TRAIN
         self.modelo_proto.learn_one(x, y)
-        
         if not (self.modelo_pred is self.modelo_proto):
-            self.modelo_proto.learn_one(x, y)
-                        
+            self.modelo_pred.learn_one(x, y)
+            
         self.tiempo_learn_data += (time.perf_counter() - temp)
                         
             
@@ -209,9 +209,7 @@ class RaspiNodev5:
         while colas_revisadas < colas_a_revisar:
             
             if self.cola_protos.get_length(self.cola_index, call_method = "LEARNING QUEUE. Getting number of protos of neighbour.") > 0:
-                proto = self.cola_protos.getleft(self.cola_index, call_method = "LEARNING QUEUE. Popping proto from neighbour.")
-                random_index = random.randint(0, len(proto) - 1)
-                proto = proto.pop(random_index) 
+                proto = self.cola_protos.popleft(self.cola_index, call_method = "LEARNING QUEUE. Popping proto from neighbour.")
                 
                 self.protos_train += 1
                 print(f"PROTO {self.protos_train}, NODO {self.id}\n") if self.protos_train % 10000 == 0 else None
@@ -222,9 +220,8 @@ class RaspiNodev5:
                 temp = time.perf_counter()
                 #TRAIN
                 self.modelo_proto.learn_one(x, y)
-                
                 if not (self.modelo_pred is self.modelo_proto):
-                    self.modelo_proto.learn_one(x, y)
+                    self.modelo_pred.learn_one(x, y)
 
                 self.tiempo_learn_queue += (time.perf_counter() - temp)
                 
@@ -277,7 +274,7 @@ class RaspiNodev5:
                     compartidos.append(0, compartidos_local)
                     print(f"[NODO {id}] . Va a añadir {no_comp_jsd_local} a la lista de no_comp_jsd.")
                     no_comp_jsd.append(0, no_comp_jsd_local)
-                    # print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
+                    print(f"[NODO {id}] . Item añadido: {compartidos.get_item(0, 0)}.")
                     tiempo_no_share.append(0, tiempo_no_share_local)
                     print(f"[NODO {id}] El hilo emisor ha terminado. ORDEN {fin_proceso_emisor} / {fin_proceso_emisor.is_set()}. Vuelve al join.")
                     return
@@ -356,6 +353,8 @@ class RaspiNodev5:
         return destinos_eficiente
 
 
+
+
         
     def save_tam_conj(self):
         # Guardar el tamaño cada 10 muestras siempre
@@ -431,13 +430,12 @@ class RaspiNodev5:
                 # Calcular cuantos prototipos había antes, y cuantos después de añadir a la cola
                 # Ver así cuantos se han descartado.
                 # len(protos a añadir) - (get_length despúes - get_length antes)
-                # cola_protos.clear(id_recibido, call_method = "RECEIVING. Clearing neighbour queue.")
-                # cola_protos.extendleft(id_recibido, protos, call_method = "RECEIVING. Extending left neighbour queue.")
+                n_add = len(protos)
+                n_before = cola_protos.get_length(id_recibido, call_method = "RECEIVING. Getting number of protos of neighbour.")
+                cola_protos.extendleft(id_recibido, protos, call_method = "RECEIVING. Extending left neighbour queue.")
+                n_after = cola_protos.get_length(id_recibido, call_method = "RECEIVING. Getting number of protos of neighbour.")
                 
-                n_before = cola_protos.get_length(id_recibido, call_method = "RECEIVING. Getting the number of protos of neighbour.")
-                protos_descartados_local += n_before
-                cola_protos.append(id_recibido, protos, call_method ="RECEIVING. Appending protos to neighbour queue.")
-
+                protos_descartados_local += (n_add - (n_after - n_before))
                 
                 # print(f"[NODO {id}] Ha añadido. Procede a actualizar la lista de conjunto reciente.")
                 self.update_conj_proto(id, id_recibido, protos, last_set)
