@@ -6,7 +6,7 @@ if ruta_directorio_main not in sys.path:
 
 from prototypes_mod import XuILVQ
 import pandas as pd
-from new_node_class.raspi_nodev4 import RaspiNodev4
+from new_node_class.nodev4 import Nodev4
 import time
 import threading
 import numpy as np
@@ -50,7 +50,7 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
 
-    nodo = RaspiNodev4(id, dataset=df_nodos[id], modelo_proto=XuILVQ(max_pset_size=limit, target_size=target_range), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = Nodev4(id, dataset=df_nodos[id], modelo_proto=XuILVQ(max_pset_size=limit, target_size=target_range), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()

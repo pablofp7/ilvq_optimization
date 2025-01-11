@@ -20,9 +20,8 @@ def read_dataset(name: str):
     dataset.infer_objects(copy=False)
     
     if "2" in name:
-       
- dataset.infer_objects(copy=False)t
-    return dataset.iloc[::5].iloc[:1000]
+        dataset.infer_objects(copy=False)
+        return dataset.iloc[::5].iloc[:1000]
       
     dataset.infer_objects(copy=False)
     return dataset
