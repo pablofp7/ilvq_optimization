@@ -1,3 +1,4 @@
+import csv
 import sys
 import os
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -6,7 +7,7 @@ if ruta_directorio_main not in sys.path:
 
 from prototypes import XuILVQ
 import pandas as pd
-from node_class.nodev3 import Nodev3
+from node_class.nodev2 import Nodev2
 import time
 import threading
 import numpy as np
@@ -49,7 +50,7 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
 
-    nodo = Nodev3(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = Nodev2(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
@@ -76,28 +77,36 @@ def main(df: pd.DataFrame):
     else:
         cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
     
-    to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
-                    f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
-                    f"Ha compartido {nodo.shared_times_final} veces.\n"
-                    f"Ha compartido {nodo.compartidos_final} prototipos.\n"
-                    f"Se ha ahorrado compartir {nodo.no_comp_jsd_final} prototipos.\n"
-                    f"Se han descartado por limitación cola {nodo.protos_descartados_final} prototipos.\n"
-                    f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
-                    f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
-                    f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
-                    f"Tiempo no compartiendo prototipos: {nodo.tiempo_no_share_final}\n" 
-                    f"Tiempo total de espera activa: {nodo.tiempo_espera_total}\n"  
-                    f"Tiempo total: {nodo.tiempo_final_total}\n"
-                    f"Capacidad de ejecución: {cap_ejec}\n"
-                    f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n"
-                    f"Tamaño conjunto de prototipos: {nodo.tam_conj_prot}\n"
-                    f"\n")
+    row = {
+        "NODO": nodo.id,
+        "Precision": precision,
+        "Recall": recall,
+        "F1": f1,
+        "Muestras entrenadas": nodo.muestras_train,
+        "Prototipos entrenados": nodo.protos_train,
+        "Veces compartido": nodo.shared_times_final,
+        "Prototipos compartidos": nodo.compartidos_final,
+        "Prototipos ahorrados": nodo.no_comp_jsd_final,  # Nuevo atributo
+        "Tiempo aprendizaje (muestras)": nodo.tiempo_learn_data,
+        "Tiempo aprendizaje (prototipos)": nodo.tiempo_learn_queue,
+        "Tiempo compartiendo prototipos": nodo.tiempo_share_final,
+        "Tiempo no compartiendo prototipos": nodo.tiempo_no_share_final,
+        "Tiempo total espera activa": nodo.tiempo_espera_total,
+        "Tiempo total": nodo.tiempo_final_total,
+        "Capacidad de ejecución": cap_ejec,
+        "Tamaño de lotes recibidos": nodo.tam_lotes_recibidos,
+        "Tamaño conjunto de prototipos": nodo.tam_conj_prot
+    }
 
+    # Escribir en el archivo CSV
+    with open(nombre_archivo, 'w', newline='') as csvfile:
+        fieldnames = row.keys()
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-    print("Se ha terminado de ejecutar todo.")
+        writer.writeheader()
+        writer.writerow(row)
 
-    with open(nombre_archivo, "w") as f:
-        f.writelines(to_write)
+    print("Se ha terminado de ejecutar todo y se ha generado el archivo CSV.")
 
 def sincronizar():
 
@@ -109,8 +118,7 @@ def sincronizar():
 
     check_availability(id, dir_nodos, puerto)
     if id == 0:
-        # Como base se ponen los parametros del nodo central
-        min_prov = parsear_parametros(parametros)
+        min_prov = None
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
@@ -311,7 +319,7 @@ if __name__ == "__main__":
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        i_iter = 39
+        i_iter = 46
         while i_iter < iteraciones:
             dataset_idx = 0
             while dataset_idx < len(datasets):
@@ -327,7 +335,7 @@ if __name__ == "__main__":
                         print(f"[ITERATION] Pre-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
 
                         parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
-                        nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
+                        nombre_archivo = f"{directorio_resultados}/result_{parametros}.csv"
                         if os.path.isfile(nombre_archivo):
                             print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
                             t_idx += 1
@@ -339,7 +347,7 @@ if __name__ == "__main__":
                         t = T[t_idx]
                         i_iter = i_iter
                         new_parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
-                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.txt"
+                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.csv"
                         
                         print(f"[ITERATION] Post-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
                         main(data_frame)

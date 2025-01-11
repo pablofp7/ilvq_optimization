@@ -1,3 +1,4 @@
+import csv
 import sys
 import os
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -76,26 +77,37 @@ def main(df: pd.DataFrame):
     else:
         cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
 
-    to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
-                    f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
-                    f"Ha compartido {nodo.shared_times_final} veces.\n"
-                    f"Ha compartido {nodo.compartidos_final} en total.\n"
-                    f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
-                    f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
-                    f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
-                    f"Tiempo no compartiendo prototipos: {nodo.tiempo_no_share_final}\n" 
-                    f"Tiempo total de espera activa: {nodo.tiempo_espera_total}\n"  
-                    f"Tiempo total: {nodo.tiempo_final_total}\n"
-                    f"Capacidad de ejecución: {cap_ejec}\n"
-                    f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n"
-                    f"Tamaño conjunto de prototipos: {nodo.tam_conj_prot}\n"
-                    f"\n")
 
+    # Crear una fila con los datos del nodo
+    row = {
+        "NODO": nodo.id,
+        "Precision": precision,
+        "Recall": recall,
+        "F1": f1,
+        "Muestras entrenadas": nodo.muestras_train,
+        "Prototipos entrenados": nodo.protos_train,
+        "Veces compartido": nodo.shared_times_final,
+        "Prototipos compartidos": nodo.compartidos_final,
+        "Tiempo aprendizaje (muestras)": nodo.tiempo_learn_data,
+        "Tiempo aprendizaje (prototipos)": nodo.tiempo_learn_queue,
+        "Tiempo compartiendo prototipos": nodo.tiempo_share_final,
+        "Tiempo no compartiendo prototipos": nodo.tiempo_no_share_final,
+        "Tiempo total espera activa": nodo.tiempo_espera_total,
+        "Tiempo total": nodo.tiempo_final_total,
+        "Capacidad de ejecución": cap_ejec,
+        "Tamaño de lotes recibidos": nodo.tam_lotes_recibidos,
+        "Tamaño conjunto de prototipos": nodo.tam_conj_prot
+    }
 
-    print("Se ha terminado de ejecutar todo.")
+    # Escribir en el archivo CSV
+    with open(nombre_archivo, 'w', newline='') as csvfile:
+        fieldnames = row.keys()
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-    with open(nombre_archivo, "w") as f:
-        f.writelines(to_write)
+        writer.writeheader()
+        writer.writerow(row)
+
+    print("Se ha terminado de ejecutar todo y se ha generado el archivo CSV.")
 
 
               
@@ -326,7 +338,7 @@ if __name__ == "__main__":
                         print(f"[ITERATION] Pre-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
 
                         parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
-                        nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
+                        nombre_archivo = f"{directorio_resultados}/result_{parametros}.csv"
                         if os.path.isfile(nombre_archivo):
                             print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
                             t_idx += 1
@@ -338,7 +350,7 @@ if __name__ == "__main__":
                         t = T[t_idx]
                         i_iter = i_iter
                         new_parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
-                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.txt"
+                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.csv"
                         
                         print(f"[ITERATION] Post-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
                         main(data_frame)

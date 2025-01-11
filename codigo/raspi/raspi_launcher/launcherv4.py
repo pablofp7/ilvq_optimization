@@ -4,13 +4,14 @@ ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
 
-from prototypes import XuILVQ
+from prototypes_mod import XuILVQ
 import pandas as pd
-from node_class.nodev2 import Nodev2
+from node_class.nodev4 import Nodev4
 import time
 import threading
 import numpy as np
 import socket
+import csv
 
 
 
@@ -49,7 +50,7 @@ def main(df: pd.DataFrame):
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
 
-    nodo = Nodev2(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = Nodev4(id, dataset=df_nodos[id], modelo_proto=XuILVQ(max_pset_size=limit, target_size=target_range), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
@@ -69,34 +70,50 @@ def main(df: pd.DataFrame):
     precision = round(tp / (tp + fp), 3) if tp + fp != 0 else 0
     recall = round(tp / (tp + fn), 3) if tp + fn != 0 else 0
     f1 = round(2 * (precision * recall) / (precision + recall), 3) if precision + recall != 0 else 0
+    clust_time = round(nodo.clust_time, 1)
 
 
     if nodo.tiempo_learn_queue == 0:
         cap_ejec = 0
     else:
         cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
-    
-    to_write.append(f" - NODO {nodo.id}.\nPrecision: {precision}\nRecall: {recall}\nF1: {f1}\n"
-                    f"Se ha entrenado con {nodo.muestras_train} muestras.\nSe ha entrenado con {nodo.protos_train} prototipos.\n"
-                    f"Ha compartido {nodo.shared_times_final} veces.\n"
-                    f"Ha compartido {nodo.compartidos_final} prototipos.\n"
-                    f"Se ha ahorrado compartir {nodo.no_comp_jsd_final} prototipos.\n"
-                    f"Tiempo de aprendizaje (muestras): {nodo.tiempo_learn_data}\n"
-                    f"Tiempo de aprendizaje (prototipos): {nodo.tiempo_learn_queue}\n"
-                    f"Tiempo compartiendo prototipos: {nodo.tiempo_share_final}\n"
-                    f"Tiempo no compartiendo prototipos: {nodo.tiempo_no_share_final}\n" 
-                    f"Tiempo total de espera activa: {nodo.tiempo_espera_total}\n"  
-                    f"Tiempo total: {nodo.tiempo_final_total}\n"
-                    f"Capacidad de ejecución: {cap_ejec}\n"
-                    f"ID, Tamaño de lotes recibidos: {nodo.tam_lotes_recibidos}\n"
-                    f"Tamaño conjunto de prototipos: {nodo.tam_conj_prot}\n"
-                    f"\n")
+        
+
+    # Crear una fila con los datos del nodo
+    row = {
+        "NODO": nodo.id,
+        "Precision": precision,
+        "Recall": recall,
+        "F1": f1,
+        "Muestras entrenadas": nodo.muestras_train,
+        "Prototipos entrenados": nodo.protos_train,
+        "Veces compartido": nodo.shared_times_final,
+        "Prototipos compartidos": nodo.compartidos_final,
+        "Prototipos ahorrados": nodo.no_comp_jsd_final,
+        "Prototipos descartados": nodo.protos_descartados_final,
+        "Ejecuciones de clustering": nodo.clust_runs,
+        "Tiempo clustering": clust_time,
+        "Tiempo aprendizaje (muestras)": nodo.tiempo_learn_data,
+        "Tiempo aprendizaje (prototipos)": nodo.tiempo_learn_queue,
+        "Tiempo compartiendo prototipos": nodo.tiempo_share_final,
+        "Tiempo no compartiendo prototipos": nodo.tiempo_no_share_final,
+        "Tiempo total espera activa": nodo.tiempo_espera_total,
+        "Tiempo total": nodo.tiempo_final_total,
+        "Capacidad de ejecución": cap_ejec,
+        "Tamaño de lotes recibidos": nodo.tam_lotes_recibidos,
+        "Tamaño conjunto de prototipos": nodo.tam_conj_prot
+    }
 
 
-    print("Se ha terminado de ejecutar todo.")
+    # Escribir en el archivo CSV
+    with open(nombre_archivo, 'w', newline='') as csvfile:
+        fieldnames = row.keys()
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-    with open(nombre_archivo, "w") as f:
-        f.writelines(to_write)
+        writer.writeheader()
+        writer.writerow(row)
+
+    print("Se ha terminado de ejecutar todo y se ha generado el archivo CSV.")
 
 def sincronizar():
 
@@ -108,7 +125,8 @@ def sincronizar():
 
     check_availability(id, dir_nodos, puerto)
     if id == 0:
-        min_prov = None
+        # Como base se ponen los parametros del nodo central
+        min_prov = parsear_parametros(parametros)
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
@@ -206,29 +224,39 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
 
 def parsear_parametros(mensaje):
+    print(f"Se van a parsear los parametros: {mensaje}")
     partes = mensaje.split('_')
     
-    dataset = partes[0]  # 'elec'
-    s_value = int(partes[1][1:])  # Extrae '1' de 's1' y convierte a entero
-    t_value = float(partes[2][1:])  # Extrae '0.0' de 'T0.0' y mantiene como flotante
-    iteration = int(partes[3][2:])  # Extrae '31' de 'it31' y convierte a entero
-
-    # Encuentra índices de los valores en sus respectivas listas
+    dataset = partes[0]
+    s_value = int(partes[1][1:])
+    t_value = float(partes[2][1:])
+    limite = int(partes[3][5:])
+    ranges = partes[4].split('-')
+    inf_range = float(ranges[0][5:])
+    sup_range = float(ranges[1][:])
+    target_range = (inf_range, sup_range)
+    lim_range_searched = (limite, target_range)
+    iteracion = int(partes[5][2:])   
+    
     dataset_index = datasets.index(dataset)
     s_index = S.index(s_value)
-    
-    # Para encontrar el índice de t_value en T, usamos np.isclose para manejar precisión de punto flotante
     t_index = np.where(np.isclose(T, t_value))[0][0]
+    target_index = lim_range.index(lim_range_searched)
+    
+    return (iteracion, dataset_index, s_index, t_index, target_index)
 
-    return (iteration, dataset_index, s_index, t_index)
 
 
 def indices_a_parametros(indices):
-    iteration, dataset_index, s_index, t_index = indices
+    iteration, dataset_index, s_index, t_index, limit_target_index = indices
     dataset = datasets[dataset_index]
     s = S[s_index]
     T_value = T[t_index]
-    return f"{dataset}_s{s}_T{T_value}_it{iteration}"
+    limit, target_range = lim_range[limit_target_index]
+    target_range_str = "-".join(map(str, target_range))
+    return f"{dataset}_s{s}_T{T_value}_limit{limit}_range{target_range_str}_it{iteration}"
+
+
 
 def check_availability(nodo_id, nodos, puerto):
     """
@@ -304,12 +332,22 @@ if __name__ == "__main__":
 
         data_name = {"elec": "electricity.csv", "phis": "phishing.csv", "elec2": "electricity.csv"}
 
+        datasets = ["elec"]
+        S = [1, 4]
+        T = np.array([0.0, 0.1, 1.0])
+        lim_range = [
+            (50, (50, 60)),
+            (150, (50, 60)),
+            (250, (50, 60)),
+            (500, (72.5, 77.5))
+        ] 
+        
         directorio_resultados = "../resultados_raspi_indiv"
 
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
 
-        i_iter = 46
+        i_iter = 0
         while i_iter < iteraciones:
             dataset_idx = 0
             while dataset_idx < len(datasets):
@@ -321,44 +359,39 @@ if __name__ == "__main__":
                     t_idx = 0
                     while t_idx < len(T):
                         t = T[t_idx]
-                        tiempo_inicio = time.perf_counter()
-                        print(f"[ITERATION] Pre-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
+                        lim_range_idx = 0
+                        while lim_range_idx < len(lim_range):
+                            limit, target_range = lim_range[lim_range_idx]
+                            tiempo_inicio = time.perf_counter()
+                            print(f"[ITERATION] Pre-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}, Limit: {limit}, Target: {target_range}")
 
-                        parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
-                        nombre_archivo = f"{directorio_resultados}/result_{parametros}.txt"
-                        if os.path.isfile(nombre_archivo):
-                            print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
-                            t_idx += 1
-                            continue  # Salta a la siguiente iteración si el archivo ya existe
+                            parametros = f"{dataset}_s{s}_T{t}_limit{limit}_range{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
+                            nombre_archivo = f"{directorio_resultados}/result_{parametros}.csv"
+                            
+                            if os.path.isfile(nombre_archivo):
+                                print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
+                                lim_range_idx += 1
+                                continue
 
-                        i_iter, dataset_idx, s_idx, t_idx = sincronizar()
-                        dataset = datasets[dataset_idx]
-                        s = S[s_idx]
-                        t = T[t_idx]
-                        i_iter = i_iter
-                        new_parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
-                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.txt"
-                        
-                        print(f"[ITERATION] Post-SINCRO:  {i_iter}, dataset: {dataset}, S: {s}, T:{t}")
-                        main(data_frame)
-                        print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
-                        t_idx += 1  # Avanza manualmente a la siguiente iteración de T
-                    s_idx += 1  # Avanza manualmente a la siguiente iteración de S
-                dataset_idx += 1  # Avanza manualmente a la siguiente iteración del dataset
-            i_iter += 1  # Avanza manualmente a la siguiente iteración principal
+                            # Synchronize here
+                            i_iter, dataset_idx, s_idx, t_idx, lim_range_idx = sincronizar()
+                            dataset = datasets[dataset_idx]
+                            s = S[s_idx]
+                            t = T[t_idx]
+                            limit, target_range = lim_range[lim_range_idx]
+                                    
+                            new_parametros = f"{dataset}_s{s}_T{t}_limit{limit}_range{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
+                            nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.csv"
+
+                            print(f"[ITERATION] Post-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}, Limit: {limit}, Target: {target_range}")
+                            main(data_frame)
+                            print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
+
+                            lim_range_idx += 1  # Move to the next combination of limit and target_range
+                        t_idx += 1  # Move to the next T value
+                    s_idx += 1  # Move to the next S value
+                dataset_idx += 1  # Move to the next dataset
+            i_iter += 1  # Move to the next overall iteration
 
     except KeyboardInterrupt as e:
         print(f"Se ha interrumpido la ejecución del programa: {e}")
-
-
-
-
-# def vaciar_buffer(socket):
-#     print("Vaciando buffer...")
-#     ahora = time.perf_counter()
-#     while time.perf_counter() - ahora < 1:
-#         try:
-#             socket.recv(1024)
-#         except:
-#             print("Buffer vaciado.")
-#             break
