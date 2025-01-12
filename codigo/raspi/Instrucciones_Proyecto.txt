@@ -1,0 +1,32 @@
+# Instrucciones del Proyecto
+
+## Inicialización
+Una vez se tenga instalado el sistema operativo en las raspis y estén conectadas a la red con su servidor ssh encendido, seguir los siguientes pasos:
+
+1. 
+
+# ------------------------------------------------------------------------------------
+# INSTRUCCIONES PARA CONFIGURAR AUTENTICACIÓN SIN CONTRASEÑA
+# ------------------------------------------------------------------------------------
+# Para evitar que rsync pida contraseña, configura la autenticación sin contraseña
+# usando claves SSH. Sigue estos pasos:
+#
+# 1. Generar un par de claves SSH en tu PC central (si no lo has hecho ya):
+#    Ejecuta en una terminal:
+#      ssh-keygen -t rsa -b 4096
+#    Presiona Enter para aceptar la ubicación predeterminada y no establezcas una frase
+#    de contraseña.
+#
+# 2. Copiar la clave pública a cada Raspberry Pi:
+#    Usa el comando ssh-copy-id para copiar la clave pública a cada Raspberry Pi:
+#      ssh-copy-id pablo@192.168.1.101  # Para nodo0
+#      ssh-copy-id pablo@192.168.1.102  # Para nodo1
+#    Introduce la contraseña del usuario pablo en la Raspberry Pi cuando te lo pida.
+#
+# 3. Verificar la conexión sin contraseña:
+#    Prueba la conexión SSH desde tu PC central a una Raspberry Pi:
+#      ssh pablo@192.168.1.101
+#    Si todo está configurado correctamente, no te pedirá la contraseña.
+#
+# ¡Listo! Ahora el script rsync funcionará sin pedir contraseña.
+# ------------------------------------------------------------------------------------

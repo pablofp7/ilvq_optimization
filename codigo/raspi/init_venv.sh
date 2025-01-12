@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Ruta base del proyecto
+PROJECT_DIR="$HOME/ilvq_optimization/codigo/raspi"
+
 # Instalar dependencias necesarias para pyenv
 echo "Instalando dependencias para pyenv..."
 sudo apt-get update
@@ -29,17 +32,25 @@ fi
 echo "Instalando Python 3.10.12..."
 pyenv install 3.10.12
 
-# Crear un entorno virtual con Python 3.10.12
-echo "Creando entorno virtual 'myenv'..."
-pyenv virtualenv 3.10.12 myenv
+# Crear un entorno virtual con Python 3.10.12 en la ruta del proyecto
+echo "Creando entorno virtual en $PROJECT_DIR/venv..."
+pyenv virtualenv 3.10.12 raspi_env
 
 # Activar el entorno virtual
-echo "Activando entorno virtual 'myenv'..."
-pyenv activate myenv
+echo "Activando entorno virtual 'raspi_env'..."
+pyenv activate raspi_env
 
 # Instalar pip 22.0.2
 echo "Instalando pip 22.0.2..."
 pip install pip==22.0.2
+
+# Instalar dependencias desde requirements.txt (si existe)
+if [ -f "$PROJECT_DIR/requirements.txt" ]; then
+    echo "Instalando dependencias desde requirements.txt..."
+    pip install -r "$PROJECT_DIR/requirements.txt"
+else
+    echo "No se encontró requirements.txt en $PROJECT_DIR. Omitiendo instalación de dependencias."
+fi
 
 # Desactivar el entorno virtual
 pyenv deactivate
@@ -55,9 +66,9 @@ fi
 
 # Crear un archivo .envrc para activar automáticamente el entorno virtual
 echo "Configurando activación automática del entorno virtual..."
-echo "pyenv activate myenv" > .envrc
-direnv allow .
+echo "pyenv activate raspi_env" > "$PROJECT_DIR/.envrc"
+direnv allow "$PROJECT_DIR"
 
 echo "¡Configuración completada!"
-echo "El entorno virtual 'myenv' con Python 3.10.12 y pip 22.0.2 está listo."
-echo "Al entrar en este directorio, el entorno virtual se activará automáticamente."
+echo "El entorno virtual 'raspi_env' con Python 3.10.12 y pip 22.0.2 está listo."
+echo "Al entrar en el directorio $PROJECT_DIR, el entorno virtual se activará automáticamente."
