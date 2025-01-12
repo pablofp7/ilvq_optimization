@@ -1,6 +1,10 @@
 import paramiko
 import sys
 import argparse
+import re
+
+# Ruta al intérprete de Python del entorno virtual
+VENV_PYTHON = "~/ilvq_optimization/codigo/raspi/venv/bin/python3"
 
 def send_command(hosts, command, username='prueba', password='123', sudo_password='123'):
     for host in hosts:
@@ -8,6 +12,10 @@ def send_command(hosts, command, username='prueba', password='123', sudo_passwor
             client = paramiko.SSHClient()
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             client.connect(hostname=host, username=username, password=password)
+
+            # Si el comando contiene "python", usar el intérprete del entorno virtual
+            if "python" in command:
+                command = re.sub(r"\bpython3?\b", VENV_PYTHON, command)
 
             # Open a session
             session = client.get_transport().open_session()
