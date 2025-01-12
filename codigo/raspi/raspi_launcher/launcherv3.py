@@ -60,9 +60,6 @@ def main(df: pd.DataFrame):
         print(f"EL HILO ESTÁ BLOQUEADO. CERRANDO PROGRAMA")
         exit()
         
-    to_write = []
-    # to_write.append(f" - TIEMPO EJECUCION: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n\n")
-    #Vamos a guardar en una string lo que se va a escribir en el archivo
 
     tp = nodo.matriz_conf["TP"]
     fp = nodo.matriz_conf["FP"]
