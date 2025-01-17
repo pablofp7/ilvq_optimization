@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from mlp import DynamicMLP
+from ..mlp.mlp import DynamicMLP
 
 input_size = 5  # Number of features
 model = DynamicMLP(input_size=input_size)
