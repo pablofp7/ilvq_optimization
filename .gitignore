@@ -1,0 +1,42 @@
+# Directorios y archivos específicos
+**/new_exp/resultados/
+**/zlater/benchmarks
+**/new_exp/__pycache__/
+**/new_exp/prototypes/__pycache__/
+**/raspi/gamma_pruebas/
+**/raspi/dataset/
+**/.vscode/
+**/.lprof/
+script_bash/
+**/raspi/*test[0-9]*_resultados/
+**/*resultados*/
+# Archivos específicos
+*.pyc
+**/new_exp/tiempos.txt
+
+# Patrones globales
+**/resultados_servidor/
+**/*.log
+**/__pycache__/
+**/nohup.out
+**/resultados_raspi_indiv/
+
+# Nuevas reglas para el entorno virtual y otros
+**/venv/
+**/.envrc
+**/.direnv/
+**/*.py[cod]
+**/*.swp
+**/*.swo
+**/*.sqlite3
+**/dist/
+**/build/
+**/*.egg-info/
+**/*.egg
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.ipynb_checkpoints/
+**/.coverage
+**/htmlcov/
+**/.pytest_cache/
