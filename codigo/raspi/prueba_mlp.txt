@@ -1,0 +1,4201 @@
+Comparison of results across configurations (sorted by Fbeta):
+
+1) LR=0.5, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.7300
+  Recall: 0.7670
+  F1: 0.7480
+  Fbeta: 0.7370
+  Execution time: 0.68 seconds
+
+2) LR=1.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.7060
+  Recall: 0.7090
+  F1: 0.7070
+  Fbeta: 0.7070
+  Execution time: 0.61 seconds
+
+3) LR=0.5, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6720
+  Recall: 0.7250
+  F1: 0.6970
+  Fbeta: 0.6820
+  Execution time: 0.60 seconds
+
+4) LR=1.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6670
+  Recall: 0.7190
+  F1: 0.6920
+  Fbeta: 0.6770
+  Execution time: 0.78 seconds
+
+5) LR=0.5, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6710
+  Recall: 0.6940
+  F1: 0.6820
+  Fbeta: 0.6750
+  Execution time: 0.67 seconds
+
+6) LR=0.2, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6670
+  Recall: 0.6960
+  F1: 0.6810
+  Fbeta: 0.6730
+  Execution time: 0.62 seconds
+
+7) LR=2.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6590
+  Recall: 0.6920
+  F1: 0.6750
+  Fbeta: 0.6650
+  Execution time: 0.67 seconds
+
+8) LR=0.5, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6460
+  Recall: 0.7230
+  F1: 0.6820
+  Fbeta: 0.6600
+  Execution time: 0.62 seconds
+
+9) LR=2.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6600
+  Recall: 0.6440
+  F1: 0.6520
+  Fbeta: 0.6570
+  Execution time: 0.72 seconds
+
+10) LR=0.2, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6500
+  Recall: 0.6700
+  F1: 0.6600
+  Fbeta: 0.6540
+  Execution time: 0.68 seconds
+
+11) LR=0.5, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6330
+  Recall: 0.7290
+  F1: 0.6780
+  Fbeta: 0.6500
+  Execution time: 0.73 seconds
+
+12) LR=0.1, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6520
+  Recall: 0.6090
+  F1: 0.6300
+  Fbeta: 0.6430
+  Execution time: 0.68 seconds
+
+13) LR=2.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6420
+  Recall: 0.6400
+  F1: 0.6410
+  Fbeta: 0.6420
+  Execution time: 0.74 seconds
+
+14) LR=1.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6270
+  Recall: 0.6960
+  F1: 0.6600
+  Fbeta: 0.6400
+  Execution time: 0.60 seconds
+
+15) LR=1.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6190
+  Recall: 0.7330
+  F1: 0.6710
+  Fbeta: 0.6390
+  Execution time: 0.68 seconds
+
+16) LR=0.1, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6520
+  Recall: 0.5890
+  F1: 0.6190
+  Fbeta: 0.6380
+  Execution time: 0.72 seconds
+
+17) LR=0.2, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6340
+  Recall: 0.6500
+  F1: 0.6420
+  Fbeta: 0.6370
+  Execution time: 0.68 seconds
+
+18) LR=0.2, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6260
+  Recall: 0.6880
+  F1: 0.6560
+  Fbeta: 0.6370
+  Execution time: 0.82 seconds
+
+19) LR=0.5, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.6190
+  Recall: 0.7230
+  F1: 0.6670
+  Fbeta: 0.6370
+  Execution time: 0.62 seconds
+
+20) LR=0.2, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6290
+  Recall: 0.6520
+  F1: 0.6400
+  Fbeta: 0.6330
+  Execution time: 0.67 seconds
+
+21) LR=0.5, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6190
+  Recall: 0.6900
+  F1: 0.6530
+  Fbeta: 0.6320
+  Execution time: 0.68 seconds
+
+22) LR=0.2, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.6340
+  Recall: 0.6170
+  F1: 0.6250
+  Fbeta: 0.6310
+  Execution time: 1.05 seconds
+
+23) LR=0.2, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6240
+  Recall: 0.6460
+  F1: 0.6350
+  Fbeta: 0.6280
+  Execution time: 0.73 seconds
+
+24) LR=1.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6310
+  Recall: 0.6130
+  F1: 0.6220
+  Fbeta: 0.6270
+  Execution time: 0.75 seconds
+
+25) LR=0.5, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6280
+  Recall: 0.6070
+  F1: 0.6170
+  Fbeta: 0.6240
+  Execution time: 0.71 seconds
+
+26) LR=0.2, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6270
+  Recall: 0.6030
+  F1: 0.6150
+  Fbeta: 0.6220
+  Execution time: 0.68 seconds
+
+27) LR=0.5, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6280
+  Recall: 0.5970
+  F1: 0.6120
+  Fbeta: 0.6220
+  Execution time: 0.67 seconds
+
+28) LR=1.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6440
+  Recall: 0.5490
+  F1: 0.5930
+  Fbeta: 0.6220
+  Execution time: 0.82 seconds
+
+29) LR=0.2, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.6360
+  Recall: 0.5630
+  F1: 0.5970
+  Fbeta: 0.6200
+  Execution time: 0.93 seconds
+
+30) LR=0.2, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6000
+  Recall: 0.7150
+  F1: 0.6520
+  Fbeta: 0.6200
+  Execution time: 0.81 seconds
+
+31) LR=1.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5990
+  Recall: 0.7190
+  F1: 0.6540
+  Fbeta: 0.6200
+  Execution time: 0.67 seconds
+
+32) LR=0.2, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6240
+  Recall: 0.5950
+  F1: 0.6090
+  Fbeta: 0.6180
+  Execution time: 0.82 seconds
+
+33) LR=2.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5970
+  Recall: 0.7190
+  F1: 0.6520
+  Fbeta: 0.6180
+  Execution time: 0.73 seconds
+
+34) LR=0.5, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6130
+  Recall: 0.6340
+  F1: 0.6230
+  Fbeta: 0.6170
+  Execution time: 0.67 seconds
+
+35) LR=0.1, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6180
+  Recall: 0.6090
+  F1: 0.6130
+  Fbeta: 0.6160
+  Execution time: 0.68 seconds
+
+36) LR=0.2, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6160
+  Recall: 0.6170
+  F1: 0.6160
+  Fbeta: 0.6160
+  Execution time: 0.60 seconds
+
+37) LR=0.2, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.6130
+  Recall: 0.6280
+  F1: 0.6200
+  Fbeta: 0.6160
+  Execution time: 0.84 seconds
+
+38) LR=0.1, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6150
+  Recall: 0.6150
+  F1: 0.6150
+  Fbeta: 0.6150
+  Execution time: 0.61 seconds
+
+39) LR=0.5, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.6370
+  Recall: 0.5400
+  F1: 0.5850
+  Fbeta: 0.6150
+  Execution time: 0.93 seconds
+
+40) LR=2.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5870
+  Recall: 0.7570
+  F1: 0.6610
+  Fbeta: 0.6150
+  Execution time: 0.92 seconds
+
+41) LR=1.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5910
+  Recall: 0.7150
+  F1: 0.6470
+  Fbeta: 0.6120
+  Execution time: 0.67 seconds
+
+42) LR=1.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5910
+  Recall: 0.7040
+  F1: 0.6430
+  Fbeta: 0.6110
+  Execution time: 0.60 seconds
+
+43) LR=2.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.6060
+  Recall: 0.6150
+  F1: 0.6100
+  Fbeta: 0.6080
+  Execution time: 0.76 seconds
+
+44) LR=1.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5800
+  Recall: 0.7310
+  F1: 0.6470
+  Fbeta: 0.6050
+  Execution time: 0.78 seconds
+
+45) LR=0.1, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.6140
+  Recall: 0.5670
+  F1: 0.5900
+  Fbeta: 0.6040
+  Execution time: 1.08 seconds
+
+46) LR=0.2, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.6020
+  Recall: 0.6070
+  F1: 0.6040
+  Fbeta: 0.6030
+  Execution time: 0.67 seconds
+
+47) LR=1.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5850
+  Recall: 0.6900
+  F1: 0.6330
+  Fbeta: 0.6030
+  Execution time: 0.95 seconds
+
+48) LR=1.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5960
+  Recall: 0.6340
+  F1: 0.6140
+  Fbeta: 0.6030
+  Execution time: 0.86 seconds
+
+49) LR=0.1, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5950
+  Recall: 0.6320
+  F1: 0.6130
+  Fbeta: 0.6020
+  Execution time: 0.61 seconds
+
+50) LR=0.2, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5760
+  Recall: 0.7170
+  F1: 0.6390
+  Fbeta: 0.6000
+  Execution time: 1.05 seconds
+
+51) LR=0.2, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5700
+  Recall: 0.7430
+  F1: 0.6450
+  Fbeta: 0.5980
+  Execution time: 0.62 seconds
+
+52) LR=0.5, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5800
+  Recall: 0.6820
+  F1: 0.6270
+  Fbeta: 0.5980
+  Execution time: 0.61 seconds
+
+53) LR=0.5, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5770
+  Recall: 0.7000
+  F1: 0.6330
+  Fbeta: 0.5980
+  Execution time: 0.82 seconds
+
+54) LR=0.1, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5940
+  Recall: 0.6030
+  F1: 0.5980
+  Fbeta: 0.5960
+  Execution time: 0.68 seconds
+
+55) LR=0.5, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5940
+  Recall: 0.6030
+  F1: 0.5980
+  Fbeta: 0.5960
+  Execution time: 1.07 seconds
+
+56) LR=0.2, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5920
+  Recall: 0.6070
+  F1: 0.5990
+  Fbeta: 0.5950
+  Execution time: 0.67 seconds
+
+57) LR=0.1, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5950
+  Recall: 0.5890
+  F1: 0.5920
+  Fbeta: 0.5940
+  Execution time: 0.93 seconds
+
+58) LR=0.5, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5750
+  Recall: 0.6760
+  F1: 0.6210
+  Fbeta: 0.5930
+  Execution time: 0.68 seconds
+
+59) LR=0.2, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5940
+  Recall: 0.5810
+  F1: 0.5870
+  Fbeta: 0.5910
+  Execution time: 0.69 seconds
+
+60) LR=2.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5850
+  Recall: 0.6130
+  F1: 0.5990
+  Fbeta: 0.5900
+  Execution time: 0.76 seconds
+
+61) LR=0.1, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5850
+  Recall: 0.6050
+  F1: 0.5950
+  Fbeta: 0.5890
+  Execution time: 1.06 seconds
+
+62) LR=2.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5690
+  Recall: 0.6860
+  F1: 0.6220
+  Fbeta: 0.5890
+  Execution time: 0.78 seconds
+
+63) LR=0.2, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5580
+  Recall: 0.7530
+  F1: 0.6410
+  Fbeta: 0.5880
+  Execution time: 1.05 seconds
+
+64) LR=1.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5720
+  Recall: 0.6640
+  F1: 0.6150
+  Fbeta: 0.5880
+  Execution time: 0.67 seconds
+
+65) LR=2.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5550
+  Recall: 0.7710
+  F1: 0.6450
+  Fbeta: 0.5880
+  Execution time: 0.75 seconds
+
+66) LR=2.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5650
+  Recall: 0.7040
+  F1: 0.6270
+  Fbeta: 0.5880
+  Execution time: 0.75 seconds
+
+67) LR=0.2, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5800
+  Recall: 0.6170
+  F1: 0.5980
+  Fbeta: 0.5870
+  Execution time: 0.66 seconds
+
+68) LR=2.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5470
+  Recall: 0.8320
+  F1: 0.6600
+  Fbeta: 0.5870
+  Execution time: 0.75 seconds
+
+69) LR=0.2, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5520
+  Recall: 0.7750
+  F1: 0.6450
+  Fbeta: 0.5860
+  Execution time: 0.66 seconds
+
+70) LR=0.2, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5500
+  Recall: 0.7980
+  F1: 0.6510
+  Fbeta: 0.5860
+  Execution time: 0.68 seconds
+
+71) LR=0.1, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5800
+  Recall: 0.5990
+  F1: 0.5890
+  Fbeta: 0.5840
+  Execution time: 1.06 seconds
+
+72) LR=1.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5750
+  Recall: 0.6230
+  F1: 0.5980
+  Fbeta: 0.5840
+  Execution time: 0.73 seconds
+
+73) LR=2.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5630
+  Recall: 0.6880
+  F1: 0.6190
+  Fbeta: 0.5840
+  Execution time: 0.76 seconds
+
+74) LR=2.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5530
+  Recall: 0.7530
+  F1: 0.6380
+  Fbeta: 0.5840
+  Execution time: 1.18 seconds
+
+75) LR=0.1, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5680
+  Recall: 0.6540
+  F1: 0.6080
+  Fbeta: 0.5830
+  Execution time: 0.82 seconds
+
+76) LR=0.2, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5320
+  Recall: 0.9430
+  F1: 0.6800
+  Fbeta: 0.5830
+  Execution time: 0.82 seconds
+
+77) LR=0.2, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5820
+  Recall: 0.5810
+  F1: 0.5810
+  Fbeta: 0.5820
+  Execution time: 0.67 seconds
+
+78) LR=0.2, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5510
+  Recall: 0.7510
+  F1: 0.6360
+  Fbeta: 0.5820
+  Execution time: 1.05 seconds
+
+79) LR=0.5, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5330
+  Recall: 0.9250
+  F1: 0.6760
+  Fbeta: 0.5820
+  Execution time: 0.68 seconds
+
+80) LR=1.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5610
+  Recall: 0.6840
+  F1: 0.6160
+  Fbeta: 0.5820
+  Execution time: 0.73 seconds
+
+81) LR=0.5, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5280
+  Recall: 0.9660
+  F1: 0.6830
+  Fbeta: 0.5810
+  Execution time: 0.73 seconds
+
+82) LR=0.1, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5790
+  Recall: 0.5850
+  F1: 0.5820
+  Fbeta: 0.5800
+  Execution time: 1.06 seconds
+
+83) LR=2.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.6010
+  Recall: 0.5060
+  F1: 0.5490
+  Fbeta: 0.5790
+  Execution time: 0.90 seconds
+
+84) LR=0.1, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5710
+  Recall: 0.5950
+  F1: 0.5830
+  Fbeta: 0.5760
+  Execution time: 0.82 seconds
+
+85) LR=0.1, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5330
+  Recall: 0.8440
+  F1: 0.6530
+  Fbeta: 0.5750
+  Execution time: 0.66 seconds
+
+86) LR=0.2, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5850
+  Recall: 0.5380
+  F1: 0.5610
+  Fbeta: 0.5750
+  Execution time: 0.67 seconds
+
+87) LR=0.5, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5770
+  Recall: 0.5690
+  F1: 0.5730
+  Fbeta: 0.5750
+  Execution time: 0.82 seconds
+
+88) LR=1.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5330
+  Recall: 0.8380
+  F1: 0.6520
+  Fbeta: 0.5750
+  Execution time: 1.05 seconds
+
+89) LR=1.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5500
+  Recall: 0.7040
+  F1: 0.6180
+  Fbeta: 0.5750
+  Execution time: 0.75 seconds
+
+90) LR=0.1, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5700
+  Recall: 0.5910
+  F1: 0.5800
+  Fbeta: 0.5740
+  Execution time: 0.60 seconds
+
+91) LR=0.5, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5680
+  Recall: 0.6010
+  F1: 0.5840
+  Fbeta: 0.5740
+  Execution time: 0.67 seconds
+
+92) LR=2.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5680
+  Recall: 0.5970
+  F1: 0.5820
+  Fbeta: 0.5740
+  Execution time: 0.90 seconds
+
+93) LR=0.1, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5700
+  Recall: 0.5870
+  F1: 0.5780
+  Fbeta: 0.5730
+  Execution time: 0.73 seconds
+
+94) LR=0.1, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5720
+  Recall: 0.5770
+  F1: 0.5740
+  Fbeta: 0.5730
+  Execution time: 0.66 seconds
+
+95) LR=0.5, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5990
+  Recall: 0.4900
+  F1: 0.5390
+  Fbeta: 0.5730
+  Execution time: 0.82 seconds
+
+96) LR=0.5, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5310
+  Recall: 0.8240
+  F1: 0.6460
+  Fbeta: 0.5720
+  Execution time: 0.67 seconds
+
+97) LR=0.1, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5670
+  Recall: 0.5890
+  F1: 0.5780
+  Fbeta: 0.5710
+  Execution time: 0.82 seconds
+
+98) LR=1.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5200
+  Recall: 0.9410
+  F1: 0.6700
+  Fbeta: 0.5710
+  Execution time: 0.68 seconds
+
+99) LR=1.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.6320
+  Recall: 0.4130
+  F1: 0.5000
+  Fbeta: 0.5710
+  Execution time: 0.66 seconds
+
+100) LR=2.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5850
+  Recall: 0.5220
+  F1: 0.5520
+  Fbeta: 0.5710
+  Execution time: 0.79 seconds
+
+101) LR=0.5, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5690
+  Recall: 0.5710
+  F1: 0.5700
+  Fbeta: 0.5690
+  Execution time: 0.67 seconds
+
+102) LR=1.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5570
+  Recall: 0.6230
+  F1: 0.5880
+  Fbeta: 0.5690
+  Execution time: 0.89 seconds
+
+103) LR=0.2, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5600
+  Recall: 0.6010
+  F1: 0.5800
+  Fbeta: 0.5680
+  Execution time: 0.61 seconds
+
+104) LR=1.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.6650
+  Recall: 0.3580
+  F1: 0.4650
+  Fbeta: 0.5680
+  Execution time: 0.66 seconds
+
+105) LR=2.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5740
+  Recall: 0.5450
+  F1: 0.5590
+  Fbeta: 0.5680
+  Execution time: 1.16 seconds
+
+106) LR=0.2, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5600
+  Recall: 0.5970
+  F1: 0.5780
+  Fbeta: 0.5670
+  Execution time: 0.68 seconds
+
+107) LR=0.2, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5650
+  Recall: 0.5690
+  F1: 0.5670
+  Fbeta: 0.5660
+  Execution time: 0.59 seconds
+
+108) LR=1.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5210
+  Recall: 0.8600
+  F1: 0.6490
+  Fbeta: 0.5660
+  Execution time: 0.68 seconds
+
+109) LR=0.1, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5490
+  Recall: 0.6400
+  F1: 0.5910
+  Fbeta: 0.5650
+  Execution time: 0.93 seconds
+
+110) LR=0.2, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5470
+  Recall: 0.6480
+  F1: 0.5930
+  Fbeta: 0.5650
+  Execution time: 0.61 seconds
+
+111) LR=0.1, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5220
+  Recall: 0.8320
+  F1: 0.6420
+  Fbeta: 0.5640
+  Execution time: 0.82 seconds
+
+112) LR=0.2, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5360
+  Recall: 0.7110
+  F1: 0.6110
+  Fbeta: 0.5640
+  Execution time: 0.93 seconds
+
+113) LR=0.5, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5280
+  Recall: 0.7750
+  F1: 0.6280
+  Fbeta: 0.5640
+  Execution time: 0.69 seconds
+
+114) LR=2.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5930
+  Recall: 0.4720
+  F1: 0.5260
+  Fbeta: 0.5640
+  Execution time: 0.89 seconds
+
+115) LR=2.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5090
+  Recall: 0.9880
+  F1: 0.6720
+  Fbeta: 0.5640
+  Execution time: 0.75 seconds
+
+116) LR=2.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5320
+  Recall: 0.7470
+  F1: 0.6210
+  Fbeta: 0.5640
+  Execution time: 0.92 seconds
+
+117) LR=0.1, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5120
+  Recall: 0.9370
+  F1: 0.6620
+  Fbeta: 0.5630
+  Execution time: 1.05 seconds
+
+118) LR=0.2, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5630
+  Recall: 0.5630
+  F1: 0.5630
+  Fbeta: 0.5630
+  Execution time: 0.67 seconds
+
+119) LR=0.2, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5630
+  Recall: 0.5630
+  F1: 0.5630
+  Fbeta: 0.5630
+  Execution time: 0.67 seconds
+
+120) LR=0.2, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5620
+  Recall: 0.5670
+  F1: 0.5640
+  Fbeta: 0.5630
+  Execution time: 0.67 seconds
+
+121) LR=2.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5240
+  Recall: 0.8020
+  F1: 0.6340
+  Fbeta: 0.5630
+  Execution time: 0.73 seconds
+
+122) LR=2.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5550
+  Recall: 0.5950
+  F1: 0.5740
+  Fbeta: 0.5630
+  Execution time: 1.16 seconds
+
+123) LR=2.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5090
+  Recall: 0.9720
+  F1: 0.6680
+  Fbeta: 0.5630
+  Execution time: 0.90 seconds
+
+124) LR=2.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5460
+  Recall: 0.6440
+  F1: 0.5910
+  Fbeta: 0.5630
+  Execution time: 1.17 seconds
+
+125) LR=0.2, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5220
+  Recall: 0.8080
+  F1: 0.6340
+  Fbeta: 0.5620
+  Execution time: 1.05 seconds
+
+126) LR=0.2, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5610
+  Recall: 0.5670
+  F1: 0.5640
+  Fbeta: 0.5620
+  Execution time: 0.66 seconds
+
+127) LR=0.2, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5110
+  Recall: 0.9370
+  F1: 0.6610
+  Fbeta: 0.5620
+  Execution time: 0.82 seconds
+
+128) LR=0.2, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5290
+  Recall: 0.7530
+  F1: 0.6210
+  Fbeta: 0.5620
+  Execution time: 0.68 seconds
+
+129) LR=1.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5070
+  Recall: 0.9920
+  F1: 0.6710
+  Fbeta: 0.5620
+  Execution time: 0.69 seconds
+
+130) LR=0.1, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5580
+  Recall: 0.5730
+  F1: 0.5650
+  Fbeta: 0.5610
+  Execution time: 1.06 seconds
+
+131) LR=0.2, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5610
+  Recall: 0.5590
+  F1: 0.5600
+  Fbeta: 0.5610
+  Execution time: 0.65 seconds
+
+132) LR=2.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.6340
+  Recall: 0.3830
+  F1: 0.4780
+  Fbeta: 0.5610
+  Execution time: 0.67 seconds
+
+133) LR=2.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5320
+  Recall: 0.7170
+  F1: 0.6110
+  Fbeta: 0.5610
+  Execution time: 0.74 seconds
+
+134) LR=0.1, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5490
+  Recall: 0.6070
+  F1: 0.5770
+  Fbeta: 0.5600
+  Execution time: 0.66 seconds
+
+135) LR=0.1, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5390
+  Recall: 0.6640
+  F1: 0.5950
+  Fbeta: 0.5600
+  Execution time: 0.81 seconds
+
+136) LR=0.2, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5550
+  Recall: 0.5790
+  F1: 0.5670
+  Fbeta: 0.5600
+  Execution time: 0.67 seconds
+
+137) LR=0.5, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5080
+  Recall: 0.9390
+  F1: 0.6590
+  Fbeta: 0.5590
+  Execution time: 0.65 seconds
+
+138) LR=0.5, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5570
+  Recall: 0.5670
+  F1: 0.5620
+  Fbeta: 0.5590
+  Execution time: 0.67 seconds
+
+139) LR=2.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5250
+  Recall: 0.7570
+  F1: 0.6200
+  Fbeta: 0.5590
+  Execution time: 1.02 seconds
+
+140) LR=0.1, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5520
+  Recall: 0.5810
+  F1: 0.5660
+  Fbeta: 0.5580
+  Execution time: 0.66 seconds
+
+141) LR=0.1, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5560
+  Recall: 0.5650
+  F1: 0.5600
+  Fbeta: 0.5580
+  Execution time: 0.67 seconds
+
+142) LR=0.2, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5560
+  Recall: 0.5650
+  F1: 0.5600
+  Fbeta: 0.5580
+  Execution time: 0.66 seconds
+
+143) LR=0.5, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5280
+  Recall: 0.7190
+  F1: 0.6090
+  Fbeta: 0.5580
+  Execution time: 1.04 seconds
+
+144) LR=0.1, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5500
+  Recall: 0.5890
+  F1: 0.5690
+  Fbeta: 0.5570
+  Execution time: 0.67 seconds
+
+145) LR=0.2, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5040
+  Recall: 0.9640
+  F1: 0.6620
+  Fbeta: 0.5570
+  Execution time: 0.68 seconds
+
+146) LR=0.5, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5060
+  Recall: 0.9350
+  F1: 0.6570
+  Fbeta: 0.5570
+  Execution time: 0.82 seconds
+
+147) LR=0.1, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5530
+  Recall: 0.5690
+  F1: 0.5610
+  Fbeta: 0.5560
+  Execution time: 0.82 seconds
+
+148) LR=1.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5560
+  Recall: 0.5570
+  F1: 0.5560
+  Fbeta: 0.5560
+  Execution time: 0.60 seconds
+
+149) LR=1.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5030
+  Recall: 0.9660
+  F1: 0.6620
+  Fbeta: 0.5560
+  Execution time: 1.15 seconds
+
+150) LR=2.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5400
+  Recall: 0.6280
+  F1: 0.5810
+  Fbeta: 0.5560
+  Execution time: 0.74 seconds
+
+151) LR=0.1, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5020
+  Recall: 0.9660
+  F1: 0.6610
+  Fbeta: 0.5550
+  Execution time: 0.93 seconds
+
+152) LR=0.5, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5440
+  Recall: 0.6050
+  F1: 0.5730
+  Fbeta: 0.5550
+  Execution time: 0.60 seconds
+
+153) LR=1.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5010
+  Recall: 0.9800
+  F1: 0.6630
+  Fbeta: 0.5550
+  Execution time: 0.67 seconds
+
+154) LR=1.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5370
+  Recall: 0.6400
+  F1: 0.5840
+  Fbeta: 0.5550
+  Execution time: 1.17 seconds
+
+155) LR=2.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5050
+  Recall: 0.9210
+  F1: 0.6520
+  Fbeta: 0.5550
+  Execution time: 0.73 seconds
+
+156) LR=0.1, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5480
+  Recall: 0.5770
+  F1: 0.5620
+  Fbeta: 0.5540
+  Execution time: 0.68 seconds
+
+157) LR=0.1, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4990
+  Recall: 0.9880
+  F1: 0.6630
+  Fbeta: 0.5540
+  Execution time: 0.81 seconds
+
+158) LR=2.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5440
+  Recall: 0.5990
+  F1: 0.5700
+  Fbeta: 0.5540
+  Execution time: 0.89 seconds
+
+159) LR=2.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5500
+  Recall: 0.5710
+  F1: 0.5600
+  Fbeta: 0.5540
+  Execution time: 1.18 seconds
+
+160) LR=2.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5160
+  Recall: 0.7710
+  F1: 0.6180
+  Fbeta: 0.5530
+  Execution time: 0.92 seconds
+
+161) LR=0.2, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5020
+  Recall: 0.9190
+  F1: 0.6490
+  Fbeta: 0.5520
+  Execution time: 0.82 seconds
+
+162) LR=0.2, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5060
+  Recall: 0.8660
+  F1: 0.6390
+  Fbeta: 0.5520
+  Execution time: 0.81 seconds
+
+163) LR=0.2, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5490
+  Recall: 0.5630
+  F1: 0.5560
+  Fbeta: 0.5520
+  Execution time: 0.66 seconds
+
+164) LR=0.5, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5290
+  Recall: 0.6700
+  F1: 0.5910
+  Fbeta: 0.5520
+  Execution time: 0.61 seconds
+
+165) LR=2.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.5030
+  Recall: 0.9110
+  F1: 0.6480
+  Fbeta: 0.5520
+  Execution time: 0.75 seconds
+
+166) LR=2.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5030
+  Recall: 0.8990
+  F1: 0.6450
+  Fbeta: 0.5520
+  Execution time: 1.17 seconds
+
+167) LR=0.1, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5490
+  Recall: 0.5570
+  F1: 0.5530
+  Fbeta: 0.5510
+  Execution time: 0.82 seconds
+
+168) LR=0.1, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5530
+  Recall: 0.5450
+  F1: 0.5490
+  Fbeta: 0.5510
+  Execution time: 0.68 seconds
+
+169) LR=0.2, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5560
+  Recall: 0.5320
+  F1: 0.5440
+  Fbeta: 0.5510
+  Execution time: 0.67 seconds
+
+170) LR=0.2, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5450
+  Recall: 0.5750
+  F1: 0.5600
+  Fbeta: 0.5510
+  Execution time: 0.66 seconds
+
+171) LR=0.5, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4960
+  Recall: 0.9980
+  F1: 0.6630
+  Fbeta: 0.5510
+  Execution time: 0.65 seconds
+
+172) LR=0.5, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5430
+  Recall: 0.5830
+  F1: 0.5620
+  Fbeta: 0.5510
+  Execution time: 0.66 seconds
+
+173) LR=1.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5100
+  Recall: 0.8080
+  F1: 0.6250
+  Fbeta: 0.5510
+  Execution time: 0.72 seconds
+
+174) LR=1.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5240
+  Recall: 0.6940
+  F1: 0.5970
+  Fbeta: 0.5510
+  Execution time: 0.75 seconds
+
+175) LR=0.1, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.72 seconds
+
+176) LR=0.1, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.93 seconds
+
+177) LR=0.1, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.81 seconds
+
+178) LR=0.1, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5530
+  Recall: 0.5400
+  F1: 0.5460
+  Fbeta: 0.5500
+  Execution time: 0.66 seconds
+
+179) LR=0.1, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4940
+  Recall: 0.9980
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 1.05 seconds
+
+180) LR=0.2, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.60 seconds
+
+181) LR=0.2, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.72 seconds
+
+182) LR=0.2, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.68 seconds
+
+183) LR=0.2, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.81 seconds
+
+184) LR=0.2, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.67 seconds
+
+185) LR=0.2, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.82 seconds
+
+186) LR=0.2, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.67 seconds
+
+187) LR=0.2, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.82 seconds
+
+188) LR=0.2, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5160
+  Recall: 0.7490
+  F1: 0.6110
+  Fbeta: 0.5500
+  Execution time: 0.82 seconds
+
+189) LR=0.5, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.72 seconds
+
+190) LR=0.5, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.67 seconds
+
+191) LR=0.5, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.81 seconds
+
+192) LR=0.5, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 1.06 seconds
+
+193) LR=0.5, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.65 seconds
+
+194) LR=0.5, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5200
+  Recall: 0.7190
+  F1: 0.6040
+  Fbeta: 0.5500
+  Execution time: 0.68 seconds
+
+195) LR=0.5, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.81 seconds
+
+196) LR=1.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.59 seconds
+
+197) LR=1.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.60 seconds
+
+198) LR=1.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.93 seconds
+
+199) LR=1.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.69 seconds
+
+200) LR=1.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.81 seconds
+
+201) LR=1.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 1.05 seconds
+
+202) LR=1.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.66 seconds
+
+203) LR=1.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.67 seconds
+
+204) LR=1.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.81 seconds
+
+205) LR=1.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.70 seconds
+
+206) LR=1.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 1.16 seconds
+
+207) LR=2.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.67 seconds
+
+208) LR=2.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.65 seconds
+
+209) LR=2.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.73 seconds
+
+210) LR=2.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.87 seconds
+
+211) LR=2.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.92 seconds
+
+212) LR=2.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 1.16 seconds
+
+213) LR=2.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.75 seconds
+
+214) LR=2.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 1.0000
+  F1: 0.6610
+  Fbeta: 0.5500
+  Execution time: 0.75 seconds
+
+215) LR=0.1, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.60 seconds
+
+216) LR=0.1, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5470
+  Recall: 0.5570
+  F1: 0.5520
+  Fbeta: 0.5490
+  Execution time: 0.66 seconds
+
+217) LR=0.1, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.06 seconds
+
+218) LR=0.1, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.06 seconds
+
+219) LR=0.2, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.93 seconds
+
+220) LR=0.2, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.66 seconds
+
+221) LR=0.2, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.67 seconds
+
+222) LR=0.2, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.81 seconds
+
+223) LR=0.2, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.08 seconds
+
+224) LR=0.2, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.82 seconds
+
+225) LR=0.5, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.59 seconds
+
+226) LR=0.5, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.61 seconds
+
+227) LR=0.5, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.93 seconds
+
+228) LR=0.5, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.67 seconds
+
+229) LR=0.5, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5180
+  Recall: 0.7230
+  F1: 0.6040
+  Fbeta: 0.5490
+  Execution time: 0.82 seconds
+
+230) LR=0.5, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.05 seconds
+
+231) LR=0.5, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.87 seconds
+
+232) LR=0.5, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.05 seconds
+
+233) LR=0.5, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.68 seconds
+
+234) LR=0.5, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.06 seconds
+
+235) LR=1.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.71 seconds
+
+236) LR=1.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.67 seconds
+
+237) LR=1.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5150
+  Recall: 0.7490
+  F1: 0.6100
+  Fbeta: 0.5490
+  Execution time: 1.05 seconds
+
+238) LR=1.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5150
+  Recall: 0.7490
+  F1: 0.6100
+  Fbeta: 0.5490
+  Execution time: 0.67 seconds
+
+239) LR=1.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5100
+  Recall: 0.7960
+  F1: 0.6220
+  Fbeta: 0.5490
+  Execution time: 0.82 seconds
+
+240) LR=1.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.34 seconds
+
+241) LR=1.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.71 seconds
+
+242) LR=1.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.93 seconds
+
+243) LR=1.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.73 seconds
+
+244) LR=1.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.92 seconds
+
+245) LR=2.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.81 seconds
+
+246) LR=2.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.06 seconds
+
+247) LR=2.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5460
+  Recall: 0.5610
+  F1: 0.5530
+  Fbeta: 0.5490
+  Execution time: 0.75 seconds
+
+248) LR=2.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.16 seconds
+
+249) LR=2.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.76 seconds
+
+250) LR=2.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.17 seconds
+
+251) LR=2.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.74 seconds
+
+252) LR=2.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.90 seconds
+
+253) LR=2.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 0.94 seconds
+
+254) LR=2.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4930
+  Recall: 0.9980
+  F1: 0.6600
+  Fbeta: 0.5490
+  Execution time: 1.18 seconds
+
+255) LR=0.1, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5410
+  Recall: 0.5770
+  F1: 0.5580
+  Fbeta: 0.5480
+  Execution time: 0.67 seconds
+
+256) LR=0.5, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5230
+  Recall: 0.6760
+  F1: 0.5900
+  Fbeta: 0.5480
+  Execution time: 0.93 seconds
+
+257) LR=0.5, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5070
+  Recall: 0.8060
+  F1: 0.6220
+  Fbeta: 0.5480
+  Execution time: 0.82 seconds
+
+258) LR=1.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4930
+  Recall: 0.9840
+  F1: 0.6570
+  Fbeta: 0.5480
+  Execution time: 0.93 seconds
+
+259) LR=0.2, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5020
+  Recall: 0.8540
+  F1: 0.6320
+  Fbeta: 0.5470
+  Execution time: 1.05 seconds
+
+260) LR=0.2, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4950
+  Recall: 0.9450
+  F1: 0.6500
+  Fbeta: 0.5470
+  Execution time: 1.05 seconds
+
+261) LR=0.2, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4920
+  Recall: 0.9880
+  F1: 0.6570
+  Fbeta: 0.5470
+  Execution time: 0.68 seconds
+
+262) LR=0.1, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5520
+  Recall: 0.5220
+  F1: 0.5370
+  Fbeta: 0.5460
+  Execution time: 0.68 seconds
+
+263) LR=0.1, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5260
+  Recall: 0.6420
+  F1: 0.5780
+  Fbeta: 0.5460
+  Execution time: 0.68 seconds
+
+264) LR=0.2, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5200
+  Recall: 0.6840
+  F1: 0.5910
+  Fbeta: 0.5460
+  Execution time: 0.82 seconds
+
+265) LR=0.5, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4910
+  Recall: 0.9840
+  F1: 0.6550
+  Fbeta: 0.5460
+  Execution time: 0.67 seconds
+
+266) LR=0.1, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5510
+  Recall: 0.5240
+  F1: 0.5370
+  Fbeta: 0.5450
+  Execution time: 0.63 seconds
+
+267) LR=0.1, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5530
+  Recall: 0.5140
+  F1: 0.5330
+  Fbeta: 0.5450
+  Execution time: 0.62 seconds
+
+268) LR=0.1, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5540
+  Recall: 0.5120
+  F1: 0.5320
+  Fbeta: 0.5450
+  Execution time: 0.61 seconds
+
+269) LR=0.1, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5440
+  Recall: 0.5470
+  F1: 0.5450
+  Fbeta: 0.5450
+  Execution time: 0.67 seconds
+
+270) LR=1.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5420
+  Recall: 0.5590
+  F1: 0.5500
+  Fbeta: 0.5450
+  Execution time: 0.60 seconds
+
+271) LR=2.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4970
+  Recall: 0.8830
+  F1: 0.6360
+  Fbeta: 0.5450
+  Execution time: 1.22 seconds
+
+272) LR=0.01, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4980
+  Recall: 0.8660
+  F1: 0.6320
+  Fbeta: 0.5440
+  Execution time: 0.77 seconds
+
+273) LR=0.1, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5480
+  Recall: 0.5280
+  F1: 0.5380
+  Fbeta: 0.5440
+  Execution time: 0.61 seconds
+
+274) LR=0.1, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5420
+  Recall: 0.5510
+  F1: 0.5460
+  Fbeta: 0.5440
+  Execution time: 0.69 seconds
+
+275) LR=0.1, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5490
+  Recall: 0.5240
+  F1: 0.5360
+  Fbeta: 0.5440
+  Execution time: 0.66 seconds
+
+276) LR=0.2, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5050
+  Recall: 0.7910
+  F1: 0.6160
+  Fbeta: 0.5440
+  Execution time: 0.81 seconds
+
+277) LR=0.5, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4920
+  Recall: 0.9410
+  F1: 0.6460
+  Fbeta: 0.5440
+  Execution time: 1.05 seconds
+
+278) LR=1.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5180
+  Recall: 0.6840
+  F1: 0.5900
+  Fbeta: 0.5440
+  Execution time: 1.09 seconds
+
+279) LR=2.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5260
+  Recall: 0.6300
+  F1: 0.5730
+  Fbeta: 0.5440
+  Execution time: 1.14 seconds
+
+280) LR=0.01, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5060
+  Recall: 0.7690
+  F1: 0.6100
+  Fbeta: 0.5430
+  Execution time: 0.71 seconds
+
+281) LR=0.1, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.5490
+  Recall: 0.5180
+  F1: 0.5330
+  Fbeta: 0.5430
+  Execution time: 0.81 seconds
+
+282) LR=0.1, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.5510
+  Recall: 0.5140
+  F1: 0.5320
+  Fbeta: 0.5430
+  Execution time: 0.69 seconds
+
+283) LR=0.1, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5510
+  Recall: 0.5140
+  F1: 0.5320
+  Fbeta: 0.5430
+  Execution time: 0.68 seconds
+
+284) LR=0.1, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5010
+  Recall: 0.8160
+  F1: 0.6210
+  Fbeta: 0.5430
+  Execution time: 1.06 seconds
+
+285) LR=0.2, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5210
+  Recall: 0.6540
+  F1: 0.5800
+  Fbeta: 0.5430
+  Execution time: 0.61 seconds
+
+286) LR=0.2, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4960
+  Recall: 0.8770
+  F1: 0.6340
+  Fbeta: 0.5430
+  Execution time: 0.68 seconds
+
+287) LR=0.2, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4910
+  Recall: 0.9410
+  F1: 0.6450
+  Fbeta: 0.5430
+  Execution time: 1.06 seconds
+
+288) LR=0.5, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5260
+  Recall: 0.6260
+  F1: 0.5720
+  Fbeta: 0.5430
+  Execution time: 1.09 seconds
+
+289) LR=1.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4930
+  Recall: 0.9170
+  F1: 0.6410
+  Fbeta: 0.5430
+  Execution time: 0.67 seconds
+
+290) LR=1.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5070
+  Recall: 0.7550
+  F1: 0.6070
+  Fbeta: 0.5430
+  Execution time: 0.86 seconds
+
+291) LR=0.1, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5500
+  Recall: 0.5100
+  F1: 0.5290
+  Fbeta: 0.5420
+  Execution time: 0.66 seconds
+
+292) LR=0.1, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.5480
+  Recall: 0.5200
+  F1: 0.5340
+  Fbeta: 0.5420
+  Execution time: 0.67 seconds
+
+293) LR=0.1, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5460
+  Recall: 0.5280
+  F1: 0.5370
+  Fbeta: 0.5420
+  Execution time: 0.67 seconds
+
+294) LR=0.1, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5480
+  Recall: 0.5200
+  F1: 0.5340
+  Fbeta: 0.5420
+  Execution time: 0.66 seconds
+
+295) LR=0.5, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5040
+  Recall: 0.7770
+  F1: 0.6110
+  Fbeta: 0.5420
+  Execution time: 1.05 seconds
+
+296) LR=0.5, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4910
+  Recall: 0.9310
+  F1: 0.6430
+  Fbeta: 0.5420
+  Execution time: 0.67 seconds
+
+297) LR=1.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4920
+  Recall: 0.9170
+  F1: 0.6400
+  Fbeta: 0.5420
+  Execution time: 0.74 seconds
+
+298) LR=2.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5260
+  Recall: 0.6170
+  F1: 0.5680
+  Fbeta: 0.5420
+  Execution time: 0.68 seconds
+
+299) LR=2.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5350
+  Recall: 0.5730
+  F1: 0.5530
+  Fbeta: 0.5420
+  Execution time: 0.76 seconds
+
+300) LR=0.1, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5090
+  Recall: 0.7190
+  F1: 0.5960
+  Fbeta: 0.5410
+  Execution time: 0.93 seconds
+
+301) LR=0.1, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.5470
+  Recall: 0.5160
+  F1: 0.5310
+  Fbeta: 0.5410
+  Execution time: 0.67 seconds
+
+302) LR=0.2, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4900
+  Recall: 0.9330
+  F1: 0.6430
+  Fbeta: 0.5410
+  Execution time: 0.68 seconds
+
+303) LR=0.5, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5730
+  Recall: 0.4430
+  F1: 0.5000
+  Fbeta: 0.5410
+  Execution time: 0.68 seconds
+
+304) LR=1.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5630
+  Recall: 0.4680
+  F1: 0.5110
+  Fbeta: 0.5410
+  Execution time: 0.73 seconds
+
+305) LR=2.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4950
+  Recall: 0.8580
+  F1: 0.6280
+  Fbeta: 0.5410
+  Execution time: 1.02 seconds
+
+306) LR=2.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4990
+  Recall: 0.8140
+  F1: 0.6190
+  Fbeta: 0.5410
+  Execution time: 0.73 seconds
+
+307) LR=0.1, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5450
+  Recall: 0.5220
+  F1: 0.5330
+  Fbeta: 0.5400
+  Execution time: 0.60 seconds
+
+308) LR=0.1, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5410
+  Recall: 0.5340
+  F1: 0.5370
+  Fbeta: 0.5400
+  Execution time: 0.69 seconds
+
+309) LR=0.1, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4970
+  Recall: 0.8240
+  F1: 0.6200
+  Fbeta: 0.5400
+  Execution time: 1.05 seconds
+
+310) LR=0.1, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5180
+  Recall: 0.6500
+  F1: 0.5770
+  Fbeta: 0.5400
+  Execution time: 0.82 seconds
+
+311) LR=0.1, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5480
+  Recall: 0.5120
+  F1: 0.5290
+  Fbeta: 0.5400
+  Execution time: 0.82 seconds
+
+312) LR=0.5, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5620
+  Recall: 0.4660
+  F1: 0.5100
+  Fbeta: 0.5400
+  Execution time: 0.60 seconds
+
+313) LR=1.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4940
+  Recall: 0.8580
+  F1: 0.6270
+  Fbeta: 0.5400
+  Execution time: 0.70 seconds
+
+314) LR=0.01, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5100
+  Recall: 0.7000
+  F1: 0.5900
+  Fbeta: 0.5390
+  Execution time: 0.73 seconds
+
+315) LR=0.1, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.5450
+  Recall: 0.5160
+  F1: 0.5300
+  Fbeta: 0.5390
+  Execution time: 0.81 seconds
+
+316) LR=0.1, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4860
+  Recall: 0.9510
+  F1: 0.6430
+  Fbeta: 0.5390
+  Execution time: 0.82 seconds
+
+317) LR=0.1, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5310
+  Recall: 0.5730
+  F1: 0.5510
+  Fbeta: 0.5390
+  Execution time: 0.67 seconds
+
+318) LR=0.2, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5210
+  Recall: 0.6230
+  F1: 0.5670
+  Fbeta: 0.5390
+  Execution time: 0.67 seconds
+
+319) LR=1.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5060
+  Recall: 0.7250
+  F1: 0.5960
+  Fbeta: 0.5390
+  Execution time: 1.04 seconds
+
+320) LR=2.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5010
+  Recall: 0.7770
+  F1: 0.6090
+  Fbeta: 0.5390
+  Execution time: 0.84 seconds
+
+321) LR=0.1, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5450
+  Recall: 0.5120
+  F1: 0.5280
+  Fbeta: 0.5380
+  Execution time: 0.68 seconds
+
+322) LR=1.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5230
+  Recall: 0.6090
+  F1: 0.5630
+  Fbeta: 0.5380
+  Execution time: 0.94 seconds
+
+323) LR=0.1, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5060
+  Recall: 0.7150
+  F1: 0.5930
+  Fbeta: 0.5370
+  Execution time: 0.72 seconds
+
+324) LR=0.1, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5400
+  Recall: 0.5240
+  F1: 0.5320
+  Fbeta: 0.5370
+  Execution time: 0.66 seconds
+
+325) LR=0.1, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4910
+  Recall: 0.8640
+  F1: 0.6260
+  Fbeta: 0.5370
+  Execution time: 1.06 seconds
+
+326) LR=0.1, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5430
+  Recall: 0.5160
+  F1: 0.5290
+  Fbeta: 0.5370
+  Execution time: 0.68 seconds
+
+327) LR=0.2, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5160
+  Recall: 0.6380
+  F1: 0.5710
+  Fbeta: 0.5370
+  Execution time: 1.05 seconds
+
+328) LR=0.2, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5120
+  Recall: 0.6660
+  F1: 0.5790
+  Fbeta: 0.5370
+  Execution time: 0.84 seconds
+
+329) LR=0.5, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5400
+  Recall: 0.5240
+  F1: 0.5320
+  Fbeta: 0.5370
+  Execution time: 0.83 seconds
+
+330) LR=1.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.4960
+  Recall: 0.8020
+  F1: 0.6130
+  Fbeta: 0.5370
+  Execution time: 0.78 seconds
+
+331) LR=0.01, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5060
+  Recall: 0.7040
+  F1: 0.5890
+  Fbeta: 0.5360
+  Execution time: 0.96 seconds
+
+332) LR=1.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5070
+  Recall: 0.6960
+  F1: 0.5870
+  Fbeta: 0.5360
+  Execution time: 0.93 seconds
+
+333) LR=2.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4840
+  Recall: 0.9330
+  F1: 0.6370
+  Fbeta: 0.5360
+  Execution time: 0.67 seconds
+
+334) LR=0.1, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5150
+  Recall: 0.6300
+  F1: 0.5670
+  Fbeta: 0.5350
+  Execution time: 0.83 seconds
+
+335) LR=0.1, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5040
+  Recall: 0.7130
+  F1: 0.5910
+  Fbeta: 0.5350
+  Execution time: 0.67 seconds
+
+336) LR=0.1, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5400
+  Recall: 0.5140
+  F1: 0.5270
+  Fbeta: 0.5350
+  Execution time: 0.66 seconds
+
+337) LR=0.5, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5230
+  Recall: 0.5870
+  F1: 0.5530
+  Fbeta: 0.5350
+  Execution time: 0.93 seconds
+
+338) LR=1.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5040
+  Recall: 0.7130
+  F1: 0.5910
+  Fbeta: 0.5350
+  Execution time: 0.82 seconds
+
+339) LR=1.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5000
+  Recall: 0.7470
+  F1: 0.5990
+  Fbeta: 0.5350
+  Execution time: 0.77 seconds
+
+340) LR=0.5, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5180
+  Recall: 0.6090
+  F1: 0.5600
+  Fbeta: 0.5340
+  Execution time: 1.05 seconds
+
+341) LR=1.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5500
+  Recall: 0.4780
+  F1: 0.5110
+  Fbeta: 0.5340
+  Execution time: 0.68 seconds
+
+342) LR=2.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5100
+  Recall: 0.6560
+  F1: 0.5740
+  Fbeta: 0.5340
+  Execution time: 1.18 seconds
+
+343) LR=0.1, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4890
+  Recall: 0.8320
+  F1: 0.6160
+  Fbeta: 0.5330
+  Execution time: 0.81 seconds
+
+344) LR=0.2, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5120
+  Recall: 0.6300
+  F1: 0.5650
+  Fbeta: 0.5320
+  Execution time: 0.73 seconds
+
+345) LR=0.2, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5680
+  Recall: 0.4250
+  F1: 0.4860
+  Fbeta: 0.5320
+  Execution time: 0.93 seconds
+
+346) LR=0.5, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5310
+  Recall: 0.5380
+  F1: 0.5340
+  Fbeta: 0.5320
+  Execution time: 1.07 seconds
+
+347) LR=1.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4830
+  Recall: 0.8990
+  F1: 0.6280
+  Fbeta: 0.5320
+  Execution time: 1.21 seconds
+
+348) LR=1.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4850
+  Recall: 0.8740
+  F1: 0.6240
+  Fbeta: 0.5320
+  Execution time: 1.16 seconds
+
+349) LR=2.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5040
+  Recall: 0.6840
+  F1: 0.5800
+  Fbeta: 0.5320
+  Execution time: 0.74 seconds
+
+350) LR=0.5, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5360
+  Recall: 0.5140
+  F1: 0.5250
+  Fbeta: 0.5310
+  Execution time: 0.85 seconds
+
+351) LR=0.5, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5840
+  Recall: 0.3890
+  F1: 0.4670
+  Fbeta: 0.5310
+  Execution time: 1.04 seconds
+
+352) LR=1.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5010
+  Recall: 0.6940
+  F1: 0.5820
+  Fbeta: 0.5310
+  Execution time: 0.67 seconds
+
+353) LR=2.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4820
+  Recall: 0.8910
+  F1: 0.6260
+  Fbeta: 0.5310
+  Execution time: 0.74 seconds
+
+354) LR=0.01, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.5330
+  Recall: 0.5180
+  F1: 0.5250
+  Fbeta: 0.5300
+  Execution time: 0.82 seconds
+
+355) LR=0.01, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5620
+  Recall: 0.4310
+  F1: 0.4880
+  Fbeta: 0.5300
+  Execution time: 1.07 seconds
+
+356) LR=0.5, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5020
+  Recall: 0.6840
+  F1: 0.5790
+  Fbeta: 0.5300
+  Execution time: 0.90 seconds
+
+357) LR=0.5, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5100
+  Recall: 0.6260
+  F1: 0.5620
+  Fbeta: 0.5300
+  Execution time: 1.05 seconds
+
+358) LR=1.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4950
+  Recall: 0.7370
+  F1: 0.5920
+  Fbeta: 0.5300
+  Execution time: 0.91 seconds
+
+359) LR=2.0, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.6900
+  Recall: 0.2750
+  F1: 0.3930
+  Fbeta: 0.5300
+  Execution time: 0.67 seconds
+
+360) LR=0.1, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4810
+  Recall: 0.8870
+  F1: 0.6240
+  Fbeta: 0.5290
+  Execution time: 1.05 seconds
+
+361) LR=0.1, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5180
+  Recall: 0.5790
+  F1: 0.5470
+  Fbeta: 0.5290
+  Execution time: 0.66 seconds
+
+362) LR=0.1, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5320
+  Recall: 0.5180
+  F1: 0.5250
+  Fbeta: 0.5290
+  Execution time: 0.68 seconds
+
+363) LR=0.1, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.5300
+  Recall: 0.5240
+  F1: 0.5270
+  Fbeta: 0.5290
+  Execution time: 0.67 seconds
+
+364) LR=0.1, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.5300
+  Recall: 0.5240
+  F1: 0.5270
+  Fbeta: 0.5290
+  Execution time: 0.81 seconds
+
+365) LR=0.2, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5010
+  Recall: 0.6780
+  F1: 0.5760
+  Fbeta: 0.5290
+  Execution time: 0.67 seconds
+
+366) LR=0.5, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4840
+  Recall: 0.8440
+  F1: 0.6150
+  Fbeta: 0.5290
+  Execution time: 0.81 seconds
+
+367) LR=0.2, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5130
+  Recall: 0.6010
+  F1: 0.5540
+  Fbeta: 0.5280
+  Execution time: 0.67 seconds
+
+368) LR=0.5, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5460
+  Recall: 0.4660
+  F1: 0.5030
+  Fbeta: 0.5280
+  Execution time: 0.70 seconds
+
+369) LR=0.5, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4830
+  Recall: 0.8420
+  F1: 0.6140
+  Fbeta: 0.5280
+  Execution time: 0.68 seconds
+
+370) LR=1.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4900
+  Recall: 0.7650
+  F1: 0.5970
+  Fbeta: 0.5280
+  Execution time: 0.74 seconds
+
+371) LR=2.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4820
+  Recall: 0.8600
+  F1: 0.6180
+  Fbeta: 0.5280
+  Execution time: 1.19 seconds
+
+372) LR=2.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5040
+  Recall: 0.6520
+  F1: 0.5690
+  Fbeta: 0.5280
+  Execution time: 0.92 seconds
+
+373) LR=0.1, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5090
+  Recall: 0.6170
+  F1: 0.5580
+  Fbeta: 0.5270
+  Execution time: 0.61 seconds
+
+374) LR=0.1, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5550
+  Recall: 0.4390
+  F1: 0.4900
+  Fbeta: 0.5270
+  Execution time: 0.73 seconds
+
+375) LR=0.1, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5330
+  Recall: 0.5040
+  F1: 0.5180
+  Fbeta: 0.5270
+  Execution time: 0.67 seconds
+
+376) LR=0.2, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4780
+  Recall: 0.8970
+  F1: 0.6240
+  Fbeta: 0.5270
+  Execution time: 0.73 seconds
+
+377) LR=0.2, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4980
+  Recall: 0.6840
+  F1: 0.5760
+  Fbeta: 0.5270
+  Execution time: 0.67 seconds
+
+378) LR=0.5, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5160
+  Recall: 0.5790
+  F1: 0.5460
+  Fbeta: 0.5270
+  Execution time: 0.96 seconds
+
+379) LR=0.5, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5020
+  Recall: 0.6600
+  F1: 0.5700
+  Fbeta: 0.5270
+  Execution time: 0.66 seconds
+
+380) LR=0.5, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5160
+  Recall: 0.5790
+  F1: 0.5460
+  Fbeta: 0.5270
+  Execution time: 0.67 seconds
+
+381) LR=0.01, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4960
+  Recall: 0.6960
+  F1: 0.5790
+  Fbeta: 0.5260
+  Execution time: 0.68 seconds
+
+382) LR=0.01, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5540
+  Recall: 0.4370
+  F1: 0.4890
+  Fbeta: 0.5260
+  Execution time: 0.85 seconds
+
+383) LR=0.5, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5150
+  Recall: 0.5770
+  F1: 0.5440
+  Fbeta: 0.5260
+  Execution time: 1.06 seconds
+
+384) LR=0.1, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4860
+  Recall: 0.7750
+  F1: 0.5970
+  Fbeta: 0.5250
+  Execution time: 1.06 seconds
+
+385) LR=0.5, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4820
+  Recall: 0.8220
+  F1: 0.6080
+  Fbeta: 0.5250
+  Execution time: 0.81 seconds
+
+386) LR=0.01, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.5060
+  Recall: 0.6070
+  F1: 0.5520
+  Fbeta: 0.5230
+  Execution time: 0.68 seconds
+
+387) LR=0.1, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5080
+  Recall: 0.5950
+  F1: 0.5480
+  Fbeta: 0.5230
+  Execution time: 0.67 seconds
+
+388) LR=0.2, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5060
+  Recall: 0.6030
+  F1: 0.5500
+  Fbeta: 0.5230
+  Execution time: 0.62 seconds
+
+389) LR=1.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5560
+  Recall: 0.4230
+  F1: 0.4800
+  Fbeta: 0.5230
+  Execution time: 0.73 seconds
+
+390) LR=0.01, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4950
+  Recall: 0.6660
+  F1: 0.5680
+  Fbeta: 0.5220
+  Execution time: 0.69 seconds
+
+391) LR=0.1, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4780
+  Recall: 0.8240
+  F1: 0.6050
+  Fbeta: 0.5220
+  Execution time: 1.05 seconds
+
+392) LR=0.2, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4890
+  Recall: 0.7110
+  F1: 0.5790
+  Fbeta: 0.5220
+  Execution time: 1.06 seconds
+
+393) LR=1.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.4980
+  Recall: 0.6480
+  F1: 0.5630
+  Fbeta: 0.5220
+  Execution time: 1.06 seconds
+
+394) LR=1.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5480
+  Recall: 0.4370
+  F1: 0.4860
+  Fbeta: 0.5220
+  Execution time: 0.67 seconds
+
+395) LR=0.01, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5200
+  Recall: 0.5240
+  F1: 0.5220
+  Fbeta: 0.5210
+  Execution time: 0.68 seconds
+
+396) LR=0.2, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4980
+  Recall: 0.6360
+  F1: 0.5590
+  Fbeta: 0.5210
+  Execution time: 0.68 seconds
+
+397) LR=2.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5540
+  Recall: 0.4170
+  F1: 0.4760
+  Fbeta: 0.5200
+  Execution time: 0.79 seconds
+
+398) LR=0.1, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5190
+  Recall: 0.5160
+  F1: 0.5170
+  Fbeta: 0.5180
+  Execution time: 0.67 seconds
+
+399) LR=0.2, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.5670
+  Recall: 0.3850
+  F1: 0.4590
+  Fbeta: 0.5180
+  Execution time: 0.67 seconds
+
+400) LR=0.5, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.4950
+  Recall: 0.6400
+  F1: 0.5580
+  Fbeta: 0.5180
+  Execution time: 0.66 seconds
+
+401) LR=1.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.6080
+  Recall: 0.3260
+  F1: 0.4240
+  Fbeta: 0.5180
+  Execution time: 0.82 seconds
+
+402) LR=0.2, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4870
+  Recall: 0.6820
+  F1: 0.5680
+  Fbeta: 0.5170
+  Execution time: 0.60 seconds
+
+403) LR=1.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4920
+  Recall: 0.6460
+  F1: 0.5590
+  Fbeta: 0.5170
+  Execution time: 1.16 seconds
+
+404) LR=1.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4900
+  Recall: 0.6600
+  F1: 0.5620
+  Fbeta: 0.5170
+  Execution time: 0.74 seconds
+
+405) LR=0.01, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5610
+  Recall: 0.3910
+  F1: 0.4610
+  Fbeta: 0.5160
+  Execution time: 1.11 seconds
+
+406) LR=0.5, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4980
+  Recall: 0.6050
+  F1: 0.5460
+  Fbeta: 0.5160
+  Execution time: 0.82 seconds
+
+407) LR=0.1, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5040
+  Recall: 0.5650
+  F1: 0.5330
+  Fbeta: 0.5150
+  Execution time: 0.68 seconds
+
+408) LR=2.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5340
+  Recall: 0.4490
+  F1: 0.4880
+  Fbeta: 0.5150
+  Execution time: 0.75 seconds
+
+409) LR=1.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4920
+  Recall: 0.6260
+  F1: 0.5510
+  Fbeta: 0.5140
+  Execution time: 0.90 seconds
+
+410) LR=0.5, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4730
+  Recall: 0.7770
+  F1: 0.5880
+  Fbeta: 0.5130
+  Execution time: 0.61 seconds
+
+411) LR=1.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5720
+  Recall: 0.3620
+  F1: 0.4430
+  Fbeta: 0.5130
+  Execution time: 1.23 seconds
+
+412) LR=0.01, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5390
+  Recall: 0.4230
+  F1: 0.4740
+  Fbeta: 0.5110
+  Execution time: 0.78 seconds
+
+413) LR=0.01, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5070
+  Recall: 0.5280
+  F1: 0.5170
+  Fbeta: 0.5110
+  Execution time: 0.69 seconds
+
+414) LR=1.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5480
+  Recall: 0.3910
+  F1: 0.4560
+  Fbeta: 0.5070
+  Execution time: 1.08 seconds
+
+415) LR=1.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5170
+  Recall: 0.4700
+  F1: 0.4920
+  Fbeta: 0.5070
+  Execution time: 0.90 seconds
+
+416) LR=0.01, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.4800
+  Recall: 0.6460
+  F1: 0.5510
+  Fbeta: 0.5060
+  Execution time: 0.64 seconds
+
+417) LR=0.01, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5340
+  Recall: 0.4190
+  F1: 0.4700
+  Fbeta: 0.5060
+  Execution time: 0.94 seconds
+
+418) LR=0.01, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4980
+  Recall: 0.5430
+  F1: 0.5200
+  Fbeta: 0.5060
+  Execution time: 0.68 seconds
+
+419) LR=0.5, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.4850
+  Recall: 0.6090
+  F1: 0.5400
+  Fbeta: 0.5060
+  Execution time: 0.70 seconds
+
+420) LR=1.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4720
+  Recall: 0.7110
+  F1: 0.5670
+  Fbeta: 0.5060
+  Execution time: 0.91 seconds
+
+421) LR=2.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.5120
+  Recall: 0.4840
+  F1: 0.4980
+  Fbeta: 0.5060
+  Execution time: 0.83 seconds
+
+422) LR=0.1, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4770
+  Recall: 0.6620
+  F1: 0.5540
+  Fbeta: 0.5050
+  Execution time: 0.82 seconds
+
+423) LR=0.5, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4740
+  Recall: 0.6880
+  F1: 0.5610
+  Fbeta: 0.5050
+  Execution time: 0.67 seconds
+
+424) LR=0.1, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4930
+  Recall: 0.5510
+  F1: 0.5200
+  Fbeta: 0.5040
+  Execution time: 0.81 seconds
+
+425) LR=0.01, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5330
+  Recall: 0.4090
+  F1: 0.4630
+  Fbeta: 0.5030
+  Execution time: 0.83 seconds
+
+426) LR=2.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4930
+  Recall: 0.5450
+  F1: 0.5180
+  Fbeta: 0.5030
+  Execution time: 1.20 seconds
+
+427) LR=0.01, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5200
+  Recall: 0.4390
+  F1: 0.4760
+  Fbeta: 0.5010
+  Execution time: 0.68 seconds
+
+428) LR=0.01, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5070
+  Recall: 0.4800
+  F1: 0.4930
+  Fbeta: 0.5010
+  Execution time: 0.82 seconds
+
+429) LR=0.01, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.5340
+  Recall: 0.4010
+  F1: 0.4580
+  Fbeta: 0.5010
+  Execution time: 0.85 seconds
+
+430) LR=2.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4740
+  Recall: 0.6420
+  F1: 0.5450
+  Fbeta: 0.5000
+  Execution time: 0.92 seconds
+
+431) LR=0.5, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5150
+  Recall: 0.4450
+  F1: 0.4770
+  Fbeta: 0.4990
+  Execution time: 1.08 seconds
+
+432) LR=1.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4740
+  Recall: 0.6360
+  F1: 0.5430
+  Fbeta: 0.4990
+  Execution time: 1.07 seconds
+
+433) LR=0.01, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5040
+  Recall: 0.4740
+  F1: 0.4890
+  Fbeta: 0.4980
+  Execution time: 1.06 seconds
+
+434) LR=0.2, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.4850
+  Recall: 0.5590
+  F1: 0.5190
+  Fbeta: 0.4980
+  Execution time: 1.05 seconds
+
+435) LR=2.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5010
+  Recall: 0.4820
+  F1: 0.4910
+  Fbeta: 0.4970
+  Execution time: 0.75 seconds
+
+436) LR=0.01, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.5030
+  Recall: 0.4720
+  F1: 0.4870
+  Fbeta: 0.4960
+  Execution time: 0.68 seconds
+
+437) LR=0.01, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5170
+  Recall: 0.4250
+  F1: 0.4670
+  Fbeta: 0.4960
+  Execution time: 0.72 seconds
+
+438) LR=0.2, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4930
+  Recall: 0.5080
+  F1: 0.5000
+  Fbeta: 0.4960
+  Execution time: 0.73 seconds
+
+439) LR=2.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5160
+  Recall: 0.4290
+  F1: 0.4680
+  Fbeta: 0.4960
+  Execution time: 0.89 seconds
+
+440) LR=0.01, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.5000
+  Recall: 0.4760
+  F1: 0.4880
+  Fbeta: 0.4950
+  Execution time: 0.73 seconds
+
+441) LR=1.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.4980
+  Recall: 0.4820
+  F1: 0.4900
+  Fbeta: 0.4950
+  Execution time: 0.81 seconds
+
+442) LR=0.01, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.4880
+  Recall: 0.5200
+  F1: 0.5030
+  Fbeta: 0.4940
+  Execution time: 0.71 seconds
+
+443) LR=0.2, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5980
+  Recall: 0.2910
+  F1: 0.3910
+  Fbeta: 0.4940
+  Execution time: 0.67 seconds
+
+444) LR=0.01, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.4810
+  Recall: 0.5490
+  F1: 0.5130
+  Fbeta: 0.4930
+  Execution time: 0.65 seconds
+
+445) LR=0.01, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.4760
+  Recall: 0.5730
+  F1: 0.5200
+  Fbeta: 0.4930
+  Execution time: 1.08 seconds
+
+446) LR=0.01, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4730
+  Recall: 0.5930
+  F1: 0.5260
+  Fbeta: 0.4930
+  Execution time: 0.72 seconds
+
+447) LR=2.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4760
+  Recall: 0.5750
+  F1: 0.5210
+  Fbeta: 0.4930
+  Execution time: 0.77 seconds
+
+448) LR=0.5, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5310
+  Recall: 0.3790
+  F1: 0.4420
+  Fbeta: 0.4920
+  Execution time: 0.82 seconds
+
+449) LR=2.0, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4660
+  Recall: 0.6360
+  F1: 0.5380
+  Fbeta: 0.4920
+  Execution time: 1.17 seconds
+
+450) LR=0.01, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5080
+  Recall: 0.4330
+  F1: 0.4680
+  Fbeta: 0.4910
+  Execution time: 1.07 seconds
+
+451) LR=0.01, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.5110
+  Recall: 0.4250
+  F1: 0.4640
+  Fbeta: 0.4910
+  Execution time: 1.14 seconds
+
+452) LR=2.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5580
+  Recall: 0.3320
+  F1: 0.4160
+  Fbeta: 0.4910
+  Execution time: 0.82 seconds
+
+453) LR=0.01, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5070
+  Recall: 0.4290
+  F1: 0.4650
+  Fbeta: 0.4890
+  Execution time: 0.77 seconds
+
+454) LR=0.01, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5060
+  Recall: 0.4330
+  F1: 0.4670
+  Fbeta: 0.4890
+  Execution time: 0.73 seconds
+
+455) LR=0.01, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4760
+  Recall: 0.5510
+  F1: 0.5110
+  Fbeta: 0.4890
+  Execution time: 1.05 seconds
+
+456) LR=0.01, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 0.4720
+  F1: 0.4830
+  Fbeta: 0.4890
+  Execution time: 0.70 seconds
+
+457) LR=0.01, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.5170
+  Recall: 0.4030
+  F1: 0.4530
+  Fbeta: 0.4890
+  Execution time: 1.23 seconds
+
+458) LR=1.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.4670
+  Recall: 0.6050
+  F1: 0.5270
+  Fbeta: 0.4890
+  Execution time: 0.83 seconds
+
+459) LR=0.01, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.4880
+  Recall: 0.4880
+  F1: 0.4880
+  Fbeta: 0.4880
+  Execution time: 0.95 seconds
+
+460) LR=2.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4830
+  Recall: 0.5040
+  F1: 0.4930
+  Fbeta: 0.4870
+  Execution time: 1.01 seconds
+
+461) LR=0.01, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5180
+  Recall: 0.3890
+  F1: 0.4440
+  Fbeta: 0.4860
+  Execution time: 0.67 seconds
+
+462) LR=0.01, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.4820
+  Recall: 0.4920
+  F1: 0.4870
+  Fbeta: 0.4840
+  Execution time: 0.63 seconds
+
+463) LR=0.1, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4820
+  Recall: 0.4940
+  F1: 0.4880
+  Fbeta: 0.4840
+  Execution time: 1.07 seconds
+
+464) LR=0.01, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4890
+  Recall: 0.4620
+  F1: 0.4750
+  Fbeta: 0.4830
+  Execution time: 0.82 seconds
+
+465) LR=0.5, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4920
+  Recall: 0.4450
+  F1: 0.4670
+  Fbeta: 0.4820
+  Execution time: 1.04 seconds
+
+466) LR=0.01, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4740
+  Recall: 0.5140
+  F1: 0.4930
+  Fbeta: 0.4810
+  Execution time: 0.83 seconds
+
+467) LR=0.2, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5950
+  Recall: 0.2730
+  F1: 0.3740
+  Fbeta: 0.4810
+  Execution time: 0.81 seconds
+
+468) LR=0.5, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.4660
+  Recall: 0.5470
+  F1: 0.5030
+  Fbeta: 0.4800
+  Execution time: 0.68 seconds
+
+469) LR=2.0, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4740
+  Recall: 0.5080
+  F1: 0.4900
+  Fbeta: 0.4800
+  Execution time: 0.89 seconds
+
+470) LR=0.01, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5260
+  Recall: 0.3520
+  F1: 0.4220
+  Fbeta: 0.4790
+  Execution time: 0.62 seconds
+
+471) LR=0.01, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.5310
+  Recall: 0.3440
+  F1: 0.4180
+  Fbeta: 0.4790
+  Execution time: 0.64 seconds
+
+472) LR=0.01, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.4980
+  Recall: 0.4170
+  F1: 0.4540
+  Fbeta: 0.4790
+  Execution time: 0.68 seconds
+
+473) LR=0.01, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5160
+  Recall: 0.3680
+  F1: 0.4300
+  Fbeta: 0.4780
+  Execution time: 0.68 seconds
+
+474) LR=0.01, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5030
+  Recall: 0.3970
+  F1: 0.4440
+  Fbeta: 0.4780
+  Execution time: 0.72 seconds
+
+475) LR=0.1, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4810
+  Recall: 0.4680
+  F1: 0.4740
+  Fbeta: 0.4780
+  Execution time: 0.82 seconds
+
+476) LR=0.01, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4900
+  Recall: 0.4310
+  F1: 0.4590
+  Fbeta: 0.4770
+  Execution time: 1.07 seconds
+
+477) LR=0.01, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5070
+  Recall: 0.3870
+  F1: 0.4390
+  Fbeta: 0.4770
+  Execution time: 1.18 seconds
+
+478) LR=0.01, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4740
+  Recall: 0.4820
+  F1: 0.4780
+  Fbeta: 0.4760
+  Execution time: 0.71 seconds
+
+479) LR=0.01, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5070
+  Recall: 0.3830
+  F1: 0.4360
+  Fbeta: 0.4760
+  Execution time: 0.86 seconds
+
+480) LR=0.1, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4670
+  Recall: 0.5140
+  F1: 0.4890
+  Fbeta: 0.4760
+  Execution time: 1.05 seconds
+
+481) LR=0.01, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4850
+  Recall: 0.4390
+  F1: 0.4610
+  Fbeta: 0.4750
+  Execution time: 1.05 seconds
+
+482) LR=0.01, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4850
+  Recall: 0.4370
+  F1: 0.4600
+  Fbeta: 0.4750
+  Execution time: 0.73 seconds
+
+483) LR=0.5, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4700
+  Recall: 0.4940
+  F1: 0.4820
+  Fbeta: 0.4750
+  Execution time: 0.67 seconds
+
+484) LR=1.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4900
+  Recall: 0.4250
+  F1: 0.4550
+  Fbeta: 0.4750
+  Execution time: 1.06 seconds
+
+485) LR=0.01, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4690
+  Recall: 0.4960
+  F1: 0.4820
+  Fbeta: 0.4740
+  Execution time: 0.67 seconds
+
+486) LR=0.01, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5110
+  Recall: 0.3680
+  F1: 0.4280
+  Fbeta: 0.4740
+  Execution time: 1.15 seconds
+
+487) LR=0.01, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4700
+  Recall: 0.4880
+  F1: 0.4790
+  Fbeta: 0.4730
+  Execution time: 0.89 seconds
+
+488) LR=0.01, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4890
+  Recall: 0.4130
+  F1: 0.4480
+  Fbeta: 0.4720
+  Execution time: 1.14 seconds
+
+489) LR=0.01, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4760
+  Recall: 0.4510
+  F1: 0.4630
+  Fbeta: 0.4710
+  Execution time: 1.20 seconds
+
+490) LR=0.5, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5710
+  Recall: 0.2770
+  F1: 0.3730
+  Fbeta: 0.4710
+  Execution time: 0.68 seconds
+
+491) LR=2.0, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5380
+  Recall: 0.3140
+  F1: 0.3970
+  Fbeta: 0.4710
+  Execution time: 0.74 seconds
+
+492) LR=0.01, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.4940
+  Recall: 0.3930
+  F1: 0.4380
+  Fbeta: 0.4700
+  Execution time: 0.90 seconds
+
+493) LR=0.01, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4880
+  Recall: 0.4070
+  F1: 0.4440
+  Fbeta: 0.4690
+  Execution time: 0.75 seconds
+
+494) LR=0.01, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.4730
+  Recall: 0.4390
+  F1: 0.4550
+  Fbeta: 0.4660
+  Execution time: 0.72 seconds
+
+495) LR=0.5, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.5190
+  Recall: 0.3300
+  F1: 0.4030
+  Fbeta: 0.4660
+  Execution time: 1.11 seconds
+
+496) LR=0.5, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4560
+  Recall: 0.5100
+  F1: 0.4810
+  Fbeta: 0.4660
+  Execution time: 0.66 seconds
+
+497) LR=0.01, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.4670
+  Recall: 0.4530
+  F1: 0.4600
+  Fbeta: 0.4640
+  Execution time: 0.69 seconds
+
+498) LR=1.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.5110
+  Recall: 0.3380
+  F1: 0.4070
+  Fbeta: 0.4640
+  Execution time: 1.16 seconds
+
+499) LR=0.01, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5320
+  Recall: 0.3040
+  F1: 0.3870
+  Fbeta: 0.4630
+  Execution time: 0.68 seconds
+
+500) LR=0.5, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5000
+  Recall: 0.3580
+  F1: 0.4170
+  Fbeta: 0.4630
+  Execution time: 0.83 seconds
+
+501) LR=1.0, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.4880
+  Recall: 0.3830
+  F1: 0.4290
+  Fbeta: 0.4630
+  Execution time: 0.84 seconds
+
+502) LR=0.01, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4650
+  Recall: 0.4490
+  F1: 0.4570
+  Fbeta: 0.4620
+  Execution time: 0.87 seconds
+
+503) LR=0.2, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.4500
+  Recall: 0.5180
+  F1: 0.4820
+  Fbeta: 0.4620
+  Execution time: 0.82 seconds
+
+504) LR=0.01, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.4640
+  Recall: 0.4470
+  F1: 0.4550
+  Fbeta: 0.4600
+  Execution time: 0.68 seconds
+
+505) LR=0.01, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4610
+  Recall: 0.4550
+  F1: 0.4580
+  Fbeta: 0.4600
+  Execution time: 0.85 seconds
+
+506) LR=0.01, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.4650
+  Recall: 0.4390
+  F1: 0.4520
+  Fbeta: 0.4600
+  Execution time: 1.11 seconds
+
+507) LR=0.5, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.5830
+  Recall: 0.2490
+  F1: 0.3490
+  Fbeta: 0.4600
+  Execution time: 0.73 seconds
+
+508) LR=2.0, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4570
+  Recall: 0.4620
+  F1: 0.4590
+  Fbeta: 0.4580
+  Execution time: 1.20 seconds
+
+509) LR=0.01, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4590
+  Recall: 0.4490
+  F1: 0.4540
+  Fbeta: 0.4570
+  Execution time: 0.75 seconds
+
+510) LR=0.01, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.5130
+  Recall: 0.3180
+  F1: 0.3930
+  Fbeta: 0.4570
+  Execution time: 0.69 seconds
+
+511) LR=0.01, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4870
+  Recall: 0.3660
+  F1: 0.4180
+  Fbeta: 0.4570
+  Execution time: 1.08 seconds
+
+512) LR=0.5, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4580
+  Recall: 0.4470
+  F1: 0.4520
+  Fbeta: 0.4560
+  Execution time: 0.67 seconds
+
+513) LR=1.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4490
+  Recall: 0.4880
+  F1: 0.4680
+  Fbeta: 0.4560
+  Execution time: 0.68 seconds
+
+514) LR=0.01, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4680
+  Recall: 0.4090
+  F1: 0.4370
+  Fbeta: 0.4550
+  Execution time: 0.92 seconds
+
+515) LR=1.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5170
+  Recall: 0.3080
+  F1: 0.3860
+  Fbeta: 0.4550
+  Execution time: 0.76 seconds
+
+516) LR=0.01, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4840
+  Recall: 0.3640
+  F1: 0.4160
+  Fbeta: 0.4540
+  Execution time: 0.67 seconds
+
+517) LR=0.01, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.1
+  Precision: 0.4630
+  Recall: 0.4230
+  F1: 0.4420
+  Fbeta: 0.4540
+  Execution time: 0.67 seconds
+
+518) LR=0.01, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4750
+  Recall: 0.3850
+  F1: 0.4250
+  Fbeta: 0.4540
+  Execution time: 0.72 seconds
+
+519) LR=0.01, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4570
+  Recall: 0.4410
+  F1: 0.4490
+  Fbeta: 0.4540
+  Execution time: 0.89 seconds
+
+520) LR=1.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4640
+  Recall: 0.4170
+  F1: 0.4390
+  Fbeta: 0.4540
+  Execution time: 0.61 seconds
+
+521) LR=0.01, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4650
+  Recall: 0.4110
+  F1: 0.4360
+  Fbeta: 0.4530
+  Execution time: 0.83 seconds
+
+522) LR=0.5, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.4960
+  Recall: 0.3360
+  F1: 0.4010
+  Fbeta: 0.4530
+  Execution time: 0.82 seconds
+
+523) LR=0.01, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4900
+  Recall: 0.3460
+  F1: 0.4060
+  Fbeta: 0.4520
+  Execution time: 0.70 seconds
+
+524) LR=1.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4430
+  Recall: 0.4940
+  F1: 0.4670
+  Fbeta: 0.4520
+  Execution time: 1.20 seconds
+
+525) LR=0.01, Dropout=0.2, Hidden Units=(64, 32, 16), Weight Decay=0.1
+  Precision: 0.4890
+  Recall: 0.3440
+  F1: 0.4040
+  Fbeta: 0.4510
+  Execution time: 0.83 seconds
+
+526) LR=0.01, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.4600
+  Recall: 0.4170
+  F1: 0.4370
+  Fbeta: 0.4510
+  Execution time: 1.07 seconds
+
+527) LR=0.01, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4420
+  Recall: 0.4800
+  F1: 0.4600
+  Fbeta: 0.4490
+  Execution time: 0.64 seconds
+
+528) LR=0.1, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4680
+  Recall: 0.3870
+  F1: 0.4240
+  Fbeta: 0.4490
+  Execution time: 1.06 seconds
+
+529) LR=2.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.4570
+  Recall: 0.4190
+  F1: 0.4370
+  Fbeta: 0.4490
+  Execution time: 0.77 seconds
+
+530) LR=0.01, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4660
+  Recall: 0.3890
+  F1: 0.4240
+  Fbeta: 0.4480
+  Execution time: 0.69 seconds
+
+531) LR=0.01, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4590
+  Recall: 0.4070
+  F1: 0.4310
+  Fbeta: 0.4480
+  Execution time: 0.69 seconds
+
+532) LR=0.01, Dropout=0.0, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4570
+  Recall: 0.4010
+  F1: 0.4270
+  Fbeta: 0.4450
+  Execution time: 0.63 seconds
+
+533) LR=2.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.6580
+  Recall: 0.1940
+  F1: 0.3000
+  Fbeta: 0.4450
+  Execution time: 0.66 seconds
+
+534) LR=2.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.4740
+  Recall: 0.3540
+  F1: 0.4050
+  Fbeta: 0.4440
+  Execution time: 0.93 seconds
+
+535) LR=0.01, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.4620
+  Recall: 0.3790
+  F1: 0.4160
+  Fbeta: 0.4430
+  Execution time: 1.14 seconds
+
+536) LR=0.5, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5430
+  Recall: 0.2550
+  F1: 0.3470
+  Fbeta: 0.4430
+  Execution time: 1.11 seconds
+
+537) LR=0.2, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4940
+  Recall: 0.3100
+  F1: 0.3810
+  Fbeta: 0.4420
+  Execution time: 1.05 seconds
+
+538) LR=0.01, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.5390
+  Recall: 0.2530
+  F1: 0.3440
+  Fbeta: 0.4400
+  Execution time: 0.96 seconds
+
+539) LR=0.01, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4890
+  Recall: 0.3080
+  F1: 0.3780
+  Fbeta: 0.4380
+  Execution time: 0.67 seconds
+
+540) LR=0.01, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.1
+  Precision: 0.4720
+  Recall: 0.3380
+  F1: 0.3940
+  Fbeta: 0.4370
+  Execution time: 0.69 seconds
+
+541) LR=0.01, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.4670
+  Recall: 0.3460
+  F1: 0.3970
+  Fbeta: 0.4360
+  Execution time: 1.17 seconds
+
+542) LR=1.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5070
+  Recall: 0.2790
+  F1: 0.3600
+  Fbeta: 0.4360
+  Execution time: 0.63 seconds
+
+543) LR=0.01, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4500
+  Recall: 0.3830
+  F1: 0.4140
+  Fbeta: 0.4350
+  Execution time: 0.67 seconds
+
+544) LR=0.01, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4820
+  Recall: 0.3040
+  F1: 0.3730
+  Fbeta: 0.4310
+  Execution time: 0.94 seconds
+
+545) LR=0.01, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.0
+  Precision: 0.5480
+  Recall: 0.2330
+  F1: 0.3270
+  Fbeta: 0.4310
+  Execution time: 0.83 seconds
+
+546) LR=0.2, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4650
+  Recall: 0.3320
+  F1: 0.3870
+  Fbeta: 0.4310
+  Execution time: 1.05 seconds
+
+547) LR=0.01, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.1
+  Precision: 0.4570
+  Recall: 0.3460
+  F1: 0.3940
+  Fbeta: 0.4290
+  Execution time: 0.96 seconds
+
+548) LR=0.01, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4680
+  Recall: 0.3120
+  F1: 0.3740
+  Fbeta: 0.4250
+  Execution time: 1.08 seconds
+
+549) LR=0.01, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.01
+  Precision: 0.4580
+  Recall: 0.3300
+  F1: 0.3840
+  Fbeta: 0.4250
+  Execution time: 0.72 seconds
+
+550) LR=0.01, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4610
+  Recall: 0.3240
+  F1: 0.3810
+  Fbeta: 0.4250
+  Execution time: 0.86 seconds
+
+551) LR=0.01, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4710
+  Recall: 0.3000
+  F1: 0.3670
+  Fbeta: 0.4230
+  Execution time: 0.64 seconds
+
+552) LR=1.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.5170
+  Recall: 0.2430
+  F1: 0.3310
+  Fbeta: 0.4220
+  Execution time: 0.61 seconds
+
+553) LR=0.01, Dropout=0.1, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5000
+  Recall: 0.2550
+  F1: 0.3380
+  Fbeta: 0.4190
+  Execution time: 0.83 seconds
+
+554) LR=1.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4380
+  Recall: 0.3520
+  F1: 0.3900
+  Fbeta: 0.4180
+  Execution time: 0.94 seconds
+
+555) LR=1.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4820
+  Recall: 0.2670
+  F1: 0.3440
+  Fbeta: 0.4150
+  Execution time: 1.17 seconds
+
+556) LR=0.01, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0
+  Precision: 0.4710
+  Recall: 0.2790
+  F1: 0.3500
+  Fbeta: 0.4140
+  Execution time: 0.64 seconds
+
+557) LR=2.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4670
+  Recall: 0.2830
+  F1: 0.3520
+  Fbeta: 0.4130
+  Execution time: 0.77 seconds
+
+558) LR=0.01, Dropout=0.5, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.4770
+  Recall: 0.2670
+  F1: 0.3420
+  Fbeta: 0.4120
+  Execution time: 0.73 seconds
+
+559) LR=1.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.4470
+  Recall: 0.3060
+  F1: 0.3630
+  Fbeta: 0.4090
+  Execution time: 0.93 seconds
+
+560) LR=0.2, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4670
+  Recall: 0.2690
+  F1: 0.3410
+  Fbeta: 0.4070
+  Execution time: 0.93 seconds
+
+561) LR=0.5, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.01
+  Precision: 0.4220
+  Recall: 0.3400
+  F1: 0.3770
+  Fbeta: 0.4030
+  Execution time: 0.68 seconds
+
+562) LR=0.2, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.5710
+  Recall: 0.1780
+  F1: 0.2710
+  Fbeta: 0.3960
+  Execution time: 0.82 seconds
+
+563) LR=0.2, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5330
+  Recall: 0.1940
+  F1: 0.2840
+  Fbeta: 0.3950
+  Execution time: 1.06 seconds
+
+564) LR=0.01, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4430
+  Recall: 0.2670
+  F1: 0.3330
+  Fbeta: 0.3910
+  Execution time: 0.63 seconds
+
+565) LR=0.01, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.4800
+  Recall: 0.2190
+  F1: 0.3010
+  Fbeta: 0.3880
+  Execution time: 0.67 seconds
+
+566) LR=2.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.0
+  Precision: 0.5110
+  Recall: 0.1960
+  F1: 0.2830
+  Fbeta: 0.3870
+  Execution time: 0.73 seconds
+
+567) LR=0.1, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.5000
+  Recall: 0.2000
+  F1: 0.2860
+  Fbeta: 0.3850
+  Execution time: 1.07 seconds
+
+568) LR=2.0, Dropout=0.1, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4360
+  Recall: 0.2570
+  F1: 0.3230
+  Fbeta: 0.3830
+  Execution time: 0.74 seconds
+
+569) LR=0.5, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.4490
+  Recall: 0.2330
+  F1: 0.3070
+  Fbeta: 0.3790
+  Execution time: 0.67 seconds
+
+570) LR=2.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.5890
+  Recall: 0.1480
+  F1: 0.2370
+  Fbeta: 0.3690
+  Execution time: 1.15 seconds
+
+571) LR=0.5, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.5490
+  Recall: 0.1580
+  F1: 0.2450
+  Fbeta: 0.3670
+  Execution time: 0.91 seconds
+
+572) LR=0.2, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4180
+  Recall: 0.2410
+  F1: 0.3060
+  Fbeta: 0.3640
+  Execution time: 1.06 seconds
+
+573) LR=0.5, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.01
+  Precision: 0.4350
+  Recall: 0.2190
+  F1: 0.2910
+  Fbeta: 0.3630
+  Execution time: 0.82 seconds
+
+574) LR=0.1, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4040
+  Recall: 0.2510
+  F1: 0.3100
+  Fbeta: 0.3600
+  Execution time: 1.09 seconds
+
+575) LR=1.0, Dropout=0.1, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.4810
+  Recall: 0.1780
+  F1: 0.2600
+  Fbeta: 0.3590
+  Execution time: 0.67 seconds
+
+576) LR=2.0, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4270
+  Recall: 0.2150
+  F1: 0.2860
+  Fbeta: 0.3570
+  Execution time: 0.76 seconds
+
+577) LR=0.5, Dropout=0.2, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.3990
+  Recall: 0.2090
+  F1: 0.2740
+  Fbeta: 0.3380
+  Execution time: 0.68 seconds
+
+578) LR=0.5, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.001
+  Precision: 0.6270
+  Recall: 0.1050
+  F1: 0.1800
+  Fbeta: 0.3140
+  Execution time: 1.05 seconds
+
+579) LR=2.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3760
+  Recall: 0.1680
+  F1: 0.2320
+  Fbeta: 0.3010
+  Execution time: 1.02 seconds
+
+580) LR=1.0, Dropout=0.0, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3770
+  Recall: 0.1400
+  F1: 0.2040
+  Fbeta: 0.2820
+  Execution time: 0.94 seconds
+
+581) LR=1.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4230
+  Recall: 0.1210
+  F1: 0.1880
+  Fbeta: 0.2820
+  Execution time: 0.75 seconds
+
+582) LR=2.0, Dropout=0.3, Hidden Units=(128, 64, 32, 16), Weight Decay=0.01
+  Precision: 0.3960
+  Recall: 0.1280
+  F1: 0.1930
+  Fbeta: 0.2790
+  Execution time: 1.17 seconds
+
+583) LR=2.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.4550
+  Recall: 0.1030
+  F1: 0.1680
+  Fbeta: 0.2700
+  Execution time: 0.76 seconds
+
+584) LR=2.0, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.3390
+  Recall: 0.1300
+  F1: 0.1880
+  Fbeta: 0.2570
+  Execution time: 0.76 seconds
+
+585) LR=2.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3240
+  Recall: 0.1380
+  F1: 0.1940
+  Fbeta: 0.2550
+  Execution time: 0.91 seconds
+
+586) LR=2.0, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3950
+  Recall: 0.0950
+  F1: 0.1530
+  Fbeta: 0.2420
+  Execution time: 0.84 seconds
+
+587) LR=0.2, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3500
+  Recall: 0.0870
+  F1: 0.1390
+  Fbeta: 0.2180
+  Execution time: 1.06 seconds
+
+588) LR=2.0, Dropout=0.0, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.3590
+  Recall: 0.0750
+  F1: 0.1240
+  Fbeta: 0.2040
+  Execution time: 0.66 seconds
+
+589) LR=0.2, Dropout=0.5, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.3330
+  Recall: 0.0670
+  F1: 0.1120
+  Fbeta: 0.1860
+  Execution time: 1.07 seconds
+
+590) LR=0.5, Dropout=0.0, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.4030
+  Recall: 0.0550
+  F1: 0.0970
+  Fbeta: 0.1780
+  Execution time: 0.73 seconds
+
+591) LR=0.2, Dropout=0.2, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3800
+  Recall: 0.0550
+  F1: 0.0960
+  Fbeta: 0.1740
+  Execution time: 1.06 seconds
+
+592) LR=2.0, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3460
+  Recall: 0.0570
+  F1: 0.0980
+  Fbeta: 0.1720
+  Execution time: 1.22 seconds
+
+593) LR=0.5, Dropout=0.3, Hidden Units=(32, 16), Weight Decay=0.001
+  Precision: 0.3180
+  Recall: 0.0550
+  F1: 0.0940
+  Fbeta: 0.1630
+  Execution time: 0.69 seconds
+
+594) LR=0.5, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0001
+  Precision: 0.3290
+  Recall: 0.0530
+  F1: 0.0910
+  Fbeta: 0.1610
+  Execution time: 1.08 seconds
+
+595) LR=2.0, Dropout=0.2, Hidden Units=(16, 8), Weight Decay=0.0001
+  Precision: 0.5130
+  Recall: 0.0400
+  F1: 0.0740
+  Fbeta: 0.1520
+  Execution time: 0.75 seconds
+
+596) LR=2.0, Dropout=0.5, Hidden Units=(32, 16), Weight Decay=0.0001
+  Precision: 0.5170
+  Recall: 0.0300
+  F1: 0.0570
+  Fbeta: 0.1220
+  Execution time: 0.76 seconds
+
+597) LR=0.2, Dropout=0.1, Hidden Units=(128, 64, 32, 16), Weight Decay=0.0
+  Precision: 0.4240
+  Recall: 0.0280
+  F1: 0.0530
+  Fbeta: 0.1110
+  Execution time: 1.07 seconds
+
+598) LR=2.0, Dropout=0.5, Hidden Units=(64, 32, 16), Weight Decay=0.0001
+  Precision: 0.2860
+  Recall: 0.0320
+  F1: 0.0580
+  Fbeta: 0.1110
+  Execution time: 0.92 seconds
+
+599) LR=1.0, Dropout=0.3, Hidden Units=(16, 8), Weight Decay=0.001
+  Precision: 0.2500
+  Recall: 0.0200
+  F1: 0.0370
+  Fbeta: 0.0760
+  Execution time: 0.71 seconds
+
+600) LR=2.0, Dropout=0.3, Hidden Units=(64, 32, 16), Weight Decay=0.001
+  Precision: 0.2500
+  Recall: 0.0040
+  F1: 0.0080
+  Fbeta: 0.0190
+  Execution time: 0.91 seconds

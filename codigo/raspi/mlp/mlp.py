@@ -3,52 +3,77 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.quantization
 from collections import deque
-import pickle
 
 class DynamicMLP(nn.Module):
-    def __init__(self, input_size, hidden_units=[32, 16], output_size=1, quantize=True, learning_rate=0.001):
+    def __init__(
+        self, 
+        input_size,
+        hidden_units=[32, 16],
+        output_size=1,
+        quantize=True,
+        learning_rate=0.001,
+        dropout_rate=0.0,
+        weight_decay=0.0
+        ):
+        
         """
         Initializes the DynamicMLP model.
-        
-        Arguments:
-        - input_size: Number of features in the input data.
-        - hidden_units: List specifying the number of neurons in hidden layers.
-        - output_size: Number of output neurons (1 for binary classification).
-        - quantize: If True, apply dynamic quantization to reduce the model's size.
-        - learning_rate: Learning rate for the optimizer.
+
+        Args:
+            input_size: Number of input features.
+            hidden_units: List specifying the number of neurons in each hidden layer.
+            output_size: Number of output neurons (1 for binary classification).
+            quantize: If True, apply dynamic quantization.
+            learning_rate: Learning rate for the optimizer.
+            dropout_rate: Dropout rate to use between layers (0.0 means no dropout).
+            weight_decay: L2 regularization strength (0.0 means no regularization).
         """
         super(DynamicMLP, self).__init__()
-        
-        # Define the neural network layers
-        self.layers = nn.Sequential(
-            nn.Linear(input_size, hidden_units[0]),
-            nn.ReLU(),
-            nn.Linear(hidden_units[0], hidden_units[1]),
-            nn.ReLU(),
-            nn.Linear(hidden_units[1], output_size),
-            nn.Sigmoid()
-        )
-        
-        # Queue to store received gradients from neighbors
-        self.gradient_queue = deque(maxlen=10)
-        
+
+        # Dynamically create layers
+        layers = []
+        prev_units = input_size
+        for units in hidden_units:
+            layers.append(nn.Linear(prev_units, units))
+            layers.append(nn.ReLU())
+            if dropout_rate > 0.0:
+                layers.append(nn.Dropout(dropout_rate))
+            prev_units = units
+
+        # Add the output layer
+        layers.append(nn.Linear(prev_units, output_size))
+        layers.append(nn.Sigmoid())
+
+        self.layers = nn.Sequential(*layers)
+
         # Apply quantization
         if quantize:
             self.quantize_model()
 
         # Initialize loss function and optimizer
         self.criterion = nn.BCELoss()  # Binary Cross-Entropy Loss
-        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate)
+        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate, weight_decay=weight_decay)  # Add L2 regularization
 
     def quantize_model(self):
         """
-        Apply dynamic quantization to reduce the model's size and improve efficiency.
+        Applies dynamic quantization to the linear layers in the model, reducing memory usage
+                and computational requirements.            
         """
-        self.layers = torch.quantization.quantize_dynamic(
-            self.layers,  
-            {nn.Linear},  
-            dtype=torch.qint8  
-        )
+        for name, module in self.layers.named_children():
+            if isinstance(module, nn.Linear):
+                setattr(self.layers, name, torch.quantization.quantize_dynamic(module, {nn.Linear}, dtype=torch.qint8))
+
+    def forward(self, x):
+        """
+        Defines the forward pass of the model.
+        
+        Arguments:
+        - x: Input tensor.
+        
+        Returns:
+        - Output tensor after passing through the network.
+        """
+        return self.layers(x)
 
     def get_parameters(self):
         """
@@ -62,39 +87,102 @@ class DynamicMLP(nn.Module):
     def predict_one(self, sample):
         """
         Predicts the output for a single input sample.
-        
+
         Args:
-            sample: A single input sample (as a tensor).
-        
+            sample: A dictionary with feature indices as keys and feature values as values.
+
         Returns:
-            The model's prediction (as a tensor).
+            int: The predicted label (0 or 1).        
         """
-        self.eval()  # Set the model to evaluation mode
-        with torch.no_grad():  # Disable gradient computation
-            sample = sample.unsqueeze(0)  # Add batch dimension
-            prediction = self.layers(sample)
-        return prediction
-    
+        self.eval()  
+        with torch.no_grad():  
+            sample_tensor = torch.tensor([v for _, v in sorted(sample.items())], dtype=torch.float32).unsqueeze(0)
+            probability = self(sample_tensor)  
+            label = 1 if probability.item() >= 0.5 else 0  
+        return label
+
     def learn_one(self, sample, label):
         """
         Trains the model on a single input sample and its corresponding label.
-        
+
         Args:
-            sample: A single input sample (as a tensor).
-            label: The corresponding label (as a tensor).
-        
+            sample: A dictionary with feature indices as keys and feature values as values.
+            label: The corresponding label.
+
         Returns:
-            The loss value (as a tensor).
+            The loss value.
         """
         self.train()  # Set the model to training mode
         self.optimizer.zero_grad()  # Zero the gradients
-        sample = sample.unsqueeze(0)  # Add batch dimension
-        output = self.layers(sample)  # Forward pass
-        loss = self.criterion(output, label.unsqueeze(0))  # Compute loss
+
+        # Convert dictionary to tensor
+        sample_tensor = torch.tensor([v for _, v in sorted(sample.items())], dtype=torch.float32).unsqueeze(0)
+        label_tensor = torch.tensor([label], dtype=torch.float32).unsqueeze(1)
+
+        output = self.layers(sample_tensor)  # Forward pass
+        loss = self.criterion(output, label_tensor)  # Compute loss
         loss.backward()  # Backward pass
         self.optimizer.step()  # Update weights
         return loss.item()
-    
+
+    def learn_batch(self, samples, labels):
+        """
+        Trains the model on a batch of input samples and their corresponding labels.
+
+        Args:
+            samples: A list of dictionaries, where each dictionary represents a sample.
+            labels: A list of labels corresponding to the samples.
+
+        Returns:
+            The average loss value for the batch.
+        """
+        self.train()  # Set the model to training mode
+        self.optimizer.zero_grad()  # Zero the gradients
+
+        # Convert list of dictionaries to a batch tensor
+        sample_tensors = [torch.tensor([v for _, v in sorted(sample.items())], dtype=torch.float32) for sample in samples]
+        sample_batch = torch.stack(sample_tensors)  # Shape: [batch_size, input_size]
+
+        # Convert labels to a batch tensor
+        label_batch = torch.tensor(labels, dtype=torch.float32).unsqueeze(1)  # Shape: [batch_size, 1]
+
+        # Forward pass
+        output = self.layers(sample_batch)  # Shape: [batch_size, 1]
+
+        # Compute loss
+        loss = self.criterion(output, label_batch)  # Scalar value
+
+        # Backward pass and optimization
+        loss.backward()  # Compute gradients
+        self.optimizer.step()  # Update weights
+
+        return loss.item()
+
+    def learn_sliding_window(self, sample, label, window_size=100):
+        """
+        Trains the model using a sliding window of recent samples.
+
+        Args:
+            sample: A dictionary representing the new sample.
+            label: The label corresponding to the new sample.
+            window_size: The size of the sliding window (default: 100).
+
+        Returns:
+            The average loss value for the window.
+        """
+        if not hasattr(self, 'sample_buffer'):
+            # Initialize the sliding window buffers
+            self.sample_buffer = deque(maxlen=window_size)
+            self.label_buffer = deque(maxlen=window_size)
+
+        # Add the new sample and label to the buffers
+        self.sample_buffer.append(sample)
+        self.label_buffer.append(label)
+
+        # Train on the entire window
+        loss = self.learn_batch(list(self.sample_buffer), list(self.label_buffer))
+        return loss
+
     def test_then_train(self, sample, label):
         """
         First predicts the output for a single sample (test phase), then trains the model on that sample (train phase).

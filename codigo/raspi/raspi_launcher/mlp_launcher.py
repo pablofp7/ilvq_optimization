@@ -1,112 +1,98 @@
+import csv
 import sys
 import os
+import time
+import threading
+import numpy as np
+import pandas as pd
+import socket
+from node_class.mlp_node import MLPNodev1  # Updated to use MLPNodev1
+
+# Add the main directory to the Python path
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
 
-from prototypes_mod import XuILVQ
-import pandas as pd
-from node_class.nodev4 import Nodev4
-import time
-import threading
-import numpy as np
-import socket
-import csv
 
-
-
+# Function to read and preprocess the dataset
 def read_dataset(name: str):
     filename = data_name[name]
     dataset = pd.read_csv(f"../dataset/{filename}")
-    # Se cambia el 'UP' por 1 y el 'DOWN' por 0
-    dataset.replace('UP', 1, inplace=True)
-    dataset.infer_objects(copy=False)
-    dataset.replace('DOWN', 0, inplace=True)
-    dataset.infer_objects(copy=False)
-
-    dataset.replace('True', 1, inplace=True)
-    dataset.infer_objects(copy=False)
-    dataset.replace('False', 0, inplace=True)
-    dataset.infer_objects(copy=False)
-
-
-      
+    dataset.replace(['UP', 'True'], 1, inplace=True)
+    dataset.replace(['DOWN', 'False'], 0, inplace=True)
     dataset.infer_objects(copy=False)
     return dataset
 
-
-def main(df: pd.DataFrame):
-
-    #Se adapta para darle a cada nodo su parte
+# Main function to run the node
+def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str, s: int, t: float, i_iter: int):
+    # Prepare the dataset for the node
     init_index = 0
     tam_muestra = n_muestras * n_nodos
     if "phis" in dataset or "elec2" in dataset:
         tam_muestra = min(tam_muestra, 1250)
         max_init_index = len(df) - tam_muestra
-        print(f"max_init_index: {max_init_index}, tam_muestra: {tam_muestra}, len(df): {len(df)}")
         init_index = np.random.randint(0, max_init_index) if max_init_index > 0 else 0
 
-    df_short = df[init_index : init_index + tam_muestra]
+    df_short = df[init_index: init_index + tam_muestra]
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
+    # Initialize the node
+    nodo = MLPNodev1(
+        id=id,
+        dataset=df_nodos[id],
+        nodos=n_nodos,
+        s=s,
+        T=t,
+        media_llegadas=media_llegadas
+    )
 
-    nodo = Nodev4(id, dataset=df_nodos[id], modelo_proto=XuILVQ(max_pset_size=limit, target_size=target_range), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
-
+    # Start the node in a separate thread
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
     hilo.join(T_MAX_IT)
-    
+
     if hilo.is_alive():
         print(f"EL HILO ESTÁ BLOQUEADO. CERRANDO PROGRAMA")
         exit()
-        
 
+    # Collect statistics from the node
     tp = nodo.matriz_conf["TP"]
     fp = nodo.matriz_conf["FP"]
     fn = nodo.matriz_conf["FN"]
     precision = round(tp / (tp + fp), 3) if tp + fp != 0 else 0
     recall = round(tp / (tp + fn), 3) if tp + fn != 0 else 0
     f1 = round(2 * (precision * recall) / (precision + recall), 3) if precision + recall != 0 else 0
-    clust_time = round(nodo.clust_time, 1)
 
-
-    if nodo.tiempo_learn_queue == 0:
+    # Calculate execution capacity
+    if nodo.tiempo_aggregation == 0:
         cap_ejec = 0
     else:
-        cap_ejec = round((nodo.protos_train + nodo.muestras_train) / (nodo.tiempo_learn_queue + nodo.tiempo_learn_data), 3)
-        
+        cap_ejec = round((nodo.muestras_train + nodo.params_aggregated) / (nodo.tiempo_learn_data + nodo.tiempo_aggregation), 3)
 
-    # Crear una fila con los datos del nodo
+    # Prepare the row for the CSV file
     row = {
         "NODO": nodo.id,
         "Precision": precision,
         "Recall": recall,
         "F1": f1,
         "Muestras entrenadas": nodo.muestras_train,
-        "Prototipos entrenados": nodo.protos_train,
-        "Veces compartido": nodo.shared_times_final,
-        "Prototipos compartidos": nodo.compartidos_final,
-        "Prototipos ahorrados": nodo.no_comp_jsd_final,
-        "Prototipos descartados": nodo.protos_descartados_final,
-        "Ejecuciones de clustering": nodo.clust_runs,
-        "Tiempo clustering": clust_time,
+        "Parámetros agregados": nodo.params_aggregated,
+        "Veces compartido": nodo.shared_times[0],
         "Tiempo aprendizaje (muestras)": nodo.tiempo_learn_data,
-        "Tiempo aprendizaje (prototipos)": nodo.tiempo_learn_queue,
-        "Tiempo compartiendo prototipos": nodo.tiempo_share_final,
-        "Tiempo no compartiendo prototipos": nodo.tiempo_no_share_final,
+        "Tiempo agregación": nodo.tiempo_aggregation,
+        "Tiempo compartiendo": nodo.tiempo_share[0],
+        "Tiempo no compartiendo": nodo.tiempo_no_share[0],
         "Tiempo total espera activa": nodo.tiempo_espera_total,
         "Tiempo total": nodo.tiempo_final_total,
-        "Capacidad de ejecución": cap_ejec,
-        "Tamaño de lotes recibidos": nodo.tam_lotes_recibidos,
-        "Tamaño conjunto de prototipos": nodo.tam_conj_prot
+        "Capacidad de ejecución": cap_ejec
     }
 
-
-    # Escribir en el archivo CSV
+    # Write the results to the CSV file
+    parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
+    nombre_archivo = f"{directorio_resultados}/result_{parametros}.csv"
     with open(nombre_archivo, 'w', newline='') as csvfile:
         fieldnames = row.keys()
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
         writer.writeheader()
         writer.writerow(row)
 
@@ -122,8 +108,7 @@ def sincronizar():
 
     check_availability(id, dir_nodos, puerto)
     if id == 0:
-        # Como base se ponen los parametros del nodo central
-        min_prov = parsear_parametros(parametros)
+        min_prov = None
         # Nodo central
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.bind(("0.0.0.0", puerto))
@@ -189,7 +174,6 @@ def sincronizar():
     print(f"[SINCRONIZACIÓN] Combinación mínima: {combinacion_minima}")           
     return combinacion_minima
 
-
 def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
     if mensaje.startswith("LISTO"):
@@ -221,39 +205,29 @@ def check_mensaje(mensaje, lista_confirmaciones, contador_prints, min_prov):
 
 
 def parsear_parametros(mensaje):
-    print(f"Se van a parsear los parametros: {mensaje}")
     partes = mensaje.split('_')
     
-    dataset = partes[0]
-    s_value = int(partes[1][1:])
-    t_value = float(partes[2][1:])
-    limite = int(partes[3][5:])
-    ranges = partes[4].split('-')
-    inf_range = float(ranges[0][5:])
-    sup_range = float(ranges[1][:])
-    target_range = (inf_range, sup_range)
-    lim_range_searched = (limite, target_range)
-    iteracion = int(partes[5][2:])   
-    
+    dataset = partes[0]  # 'elec'
+    s_value = int(partes[1][1:])  # Extrae '1' de 's1' y convierte a entero
+    t_value = float(partes[2][1:])  # Extrae '0.0' de 'T0.0' y mantiene como flotante
+    iteration = int(partes[3][2:])  # Extrae '31' de 'it31' y convierte a entero
+
+    # Encuentra índices de los valores en sus respectivas listas
     dataset_index = datasets.index(dataset)
     s_index = S.index(s_value)
-    t_index = np.where(np.isclose(T, t_value))[0][0]
-    target_index = lim_range.index(lim_range_searched)
     
-    return (iteracion, dataset_index, s_index, t_index, target_index)
+    # Para encontrar el índice de t_value en T, usamos np.isclose para manejar precisión de punto flotante
+    t_index = np.where(np.isclose(T, t_value))[0][0]
 
+    return (iteration, dataset_index, s_index, t_index)
 
 
 def indices_a_parametros(indices):
-    iteration, dataset_index, s_index, t_index, limit_target_index = indices
+    iteration, dataset_index, s_index, t_index = indices
     dataset = datasets[dataset_index]
     s = S[s_index]
     T_value = T[t_index]
-    limit, target_range = lim_range[limit_target_index]
-    target_range_str = "-".join(map(str, target_range))
-    return f"{dataset}_s{s}_T{T_value}_limit{limit}_range{target_range_str}_it{iteration}"
-
-
+    return f"{dataset}_s{s}_T{T_value}_it{iteration}"
 
 def check_availability(nodo_id, nodos, puerto):
     """
@@ -305,25 +279,23 @@ def check_availability(nodo_id, nodos, puerto):
                 except socket.timeout:
                     print("No se recibieron pings en el tiempo esperado.")
 
-        
 
-
+# Main execution block
 if __name__ == "__main__":
-
     try:
-
         hostname = socket.gethostname()
         id = int(''.join(filter(str.isdigit, hostname)))
         n_nodos = 5
         n_muestras = 1000
-
-        T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo
+        
+        T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo por iteración
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
         T = T / 1000
         tasa_llegadas = 10
         media_llegadas = 1 / tasa_llegadas
-
+        
+        
         iteraciones = 50
         datasets = ["elec", "phis", "elec2", "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
 
@@ -339,22 +311,18 @@ if __name__ == "__main__":
                     }
         
         # Parámetros temporales para hacer pruebas no simulaciones
-        # datasets = [ "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
-        # S = [1, 4]
-        # T = np.array([0.0, 0.1, 0.5, 1.0])
-        # iteraciones = 10
+        datasets = [ "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
+        S = [1, 4] 
+        T = np.array([0.0, 0.1, 0.5, 1.0])
+        iteraciones = 10
 
-        lim_range = [
-            # (50, (50, 60)),
-            # (150, (50, 60)),
-            # (250, (50, 60)),
-            (500, (72.5, 77.5))
-        ] 
-        
+
         directorio_resultados = "../resultados_raspi_indiv"
 
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
+
+
 
         i_iter = 0
         while i_iter < iteraciones:
@@ -368,39 +336,34 @@ if __name__ == "__main__":
                     t_idx = 0
                     while t_idx < len(T):
                         t = T[t_idx]
-                        lim_range_idx = 0
-                        while lim_range_idx < len(lim_range):
-                            limit, target_range = lim_range[lim_range_idx]
-                            tiempo_inicio = time.perf_counter()
-                            print(f"[ITERATION] Pre-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}, Limit: {limit}, Target: {target_range}")
+                        tiempo_inicio = time.perf_counter()
+                        print(f"[ITERATION] Pre-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}")
 
-                            parametros = f"{dataset}_s{s}_T{t}_limit{limit}_range{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
-                            nombre_archivo = f"{directorio_resultados}/result_{parametros}.csv"
-                            
-                            if os.path.isfile(nombre_archivo):
-                                print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
-                                lim_range_idx += 1
-                                continue
+                        parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
+                        nombre_archivo = f"{directorio_resultados}/result_{parametros}.csv"
 
-                            # Synchronize here
-                            i_iter, dataset_idx, s_idx, t_idx, lim_range_idx = sincronizar()
-                            dataset = datasets[dataset_idx]
-                            s = S[s_idx]
-                            t = T[t_idx]
-                            limit, target_range = lim_range[lim_range_idx]
-                                    
-                            new_parametros = f"{dataset}_s{s}_T{t}_limit{limit}_range{'-'.join(map(str, target_range))}_it{i_iter}_nodo{id}"
-                            nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.csv"
+                        if os.path.isfile(nombre_archivo):
+                            print(f"El archivo '{nombre_archivo}' ya existe. No es necesario generarlos de nuevo.")
+                            t_idx += 1
+                            continue
 
-                            print(f"[ITERATION] Post-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}, Limit: {limit}, Target: {target_range}")
-                            main(data_frame)
-                            print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
+                        # Synchronize here
+                        i_iter, dataset_idx, s_idx, t_idx = sincronizar()
+                        dataset = datasets[dataset_idx]
+                        s = S[s_idx]
+                        t = T[t_idx]
 
-                            lim_range_idx += 1  # Move to the next combination of limit and target_range
-                        t_idx += 1  # Move to the next T value
-                    s_idx += 1  # Move to the next S value
-                dataset_idx += 1  # Move to the next dataset
-            i_iter += 1  # Move to the next overall iteration
+                        new_parametros = f"{dataset}_s{s}_T{t}_it{i_iter}_nodo{id}"
+                        nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.csv"
+
+                        print(f"[ITERATION] Post-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}")
+                        main(data_frame, id, n_nodos, n_muestras, dataset, s, t, i_iter)
+                        print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
+
+                        t_idx += 1
+                    s_idx += 1
+                dataset_idx += 1
+            i_iter += 1
 
     except KeyboardInterrupt as e:
         print(f"Se ha interrumpido la ejecución del programa: {e}")

@@ -4,19 +4,21 @@ import random
 import pickle
 import multiprocessing
 import time
-from collections import deque
 from node_class.deques_proxy import DequeManager
+from mlp.mlp import DynamicMLP
 
 class MLPNodev1:
     
-    def __init__(self, id, dataset, modelo, nodos=5, s=4, T=1.0, media_llegadas=0.1, puerto_base=10000):
+    def __init__(self, id, dataset, nodos=5, s=4, T=1.0, media_llegadas=0.1, puerto_base=10000):
         
         self.id = id
-        self.modelo = modelo
         self.s = min(s, nodos - 1)
         self.T = T        
         self.datalist = [(fila[:-1], fila[-1]) for fila in dataset.values]
         print(f"El nodo {self.id} tiene {len(self.datalist)} muestras.") 
+        input_size = len(self.datalist[0][0])  # Number of features in the first sample
+        print(f"El nodo {self.id} tiene {input_size} características.")
+        self.modelo = DynamicMLP(input_size=input_size)
         self.matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []

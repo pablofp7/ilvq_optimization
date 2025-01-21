@@ -61,7 +61,7 @@ results_dir = 'resultados_raspi_indiv'
 try:
     test = sys.argv[1]     
 except Exception as e:
-    test = "test4"
+    print(f"Debes especificar el test a procesar (test1, test2...). Error: {e}")
 
 if "test4" in test:
     is_test4 = True
