@@ -246,7 +246,7 @@ class VFDTreev1:
                         shared_times_local += 1
 
                         # Get the latest model parameters
-                        params_to_share = models_list.get(self.id, 0)  # Retrieve the last parameters
+                        params_to_share = models_list.getleft(self.id, 0)  # Retrieve the last parameters
                         if params_to_share:
                             # Serialize model parameters for sharing
                             serialized_params = pickle.dumps({
