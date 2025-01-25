@@ -66,6 +66,7 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
     else:
         cap_ejec = round((nodo.muestras_train + nodo.params_aggregated) / (nodo.tiempo_learn_data + nodo.tiempo_aggregation), 3)
 
+
     # Prepare the row for the CSV file
     row = {
         "NODO": nodo.id,
@@ -74,11 +75,11 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
         "F1": f1,
         "Muestras entrenadas": nodo.muestras_train,
         "Parámetros agregados": nodo.params_aggregated,
-        "Veces compartido": nodo.shared_times[0],
+        "Veces compartido": nodo.shared_times,
         "Tiempo aprendizaje (muestras)": nodo.tiempo_learn_data,
         "Tiempo agregación": nodo.tiempo_aggregation,
-        "Tiempo compartiendo": nodo.tiempo_share[0],
-        "Tiempo no compartiendo": nodo.tiempo_no_share[0],
+        "Tiempo compartiendo": nodo.tiempo_share,
+        "Tiempo no compartiendo": nodo.tiempo_no_share,
         "Tiempo total espera activa": nodo.tiempo_espera_total,
         "Tiempo total": nodo.tiempo_final_total,
         "Capacidad de ejecución": cap_ejec
