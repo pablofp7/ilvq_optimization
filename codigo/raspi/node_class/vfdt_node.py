@@ -17,7 +17,6 @@ class VFDTreev1:
         self.datalist = [(fila[:-1], fila[-1]) for fila in dataset.values]
         print(f"El nodo {self.id} tiene {len(self.datalist)} muestras.") 
         self.modelo = tree.HoeffdingTreeClassifier()
-        self.lista_modelos = self.manager.DequesProxy(num_deques = self.nodos, maxlen = 1)
         self.matriz_conf = {"TP": 0, "TN": 0, "FP": 0, "FN": 0}
         self.nodos = nodos
         self.vecinos = [i for i in range(nodos) if i != self.id] if nodos > 1 else []
@@ -25,6 +24,7 @@ class VFDTreev1:
         self.puertos_vecinos = [self.puerto_base + i for i in self.vecinos]
         self.dir_vecinos = [f"nodo{i}.local" for i in self.vecinos]
         self.manager = DequeManager().start_manager()
+        self.lista_modelos = self.manager.DequesProxy(num_deques = self.nodos, maxlen = 1)
         self.t_llegadas = np.random.exponential(media_llegadas, len(self.datalist)).tolist()
         
         #Atributos auxiliares para obtener estadísticas
