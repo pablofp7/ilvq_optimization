@@ -52,7 +52,7 @@ class VFDTreev1:
         self.send_emisor.clear()
         self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.lista_modelos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso)
                                                         , name=f"Receptor_{self.id}")
-        self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.id, self.puerto_base, self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
+        self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
                                                                                 self.lista_modelos, self.s, self.T, self.shared_times, self.tiempo_share, 
                                                                                 self.tiempo_no_share), name=f"Emisor_{self.id}")
         
