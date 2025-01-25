@@ -294,15 +294,14 @@ if __name__ == "__main__":
         
         
         iteraciones = 50
-        datasets = ["elec", "phis", "elec2", "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
+        datasets = ["elec", "phis", "elec2"]
 
         data_name = {"elec": "electricity.csv", 
-                    "phis": "phishing.csv",
-                    "elec2": "electricity.csv",
+                    # "phis": "phishing.csv",
+                    # "elec2": "electricity.csv",
                     }
         
         # Parámetros temporales para hacer pruebas no simulaciones
-        datasets = [ "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
         S = [1, 4] 
         T = np.array([0.0, 0.1, 0.5, 1.0])
         iteraciones = 10

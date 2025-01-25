@@ -9,3 +9,4 @@ scipy>=1.11.1
 screeninfo==0.8.1
 simpy==4.1.1
 tqdm==4.65.0
+pytest
