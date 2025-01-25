@@ -139,7 +139,7 @@ class VFDTreev1:
         
         self.lista_modelos.appendleft(self.id, self.modelo)
 
-        prediccion = self.probability_vote(self.get_all_models(self.lista_modelos), x)
+        prediccion = self.probability_vote(self.get_all_models(), x)
         
         # Update the confusion matrix based on the prediction and true label
         if prediccion == 0 and y == 0:
