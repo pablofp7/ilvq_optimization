@@ -11,9 +11,9 @@ class DynamicMLP(nn.Module):
         hidden_units=[32, 16],
         output_size=1,
         quantize=True,
-        learning_rate=0.001,
-        dropout_rate=0.0,
-        weight_decay=0.0
+        learning_rate=0.01,
+        dropout_rate=0.1,
+        weight_decay=0.1,
         ):
         
         """
@@ -87,42 +87,63 @@ class DynamicMLP(nn.Module):
     def predict_one(self, sample):
         """
         Predicts the output for a single input sample.
-
         Args:
             sample: A dictionary with feature indices as keys and feature values as values.
-
         Returns:
-            int: The predicted label (0 or 1).        
+            int: The predicted label (0 or 1).
         """
-        self.eval()  
-        with torch.no_grad():  
-            sample_tensor = torch.tensor([v for _, v in sorted(sample.items())], dtype=torch.float32).unsqueeze(0)
-            probability = self(sample_tensor)  
-            label = 1 if probability.item() >= 0.5 else 0  
+        self.eval()
+        with torch.no_grad():
+            # Ensure consistent feature order
+            feature_order = sorted(sample.keys())
+            sample_tensor = torch.tensor([sample[f] for f in feature_order], dtype=torch.float32).unsqueeze(0)
+            
+            # Print input tensor
+            print(f"Input Tensor: {sample_tensor}")
+            
+            # Apply sigmoid to ensure probability output
+            probability = self(sample_tensor)
+            print(f"Raw Probability: {probability.item()}")
+            
+            label = 1 if probability.item() >= 0.5 else 0
+            print(f"Predicted Label: {label}")
         return label
 
     def learn_one(self, sample, label):
         """
         Trains the model on a single input sample and its corresponding label.
-
-        Args:
-            sample: A dictionary with feature indices as keys and feature values as values.
-            label: The corresponding label.
-
-        Returns:
-            The loss value.
         """
-        self.train()  # Set the model to training mode
-        self.optimizer.zero_grad()  # Zero the gradients
+        self.train()
+        self.optimizer.zero_grad()
 
-        # Convert dictionary to tensor
-        sample_tensor = torch.tensor([v for _, v in sorted(sample.items())], dtype=torch.float32).unsqueeze(0)
+        # Forward propagation
+        feature_order = sorted(sample.keys())
+        sample_tensor = torch.tensor([sample[f] for f in feature_order], dtype=torch.float32).unsqueeze(0)
         label_tensor = torch.tensor([label], dtype=torch.float32).unsqueeze(1)
 
-        output = self.layers(sample_tensor)  # Forward pass
-        loss = self.criterion(output, label_tensor)  # Compute loss
-        loss.backward()  # Backward pass
-        self.optimizer.step()  # Update weights
+        # Print input tensor and label
+        print(f"Input Tensor: {sample_tensor}")
+        print(f"Label Tensor: {label_tensor}")
+
+        # Forward pass
+        output = self(sample_tensor)
+        print(f"Raw Output: {output.item()}")
+
+        # Compute loss
+        loss = self.criterion(output, label_tensor)
+        print(f"Loss: {loss.item()}")
+
+        # Backward propagation
+        loss.backward()
+
+        # Check gradients
+        for name, param in self.named_parameters():
+            if param.grad is not None:
+                print(f"{name} - Grad Norm: {param.grad.norm().item()}")
+
+        # Update weights
+        self.optimizer.step()
+
         return loss.item()
 
     def learn_batch(self, samples, labels):
@@ -206,7 +227,7 @@ class DynamicMLP(nn.Module):
         """
         Aggregates parameters from neighbors' models (including the local model)
         using weighted averaging and updates the current model's parameters in-place.
-        
+
         Args:
             list_of_params: A list of dictionaries, where each dictionary contains the parameters of a model.
             weights: A list of weights for each model. If None, uniform weights are used.
@@ -229,7 +250,7 @@ class DynamicMLP(nn.Module):
         # Perform weighted averaging
         for params, weight in zip(list_of_params, weights):
             for key in params:
-                aggregated_params[key] += torch.tensor(params[key]) * weight
+                aggregated_params[key] += params[key].clone().detach() * weight  # Fix applied here
 
         # Update the local model's parameters with the aggregated result
         self.load_state_dict(aggregated_params)

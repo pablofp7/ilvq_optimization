@@ -22,11 +22,15 @@ def read_dataset(name: str, data_name: dict):
     Returns:
         pd.DataFrame: The preprocessed dataset.
     """
+    
+        
     filename = data_name[name]
-    dataset = pd.read_csv(f"./dataset/{filename}")
+    dataset = pd.read_csv(f"../dataset/{filename}")
     # Replace categorical values with numeric ones
     dataset.replace({'UP': 1, 'DOWN': 0, 'True': 1, 'False': 0}, inplace=True)
     dataset.infer_objects(copy=False)
+    if "sea_dataset" in name:
+        dataset.drop(columns=["variant"], inplace=True)
     return dataset
 
 # Custom function to calculate metrics from confusion matrix
@@ -70,11 +74,22 @@ def evaluate_model_online_learning(model, dataset):
     for _, row in dataset.iterrows():
         # Extract features and labels
         x = {i: row[col] for i, col in enumerate(feature_columns)}
-        y = row[label_column]
+        y = int(row[label_column])
 
         prediction = model.predict_one(x)
+        if isinstance(prediction, dict):
+            if 1.0 in prediction:
+                prediction = prediction[1.0]
+            else:
+                prediction = 0.0      
+
+        try:
+            prediction = int(prediction)
+        except TypeError:
+            prediction = None
         model.learn_one(x, y)
 
+        
         # Update confusion matrix
         if prediction == 0 and y == 0:
             conf_matrix["TN"] += 1
@@ -84,27 +99,6 @@ def evaluate_model_online_learning(model, dataset):
             conf_matrix["FP"] += 1
         else:
             conf_matrix["FN"] += 1
+            
 
     return conf_matrix
-
-def calculate_metrics(conf_matrix):
-    """
-    Calculate precision, recall, and F1-score from a confusion matrix in dictionary format.
-
-    Args:
-        conf_matrix: Confusion matrix in dictionary format {"TP", "TN", "FP", "FN"}.
-
-    Returns:
-        precision, recall, f1: Computed metrics.
-    """
-    TP = conf_matrix["TP"]
-    TN = conf_matrix["TN"]
-    FP = conf_matrix["FP"]
-    FN = conf_matrix["FN"]
-
-    # Calculate metrics
-    precision = TP / (TP + FP) if (TP + FP) > 0 else 0
-    recall = TP / (TP + FN) if (TP + FN) > 0 else 0
-    f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
-
-    return precision, recall, f1

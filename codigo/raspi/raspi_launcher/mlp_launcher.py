@@ -6,7 +6,7 @@ import threading
 import numpy as np
 import pandas as pd
 import socket
-from node_class.mlp_node import MLPNodev1  # Updated to use MLPNodev1
+from node_class.vfdt_node import VFDTreev1
 
 # Add the main directory to the Python path
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -37,7 +37,7 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
     df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
 
     # Initialize the node
-    nodo = MLPNodev1(
+    nodo = VFDTreev1(
         id=id,
         dataset=df_nodos[id],
         nodos=n_nodos,
@@ -302,12 +302,6 @@ if __name__ == "__main__":
         data_name = {"elec": "electricity.csv", 
                     "phis": "phishing.csv",
                     "elec2": "electricity.csv",
-                    "lgr": "linear_gradual_rotation_noise_and_redunce.csv" , 
-                    "nrr": "nonlinear_recurrent_rollingtorus_noise_and_redunce.csv",
-                    "lar": "linear_abrupt_noise_and_redunce.csv",                          
-                    "lrr": "linear_recurrent_rotation_noise_and_redunce.csv",              
-                    "ngcr": "nonlinear_gradual_cakerotation_noise_and_redunce.csv",        
-                    "nsch": "nonlinear_sudden_chocolaterotation_noise_and_redunce.csv"     
                     }
         
         # Parámetros temporales para hacer pruebas no simulaciones
@@ -317,7 +311,7 @@ if __name__ == "__main__":
         iteraciones = 10
 
 
-        directorio_resultados = "../resultados_raspi_indiv"
+        directorio_resultados = "../resultados_raspi_indiv_tree"
 
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
