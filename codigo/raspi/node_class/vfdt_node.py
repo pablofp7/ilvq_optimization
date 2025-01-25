@@ -108,6 +108,8 @@ class VFDTreev1:
         self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
         
+        print(f"[NODO {self.id}] Numero de veces compartidas {self.shared_times_final}.")
+        
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
         print(f"[NODO {self.id}. FIN!!].\n"
@@ -356,7 +358,7 @@ class VFDTreev1:
             prob = model.predict_proba_one(sample).get(1, 0)  # Probability of class 1
             
             # Print the probability predicted by each model
-            print(f"Model {i+1} Probability: {prob:.4f}") if len(models_list) > 1 else None
+            # print(f"Model {i+1} Probability: {prob:.4f}") if len(models_list) > 1 else None
             total_prob += prob
         
         # Average the probabilities and decide based on a threshold of 0.5
