@@ -232,6 +232,7 @@ class VFDTreev1:
                     client_socket.close()
                     client_context.term()
                     tiempo_share.append(0, tiempo_share_local)
+                    print(f"[NODO {self.id}] Se ha añadido: {shared_times_local} a la lista compartida.")
                     shared_times.append(0, shared_times_local)
                     tiempo_no_share.append(0, tiempo_no_share_local)
                     print(f"[NODO {self.id}] El hilo emisor ha terminado.")
@@ -355,7 +356,7 @@ class VFDTreev1:
             prob = model.predict_proba_one(sample).get(1, 0)  # Probability of class 1
             
             # Print the probability predicted by each model
-            print(f"Model {i+1} Probability: {prob:.4f}")
+            print(f"Model {i+1} Probability: {prob:.4f}") if len(models_list) > 1 else None
             total_prob += prob
         
         # Average the probabilities and decide based on a threshold of 0.5
