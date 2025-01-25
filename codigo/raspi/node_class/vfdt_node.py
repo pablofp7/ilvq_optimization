@@ -338,7 +338,7 @@ class VFDTreev1:
             
             
             
-    def probability_vote(models_list, sample):
+    def probability_vote(self, models_list, sample):
         """
         Perform voting based on predicted probabilities, deserializing models inside the function.
         
