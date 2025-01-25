@@ -141,6 +141,12 @@ class MLPNodev1:
         # TEST: Make a prediction using the model
         prediccion = self.modelo.predict_one(x)
         
+        if isinstance(prediccion, dict):
+            if 1.0 in prediccion:
+                prediccion = prediccion[1.0]
+            else:
+                prediccion = 0.0      
+        
         # Update the confusion matrix based on the prediction and true label
         if prediccion == 0 and y == 0:
             self.matriz_conf["TN"] += 1
