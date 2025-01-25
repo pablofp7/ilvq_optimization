@@ -6,13 +6,10 @@ import threading
 import numpy as np
 import pandas as pd
 import socket
-from node_class.vfdt_node import VFDTreev1
-
-# Add the main directory to the Python path
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
-
+from node_class.vfdt_node import VFDTreev1
 
 # Function to read and preprocess the dataset
 def read_dataset(name: str):
