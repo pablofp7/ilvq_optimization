@@ -280,7 +280,7 @@ def check_availability(nodo_id, nodos, puerto):
 
 # Main execution block
 if __name__ == "__main__":
-    try
+    try:
         hostname = socket.gethostname()
         id = int(''.join(filter(str.isdigit, hostname)))
         n_nodos = 5
