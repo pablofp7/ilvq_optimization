@@ -284,7 +284,7 @@ if __name__ == "__main__":
         hostname = socket.gethostname()
         id = int(''.join(filter(str.isdigit, hostname)))
         n_nodos = 5
-        n_muestras = 100
+        n_muestras = 1000
         
         T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo por iteración
         S = [i for i in range(1, 5)]
