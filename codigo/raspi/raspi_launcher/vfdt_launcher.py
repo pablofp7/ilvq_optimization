@@ -280,7 +280,7 @@ def check_availability(nodo_id, nodos, puerto):
 
 # Main execution block
 if __name__ == "__main__":
-    try:
+    try
         hostname = socket.gethostname()
         id = int(''.join(filter(str.isdigit, hostname)))
         n_nodos = 5
@@ -288,7 +288,7 @@ if __name__ == "__main__":
         
         T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo por iteración
         S = [i for i in range(1, 5)]
-        T = np.array([i for i in range(0, 1001, 50)])
+        T = np.array([i for i in range(0, 1001, 100)])
         T = T / 1000
         tasa_llegadas = 10
         media_llegadas = 1 / tasa_llegadas
@@ -298,15 +298,13 @@ if __name__ == "__main__":
         datasets = ["elec", "phis", "elec2"]
 
         data_name = {"elec": "electricity.csv", 
-                    # "phis": "phishing.csv",
-                    # "elec2": "electricity.csv",
+                    "phis": "phishing.csv",
+                    "elec2": "electricity.csv",
                     }
         
         # Parámetros temporales para hacer pruebas no simulaciones
-        datasets = ["elec"]
-        S = [1, 4] 
-        T = np.array([0.0, 0.1, 0.5, 1.0])
-        iteraciones = 10
+        S = [1, 2, 4] 
+        iteraciones = 20
 
 
         directorio_resultados = "../resultados_raspi_indiv_tree"

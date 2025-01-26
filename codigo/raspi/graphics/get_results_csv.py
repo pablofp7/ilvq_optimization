@@ -42,9 +42,9 @@ def get_results(test: str = "test1"):
                 f1_prom = df['F1'].mean()
                 capacidad_promedio = df['Capacidad de ejecución'].mean()
                 tamaño_promedio_lotes = df['Tamaño de lotes recibidos'].mean() if 'Tamaño de lotes recibidos' in df.columns else 0
-                promedio_prototipos_entrenados = df['Prototipos entrenados'].mean()
-                promedio_prototipos_compartidos = df['Prototipos compartidos'].mean()
-                promedio_mensajes_enviados = df['Veces compartido'].mean() * int(s)
+                promedio_prototipos_entrenados = df['Prototipos entrenados'].mean() if 'Prototipos entrenados' in df.columns else 0
+                promedio_prototipos_compartidos = df['Prototipos compartidos'].mean() if 'Prototipos compartidos' in df.columns else 0
+                promedio_mensajes_enviados = (df['Veces compartido'].mean() * int(s)) if 'Veces compartido' in df.columns else 0
                 tiempo_total_prom = df['Tiempo total'].mean()
                 ancho_banda_prom = (105 * promedio_prototipos_compartidos) / tiempo_total_prom
 

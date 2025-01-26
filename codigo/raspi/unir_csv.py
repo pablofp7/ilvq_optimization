@@ -57,16 +57,22 @@ class ParameterCombinations:
 
 
 # Directorios de origen y destino
-results_dir = 'resultados_raspi_indiv'
 try:
     test = sys.argv[1]     
+    if not test:
+        raise Exception()
 except Exception as e:
-    print(f"Debes especificar el test a procesar (test1, test2...). Error: {e}")
+    print(f"Debes el test para definir el directotorio donde se van a almacenar los csv unidos. Error: {e}")
+    exit(1)
 
 if "test4" in test:
     is_test4 = True
 else:
     is_test4 = False
+    
+results_dir = 'resultados_raspi_indiv'
+if "vfdt" in test:
+    results_dir += "_tree"
 
 target_dir = f'{test}_resultados'
 if not os.path.exists(target_dir):

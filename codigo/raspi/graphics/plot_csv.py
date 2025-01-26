@@ -174,6 +174,8 @@ def get_metric_and_plot(metrica: str = None):
             (datos_nsch, "NonLinear Switching Hyperplanes")
         ]
 
+        datasets = [(datos_elec, "Electricity Fixed")]
+
         # Filtrar datos no definidos
         datasets = [(data, title) for data, title in datasets if data is not None]
 
@@ -388,9 +390,11 @@ def find_matching_metric(input_metric):
 
 
 if __name__ == '__main__':
+    
 
     args = parse_args()
     test = args.t
+    test = "test2"
     if "all" in test:
         get_all(args.metrica)
     else: 
