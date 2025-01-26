@@ -67,12 +67,6 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
         cap_ejec = round((nodo.muestras_train + nodo.params_aggregated) / (nodo.tiempo_learn_data + nodo.tiempo_aggregation), 3)
 
 
-    print(f"[DESDE LAUNCHER] Fallan estos en el csv:")
-    print(f"Numero de veces compartidas {nodo.shared_times_final}.")
-    print(f"Tiempo de espera total: {nodo.tiempo_share_final} minutos.")
-    print(f"Tiempo no compartiendo en el hilo de compartir:_ {nodo.tiempo_no_share_final}")
-
-
     # Prepare the row for the CSV file
     row = {
         "NODO": nodo.id,
@@ -81,11 +75,11 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
         "F1": f1,
         "Muestras entrenadas": nodo.muestras_train,
         "Parámetros agregados": nodo.params_aggregated,
-        "Veces compartido": nodo.shared_times,
+        "Veces compartido": nodo.shared_times_final,
         "Tiempo aprendizaje (muestras)": nodo.tiempo_learn_data,
         "Tiempo agregación": nodo.tiempo_aggregation,
-        "Tiempo compartiendo": nodo.tiempo_share,
-        "Tiempo no compartiendo": nodo.tiempo_no_share,
+        "Tiempo compartiendo": nodo.tiempo_share_final,
+        "Tiempo no compartiendo": nodo.tiempo_no_share_final,
         "Tiempo total espera activa": nodo.tiempo_espera_total,
         "Tiempo total": nodo.tiempo_final_total,
         "Capacidad de ejecución": cap_ejec
@@ -309,6 +303,7 @@ if __name__ == "__main__":
                     }
         
         # Parámetros temporales para hacer pruebas no simulaciones
+        datasets = ["elec"]
         S = [1, 4] 
         T = np.array([0.0, 0.1, 0.5, 1.0])
         iteraciones = 10
