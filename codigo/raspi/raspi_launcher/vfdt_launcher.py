@@ -67,6 +67,12 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
         cap_ejec = round((nodo.muestras_train + nodo.params_aggregated) / (nodo.tiempo_learn_data + nodo.tiempo_aggregation), 3)
 
 
+    print(f"[DESDE LAUNCHER] Fallan estos en el csv:")
+    print(f"Numero de veces compartidas {nodo.shared_times_final}.")
+    print(f"Tiempo de espera total: {nodo.tiempo_share_final} minutos.")
+    print(f"Tiempo no compartiendo en el hilo de compartir:_ {nodo.tiempo_no_share_final}")
+
+
     # Prepare the row for the CSV file
     row = {
         "NODO": nodo.id,
@@ -284,7 +290,7 @@ if __name__ == "__main__":
         hostname = socket.gethostname()
         id = int(''.join(filter(str.isdigit, hostname)))
         n_nodos = 5
-        n_muestras = 1000
+        n_muestras = 100
         
         T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo por iteración
         S = [i for i in range(1, 5)]

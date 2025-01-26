@@ -108,7 +108,10 @@ class VFDTreev1:
         self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
         
+        print(f"[DESDE NODE] Fallan estos en el csv:")
         print(f"[NODO {self.id}] Numero de veces compartidas {self.shared_times_final}.")
+        print(f"[NODO {self.id}] Tiempo de espera total: {self.tiempo_share_final} minutos.")
+        print(f"[NODO {self.id}] Tiempo no compartiendo en el hilo de compartir:_ {self.tiempo_no_share_final}")
         
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
