@@ -1,6 +1,6 @@
 import pandas as pd
 import time
-from river import metrics, tree, forest
+from river import metrics, tree, forest, linear_model, naive_bayes
 from prototypes.xuilvq import XuILVQ
 from prototypes_mod.xuilvq import XuILVQ as UpdatedILVQ
 
@@ -105,14 +105,15 @@ n_models_list = []
 max_size_list = [5, 10, 20, 50]  
 
 # Initialize models
-models = {}
 models = {
     "Hoeffding Tree": tree.HoeffdingTreeClassifier(),
     "ILVQ": XuILVQ(),
     "Updated ILVQ": UpdatedILVQ(),
+    "Online Logistic Regression": linear_model.LogisticRegression(),  
+    "Online Naive Bayes": naive_bayes.GaussianNB(),  
 }
 
-# # Add ARF with different parameter combinations
+# Add ARF with different parameter combinations
 for n_models in n_models_list:
     for max_size in max_size_list:
         models[f"ARF (n_models={n_models}, max_size={max_size})"] = forest.ARFClassifier(
