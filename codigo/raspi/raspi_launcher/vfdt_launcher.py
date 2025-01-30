@@ -301,10 +301,6 @@ if __name__ == "__main__":
                     "phis": "phishing.csv",
                     "elec2": "electricity.csv",
                     }
-        
-        # Parámetros temporales para hacer pruebas no simulaciones
-        S = [1, 2, 4] 
-        iteraciones = 20
 
 
         directorio_resultados = "../resultados_raspi_indiv_tree"
