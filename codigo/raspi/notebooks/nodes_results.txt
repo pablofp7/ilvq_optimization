@@ -1,0 +1,96 @@
+=== Multi-Node Evaluation Results ===
+[Dataset=linear_gradual] [Node=0] [Model=Incremental Learning Vector Quantization] => Precision=0.6710, Recall=0.6920, F1=0.6810, Time=0.6745s
+[Dataset=linear_gradual] [Node=0] [Model=Gaussian Naive Bayes] => Precision=0.7050, Recall=0.7400, F1=0.7220, Time=0.0814s
+[Dataset=linear_gradual] [Node=0] [Model=Hoeffding Tree] => Precision=0.7030, Recall=0.7380, F1=0.7200, Time=0.0822s
+[Dataset=linear_gradual] [Node=0] [Model=Adaptive Random Forest] => Precision=0.6890, Recall=0.6900, F1=0.6890, Time=0.7992s
+
+[Dataset=linear_gradual] [Node=1] [Model=Incremental Learning Vector Quantization] => Precision=0.7090, Recall=0.7550, F1=0.7310, Time=0.6868s
+[Dataset=linear_gradual] [Node=1] [Model=Gaussian Naive Bayes] => Precision=0.7470, Recall=0.7640, F1=0.7550, Time=0.0812s
+[Dataset=linear_gradual] [Node=1] [Model=Hoeffding Tree] => Precision=0.7460, Recall=0.7640, F1=0.7550, Time=0.0811s
+[Dataset=linear_gradual] [Node=1] [Model=Adaptive Random Forest] => Precision=0.7440, Recall=0.7300, F1=0.7370, Time=0.8634s
+
+[Dataset=linear_gradual] [Node=2] [Model=Incremental Learning Vector Quantization] => Precision=0.6850, Recall=0.6560, F1=0.6700, Time=0.5834s
+[Dataset=linear_gradual] [Node=2] [Model=Gaussian Naive Bayes] => Precision=0.7230, Recall=0.6860, F1=0.7040, Time=0.0818s
+[Dataset=linear_gradual] [Node=2] [Model=Hoeffding Tree] => Precision=0.7230, Recall=0.6840, F1=0.7030, Time=0.0815s
+[Dataset=linear_gradual] [Node=2] [Model=Adaptive Random Forest] => Precision=0.7190, Recall=0.7080, F1=0.7130, Time=0.8132s
+
+[Dataset=linear_gradual] [Node=3] [Model=Incremental Learning Vector Quantization] => Precision=0.6950, Recall=0.7480, F1=0.7210, Time=0.6171s
+[Dataset=linear_gradual] [Node=3] [Model=Gaussian Naive Bayes] => Precision=0.7480, Recall=0.7480, F1=0.7480, Time=0.0819s
+[Dataset=linear_gradual] [Node=3] [Model=Hoeffding Tree] => Precision=0.7470, Recall=0.7440, F1=0.7450, Time=0.0812s
+[Dataset=linear_gradual] [Node=3] [Model=Adaptive Random Forest] => Precision=0.7160, Recall=0.6840, F1=0.7000, Time=0.8056s
+
+[Dataset=linear_gradual] [Node=4] [Model=Incremental Learning Vector Quantization] => Precision=0.6920, Recall=0.7260, F1=0.7090, Time=0.5657s
+[Dataset=linear_gradual] [Node=4] [Model=Gaussian Naive Bayes] => Precision=0.7120, Recall=0.7260, F1=0.7190, Time=0.0812s
+[Dataset=linear_gradual] [Node=4] [Model=Hoeffding Tree] => Precision=0.7120, Recall=0.7260, F1=0.7190, Time=0.0813s
+[Dataset=linear_gradual] [Node=4] [Model=Adaptive Random Forest] => Precision=0.7250, Recall=0.6550, F1=0.6880, Time=0.7954s
+
+[Dataset=linear_recurrent] [Node=0] [Model=Incremental Learning Vector Quantization] => Precision=0.8320, Recall=0.8590, F1=0.8450, Time=0.4987s
+[Dataset=linear_recurrent] [Node=0] [Model=Gaussian Naive Bayes] => Precision=0.8570, Recall=0.8770, F1=0.8670, Time=0.0811s
+[Dataset=linear_recurrent] [Node=0] [Model=Hoeffding Tree] => Precision=0.8590, Recall=0.8110, F1=0.8340, Time=0.0800s
+[Dataset=linear_recurrent] [Node=0] [Model=Adaptive Random Forest] => Precision=0.8450, Recall=0.8230, F1=0.8340, Time=0.7796s
+
+[Dataset=linear_recurrent] [Node=1] [Model=Incremental Learning Vector Quantization] => Precision=0.9180, Recall=0.7240, F1=0.8100, Time=0.5203s
+[Dataset=linear_recurrent] [Node=1] [Model=Gaussian Naive Bayes] => Precision=0.8870, Recall=0.8580, F1=0.8720, Time=0.0809s
+[Dataset=linear_recurrent] [Node=1] [Model=Hoeffding Tree] => Precision=0.8770, Recall=0.8430, F1=0.8600, Time=0.0837s
+[Dataset=linear_recurrent] [Node=1] [Model=Adaptive Random Forest] => Precision=0.9020, Recall=0.8230, F1=0.8610, Time=0.7384s
+
+[Dataset=linear_recurrent] [Node=2] [Model=Incremental Learning Vector Quantization] => Precision=0.8560, Recall=0.7690, F1=0.8100, Time=0.5680s
+[Dataset=linear_recurrent] [Node=2] [Model=Gaussian Naive Bayes] => Precision=0.8910, Recall=0.8420, F1=0.8660, Time=0.0815s
+[Dataset=linear_recurrent] [Node=2] [Model=Hoeffding Tree] => Precision=0.8690, Recall=0.8340, F1=0.8510, Time=0.0782s
+[Dataset=linear_recurrent] [Node=2] [Model=Adaptive Random Forest] => Precision=0.8550, Recall=0.8620, F1=0.8580, Time=0.7961s
+
+[Dataset=linear_recurrent] [Node=3] [Model=Incremental Learning Vector Quantization] => Precision=0.8550, Recall=0.8420, F1=0.8480, Time=0.6576s
+[Dataset=linear_recurrent] [Node=3] [Model=Gaussian Naive Bayes] => Precision=0.8850, Recall=0.8980, F1=0.8910, Time=0.0831s
+[Dataset=linear_recurrent] [Node=3] [Model=Hoeffding Tree] => Precision=0.8740, Recall=0.8590, F1=0.8660, Time=0.0791s
+[Dataset=linear_recurrent] [Node=3] [Model=Adaptive Random Forest] => Precision=0.8640, Recall=0.8740, F1=0.8690, Time=0.7761s
+
+[Dataset=linear_recurrent] [Node=4] [Model=Incremental Learning Vector Quantization] => Precision=0.8430, Recall=0.8230, F1=0.8330, Time=0.6770s
+[Dataset=linear_recurrent] [Node=4] [Model=Gaussian Naive Bayes] => Precision=0.8920, Recall=0.8810, F1=0.8860, Time=0.0815s
+[Dataset=linear_recurrent] [Node=4] [Model=Hoeffding Tree] => Precision=0.8780, Recall=0.8270, F1=0.8520, Time=0.0774s
+[Dataset=linear_recurrent] [Node=4] [Model=Adaptive Random Forest] => Precision=0.8560, Recall=0.8850, F1=0.8700, Time=0.7656s
+
+[Dataset=linear_sudden] [Node=0] [Model=Incremental Learning Vector Quantization] => Precision=0.6990, Recall=0.6560, F1=0.6770, Time=0.6290s
+[Dataset=linear_sudden] [Node=0] [Model=Gaussian Naive Bayes] => Precision=0.7200, Recall=0.7010, F1=0.7100, Time=0.0820s
+[Dataset=linear_sudden] [Node=0] [Model=Hoeffding Tree] => Precision=0.7180, Recall=0.7030, F1=0.7100, Time=0.0818s
+[Dataset=linear_sudden] [Node=0] [Model=Adaptive Random Forest] => Precision=0.6890, Recall=0.6660, F1=0.6770, Time=0.8101s
+
+[Dataset=linear_sudden] [Node=1] [Model=Incremental Learning Vector Quantization] => Precision=0.7190, Recall=0.7680, F1=0.7430, Time=0.2980s
+[Dataset=linear_sudden] [Node=1] [Model=Gaussian Naive Bayes] => Precision=0.7490, Recall=0.7460, F1=0.7470, Time=0.0815s
+[Dataset=linear_sudden] [Node=1] [Model=Hoeffding Tree] => Precision=0.7490, Recall=0.7440, F1=0.7460, Time=0.0818s
+[Dataset=linear_sudden] [Node=1] [Model=Adaptive Random Forest] => Precision=0.7300, Recall=0.7740, F1=0.7510, Time=0.8489s
+
+[Dataset=linear_sudden] [Node=2] [Model=Incremental Learning Vector Quantization] => Precision=0.6910, Recall=0.6660, F1=0.6780, Time=0.7468s
+[Dataset=linear_sudden] [Node=2] [Model=Gaussian Naive Bayes] => Precision=0.7290, Recall=0.6560, F1=0.6910, Time=0.0811s
+[Dataset=linear_sudden] [Node=2] [Model=Hoeffding Tree] => Precision=0.7290, Recall=0.6520, F1=0.6880, Time=0.0812s
+[Dataset=linear_sudden] [Node=2] [Model=Adaptive Random Forest] => Precision=0.7010, Recall=0.6600, F1=0.6800, Time=0.8458s
+
+[Dataset=linear_sudden] [Node=3] [Model=Incremental Learning Vector Quantization] => Precision=0.7310, Recall=0.7740, F1=0.7520, Time=0.3885s
+[Dataset=linear_sudden] [Node=3] [Model=Gaussian Naive Bayes] => Precision=0.7700, Recall=0.7630, F1=0.7660, Time=0.0808s
+[Dataset=linear_sudden] [Node=3] [Model=Hoeffding Tree] => Precision=0.7720, Recall=0.7170, F1=0.7430, Time=0.0794s
+[Dataset=linear_sudden] [Node=3] [Model=Adaptive Random Forest] => Precision=0.7470, Recall=0.7400, F1=0.7430, Time=0.8108s
+
+[Dataset=linear_sudden] [Node=4] [Model=Incremental Learning Vector Quantization] => Precision=0.6890, Recall=0.6770, F1=0.6830, Time=0.2520s
+[Dataset=linear_sudden] [Node=4] [Model=Gaussian Naive Bayes] => Precision=0.7210, Recall=0.7270, F1=0.7240, Time=0.0817s
+[Dataset=linear_sudden] [Node=4] [Model=Hoeffding Tree] => Precision=0.7180, Recall=0.7350, F1=0.7260, Time=0.0823s
+[Dataset=linear_sudden] [Node=4] [Model=Adaptive Random Forest] => Precision=0.6970, Recall=0.6730, F1=0.6850, Time=0.7990s
+
+
+=== Aggregated Results: Average Metrics Across Nodes ===
+
+📊 Dataset: linear_gradual
+🧠 Model: Incremental Learning Vector Quantization => Avg Precision=0.6904, Avg Recall=0.7154, Avg F1=0.7024, Avg Time=0.6255s
+🧠 Model: Gaussian Naive Bayes => Avg Precision=0.7270, Avg Recall=0.7328, Avg F1=0.7296, Avg Time=0.0815s
+🧠 Model: Hoeffding Tree => Avg Precision=0.7262, Avg Recall=0.7312, Avg F1=0.7284, Avg Time=0.0815s
+🧠 Model: Adaptive Random Forest => Avg Precision=0.7186, Avg Recall=0.6934, Avg F1=0.7054, Avg Time=0.8154s
+
+📊 Dataset: linear_recurrent
+🧠 Model: Incremental Learning Vector Quantization => Avg Precision=0.8608, Avg Recall=0.8034, Avg F1=0.8292, Avg Time=0.5843s
+🧠 Model: Gaussian Naive Bayes => Avg Precision=0.8824, Avg Recall=0.8712, Avg F1=0.8764, Avg Time=0.0816s
+🧠 Model: Hoeffding Tree => Avg Precision=0.8714, Avg Recall=0.8348, Avg F1=0.8526, Avg Time=0.0797s
+🧠 Model: Adaptive Random Forest => Avg Precision=0.8644, Avg Recall=0.8534, Avg F1=0.8584, Avg Time=0.7712s
+
+📊 Dataset: linear_sudden
+🧠 Model: Incremental Learning Vector Quantization => Avg Precision=0.7058, Avg Recall=0.7082, Avg F1=0.7066, Avg Time=0.4629s
+🧠 Model: Gaussian Naive Bayes => Avg Precision=0.7378, Avg Recall=0.7186, Avg F1=0.7276, Avg Time=0.0814s
+🧠 Model: Hoeffding Tree => Avg Precision=0.7372, Avg Recall=0.7102, Avg F1=0.7226, Avg Time=0.0813s
+🧠 Model: Adaptive Random Forest => Avg Precision=0.7128, Avg Recall=0.7026, Avg F1=0.7072, Avg Time=0.8229s
