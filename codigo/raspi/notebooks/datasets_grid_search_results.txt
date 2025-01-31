@@ -1,0 +1,151 @@
+Dataset, Step Size, Model, Precision, Recall, F1, Execution Time (sec)
+Dataset: linear_gradual, Step Size: 5, Model: Incremental Learning Vector Quantization, Precision: 0.9, Recall: 0.879, F1: 0.889, Execution Time: 0.3598 sec
+Dataset: linear_gradual, Step Size: 5, Model: Gaussian Naive Bayes, Precision: 0.929, Recall: 0.949, F1: 0.939, Execution Time: 0.0836 sec
+Dataset: linear_gradual, Step Size: 5, Model: Hoeffding Tree, Precision: 0.887, Recall: 0.93, F1: 0.908, Execution Time: 0.0863 sec
+Dataset: linear_gradual, Step Size: 5, Model: Adaptive Random Forest, Precision: 0.91, Recall: 0.904, F1: 0.907, Execution Time: 0.8447 sec
+Dataset: linear_recurrent, Step Size: 5, Model: Incremental Learning Vector Quantization, Precision: 0.89, Recall: 0.904, F1: 0.897, Execution Time: 0.3454 sec
+Dataset: linear_recurrent, Step Size: 5, Model: Gaussian Naive Bayes, Precision: 0.946, Recall: 0.963, F1: 0.954, Execution Time: 0.0836 sec
+Dataset: linear_recurrent, Step Size: 5, Model: Hoeffding Tree, Precision: 0.946, Recall: 0.961, F1: 0.953, Execution Time: 0.0857 sec
+Dataset: linear_recurrent, Step Size: 5, Model: Adaptive Random Forest, Precision: 0.894, Recall: 0.898, F1: 0.896, Execution Time: 0.8162 sec
+Dataset: linear_sudden, Step Size: 5, Model: Incremental Learning Vector Quantization, Precision: 0.83, Recall: 0.907, F1: 0.867, Execution Time: 0.5162 sec
+Dataset: linear_sudden, Step Size: 5, Model: Gaussian Naive Bayes, Precision: 0.942, Recall: 0.958, F1: 0.95, Execution Time: 0.0850 sec
+Dataset: linear_sudden, Step Size: 5, Model: Hoeffding Tree, Precision: 0.942, Recall: 0.957, F1: 0.949, Execution Time: 0.0865 sec
+Dataset: linear_sudden, Step Size: 5, Model: Adaptive Random Forest, Precision: 0.913, Recall: 0.929, F1: 0.921, Execution Time: 0.8431 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 10, Model: Incremental Learning Vector Quantization, Precision: 0.917, Recall: 0.899, F1: 0.908, Execution Time: 0.3113 sec
+Dataset: linear_gradual, Step Size: 10, Model: Gaussian Naive Bayes, Precision: 0.947, Recall: 0.946, F1: 0.946, Execution Time: 0.0851 sec
+Dataset: linear_gradual, Step Size: 10, Model: Hoeffding Tree, Precision: 0.918, Recall: 0.94, F1: 0.929, Execution Time: 0.0852 sec
+Dataset: linear_gradual, Step Size: 10, Model: Adaptive Random Forest, Precision: 0.936, Recall: 0.911, F1: 0.923, Execution Time: 0.8261 sec
+Dataset: linear_recurrent, Step Size: 10, Model: Incremental Learning Vector Quantization, Precision: 0.913, Recall: 0.804, F1: 0.855, Execution Time: 0.6287 sec
+Dataset: linear_recurrent, Step Size: 10, Model: Gaussian Naive Bayes, Precision: 0.943, Recall: 0.919, F1: 0.931, Execution Time: 0.0840 sec
+Dataset: linear_recurrent, Step Size: 10, Model: Hoeffding Tree, Precision: 0.943, Recall: 0.919, F1: 0.931, Execution Time: 0.0856 sec
+Dataset: linear_recurrent, Step Size: 10, Model: Adaptive Random Forest, Precision: 0.873, Recall: 0.893, F1: 0.883, Execution Time: 0.8537 sec
+Dataset: linear_sudden, Step Size: 10, Model: Incremental Learning Vector Quantization, Precision: 0.895, Recall: 0.847, F1: 0.87, Execution Time: 0.5649 sec
+Dataset: linear_sudden, Step Size: 10, Model: Gaussian Naive Bayes, Precision: 0.968, Recall: 0.944, F1: 0.956, Execution Time: 0.0832 sec
+Dataset: linear_sudden, Step Size: 10, Model: Hoeffding Tree, Precision: 0.97, Recall: 0.93, F1: 0.95, Execution Time: 0.0846 sec
+Dataset: linear_sudden, Step Size: 10, Model: Adaptive Random Forest, Precision: 0.878, Recall: 0.849, F1: 0.863, Execution Time: 0.8635 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 50, Model: Incremental Learning Vector Quantization, Precision: 0.849, Recall: 0.875, F1: 0.862, Execution Time: 0.5499 sec
+Dataset: linear_gradual, Step Size: 50, Model: Gaussian Naive Bayes, Precision: 0.906, Recall: 0.886, F1: 0.896, Execution Time: 0.0862 sec
+Dataset: linear_gradual, Step Size: 50, Model: Hoeffding Tree, Precision: 0.907, Recall: 0.867, F1: 0.887, Execution Time: 0.0804 sec
+Dataset: linear_gradual, Step Size: 50, Model: Adaptive Random Forest, Precision: 0.888, Recall: 0.873, F1: 0.88, Execution Time: 0.8357 sec
+Dataset: linear_recurrent, Step Size: 50, Model: Incremental Learning Vector Quantization, Precision: 0.82, Recall: 0.919, F1: 0.867, Execution Time: 0.3187 sec
+Dataset: linear_recurrent, Step Size: 50, Model: Gaussian Naive Bayes, Precision: 0.895, Recall: 0.917, F1: 0.906, Execution Time: 0.0856 sec
+Dataset: linear_recurrent, Step Size: 50, Model: Hoeffding Tree, Precision: 0.882, Recall: 0.894, F1: 0.888, Execution Time: 0.0858 sec
+Dataset: linear_recurrent, Step Size: 50, Model: Adaptive Random Forest, Precision: 0.856, Recall: 0.879, F1: 0.867, Execution Time: 0.8480 sec
+Dataset: linear_sudden, Step Size: 50, Model: Incremental Learning Vector Quantization, Precision: 0.859, Recall: 0.826, F1: 0.842, Execution Time: 0.4538 sec
+Dataset: linear_sudden, Step Size: 50, Model: Gaussian Naive Bayes, Precision: 0.879, Recall: 0.879, F1: 0.879, Execution Time: 0.0871 sec
+Dataset: linear_sudden, Step Size: 50, Model: Hoeffding Tree, Precision: 0.899, Recall: 0.881, F1: 0.89, Execution Time: 0.0837 sec
+Dataset: linear_sudden, Step Size: 50, Model: Adaptive Random Forest, Precision: 0.885, Recall: 0.858, F1: 0.871, Execution Time: 0.8658 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 100, Model: Incremental Learning Vector Quantization, Precision: 0.8, Recall: 0.773, F1: 0.786, Execution Time: 0.6297 sec
+Dataset: linear_gradual, Step Size: 100, Model: Gaussian Naive Bayes, Precision: 0.755, Recall: 0.759, F1: 0.757, Execution Time: 0.0881 sec
+Dataset: linear_gradual, Step Size: 100, Model: Hoeffding Tree, Precision: 0.759, Recall: 0.795, F1: 0.777, Execution Time: 0.0861 sec
+Dataset: linear_gradual, Step Size: 100, Model: Adaptive Random Forest, Precision: 0.846, Recall: 0.851, F1: 0.848, Execution Time: 0.8694 sec
+Dataset: linear_recurrent, Step Size: 100, Model: Incremental Learning Vector Quantization, Precision: 0.881, Recall: 0.85, F1: 0.865, Execution Time: 0.6909 sec
+Dataset: linear_recurrent, Step Size: 100, Model: Gaussian Naive Bayes, Precision: 0.906, Recall: 0.913, F1: 0.909, Execution Time: 0.0857 sec
+Dataset: linear_recurrent, Step Size: 100, Model: Hoeffding Tree, Precision: 0.913, Recall: 0.889, F1: 0.901, Execution Time: 0.0875 sec
+Dataset: linear_recurrent, Step Size: 100, Model: Adaptive Random Forest, Precision: 0.882, Recall: 0.887, F1: 0.884, Execution Time: 0.9151 sec
+Dataset: linear_sudden, Step Size: 100, Model: Incremental Learning Vector Quantization, Precision: 0.682, Recall: 0.674, F1: 0.678, Execution Time: 0.2477 sec
+Dataset: linear_sudden, Step Size: 100, Model: Gaussian Naive Bayes, Precision: 0.732, Recall: 0.735, F1: 0.733, Execution Time: 0.0859 sec
+Dataset: linear_sudden, Step Size: 100, Model: Hoeffding Tree, Precision: 0.853, Recall: 0.849, F1: 0.851, Execution Time: 0.0933 sec
+Dataset: linear_sudden, Step Size: 100, Model: Adaptive Random Forest, Precision: 0.827, Recall: 0.809, F1: 0.818, Execution Time: 0.8954 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 250, Model: Incremental Learning Vector Quantization, Precision: 0.7, Recall: 0.815, F1: 0.753, Execution Time: 0.4602 sec
+Dataset: linear_gradual, Step Size: 250, Model: Gaussian Naive Bayes, Precision: 0.786, Recall: 0.729, F1: 0.756, Execution Time: 0.0850 sec
+Dataset: linear_gradual, Step Size: 250, Model: Hoeffding Tree, Precision: 0.774, Recall: 0.774, F1: 0.774, Execution Time: 0.0861 sec
+Dataset: linear_gradual, Step Size: 250, Model: Adaptive Random Forest, Precision: 0.772, Recall: 0.725, F1: 0.748, Execution Time: 0.9338 sec
+Dataset: linear_recurrent, Step Size: 250, Model: Incremental Learning Vector Quantization, Precision: 0.814, Recall: 0.914, F1: 0.861, Execution Time: 0.5846 sec
+Dataset: linear_recurrent, Step Size: 250, Model: Gaussian Naive Bayes, Precision: 0.917, Recall: 0.919, F1: 0.918, Execution Time: 0.0841 sec
+Dataset: linear_recurrent, Step Size: 250, Model: Hoeffding Tree, Precision: 0.905, Recall: 0.874, F1: 0.889, Execution Time: 0.0833 sec
+Dataset: linear_recurrent, Step Size: 250, Model: Adaptive Random Forest, Precision: 0.892, Recall: 0.904, F1: 0.898, Execution Time: 0.8157 sec
+Dataset: linear_sudden, Step Size: 250, Model: Incremental Learning Vector Quantization, Precision: 0.728, Recall: 0.706, F1: 0.717, Execution Time: 0.8243 sec
+Dataset: linear_sudden, Step Size: 250, Model: Gaussian Naive Bayes, Precision: 0.749, Recall: 0.753, F1: 0.751, Execution Time: 0.0848 sec
+Dataset: linear_sudden, Step Size: 250, Model: Hoeffding Tree, Precision: 0.755, Recall: 0.793, F1: 0.774, Execution Time: 0.0876 sec
+Dataset: linear_sudden, Step Size: 250, Model: Adaptive Random Forest, Precision: 0.732, Recall: 0.71, F1: 0.721, Execution Time: 0.9514 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 500, Model: Incremental Learning Vector Quantization, Precision: 0.689, Recall: 0.712, F1: 0.7, Execution Time: 0.7835 sec
+Dataset: linear_gradual, Step Size: 500, Model: Gaussian Naive Bayes, Precision: 0.728, Recall: 0.714, F1: 0.721, Execution Time: 0.0842 sec
+Dataset: linear_gradual, Step Size: 500, Model: Hoeffding Tree, Precision: 0.728, Recall: 0.71, F1: 0.719, Execution Time: 0.0866 sec
+Dataset: linear_gradual, Step Size: 500, Model: Adaptive Random Forest, Precision: 0.675, Recall: 0.696, F1: 0.685, Execution Time: 0.8890 sec
+Dataset: linear_recurrent, Step Size: 500, Model: Incremental Learning Vector Quantization, Precision: 0.856, Recall: 0.817, F1: 0.836, Execution Time: 0.6336 sec
+Dataset: linear_recurrent, Step Size: 500, Model: Gaussian Naive Bayes, Precision: 0.905, Recall: 0.911, F1: 0.908, Execution Time: 0.0843 sec
+Dataset: linear_recurrent, Step Size: 500, Model: Hoeffding Tree, Precision: 0.895, Recall: 0.874, F1: 0.884, Execution Time: 0.0859 sec
+Dataset: linear_recurrent, Step Size: 500, Model: Adaptive Random Forest, Precision: 0.873, Recall: 0.905, F1: 0.889, Execution Time: 0.8318 sec
+Dataset: linear_sudden, Step Size: 500, Model: Incremental Learning Vector Quantization, Precision: 0.699, Recall: 0.656, F1: 0.677, Execution Time: 0.6554 sec
+Dataset: linear_sudden, Step Size: 500, Model: Gaussian Naive Bayes, Precision: 0.72, Recall: 0.701, F1: 0.71, Execution Time: 0.0841 sec
+Dataset: linear_sudden, Step Size: 500, Model: Hoeffding Tree, Precision: 0.718, Recall: 0.703, F1: 0.71, Execution Time: 0.0851 sec
+Dataset: linear_sudden, Step Size: 500, Model: Adaptive Random Forest, Precision: 0.703, Recall: 0.674, F1: 0.688, Execution Time: 0.9220 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 1000, Model: Incremental Learning Vector Quantization, Precision: 0.671, Recall: 0.692, F1: 0.681, Execution Time: 0.7135 sec
+Dataset: linear_gradual, Step Size: 1000, Model: Gaussian Naive Bayes, Precision: 0.705, Recall: 0.74, F1: 0.722, Execution Time: 0.0837 sec
+Dataset: linear_gradual, Step Size: 1000, Model: Hoeffding Tree, Precision: 0.703, Recall: 0.738, F1: 0.72, Execution Time: 0.0840 sec
+Dataset: linear_gradual, Step Size: 1000, Model: Adaptive Random Forest, Precision: 0.67, Recall: 0.72, F1: 0.694, Execution Time: 0.8534 sec
+Dataset: linear_recurrent, Step Size: 1000, Model: Incremental Learning Vector Quantization, Precision: 0.855, Recall: 0.815, F1: 0.835, Execution Time: 0.5841 sec
+Dataset: linear_recurrent, Step Size: 1000, Model: Gaussian Naive Bayes, Precision: 0.861, Recall: 0.876, F1: 0.868, Execution Time: 0.0834 sec
+Dataset: linear_recurrent, Step Size: 1000, Model: Hoeffding Tree, Precision: 0.866, Recall: 0.827, F1: 0.846, Execution Time: 0.0847 sec
+Dataset: linear_recurrent, Step Size: 1000, Model: Adaptive Random Forest, Precision: 0.828, Recall: 0.835, F1: 0.831, Execution Time: 0.8661 sec
+Dataset: linear_sudden, Step Size: 1000, Model: Incremental Learning Vector Quantization, Precision: 0.635, Recall: 0.586, F1: 0.61, Execution Time: 0.7827 sec
+Dataset: linear_sudden, Step Size: 1000, Model: Gaussian Naive Bayes, Precision: 0.701, Recall: 0.642, F1: 0.67, Execution Time: 0.0843 sec
+Dataset: linear_sudden, Step Size: 1000, Model: Hoeffding Tree, Precision: 0.699, Recall: 0.642, F1: 0.669, Execution Time: 0.0851 sec
+Dataset: linear_sudden, Step Size: 1000, Model: Adaptive Random Forest, Precision: 0.704, Recall: 0.607, F1: 0.652, Execution Time: 0.8450 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 2000, Model: Incremental Learning Vector Quantization, Precision: 0.655, Recall: 0.667, F1: 0.661, Execution Time: 0.7407 sec
+Dataset: linear_gradual, Step Size: 2000, Model: Gaussian Naive Bayes, Precision: 0.731, Recall: 0.752, F1: 0.741, Execution Time: 0.0848 sec
+Dataset: linear_gradual, Step Size: 2000, Model: Hoeffding Tree, Precision: 0.732, Recall: 0.75, F1: 0.741, Execution Time: 0.0861 sec
+Dataset: linear_gradual, Step Size: 2000, Model: Adaptive Random Forest, Precision: 0.683, Recall: 0.715, F1: 0.699, Execution Time: 0.8605 sec
+Dataset: linear_recurrent, Step Size: 2000, Model: Incremental Learning Vector Quantization, Precision: 0.832, Recall: 0.859, F1: 0.845, Execution Time: 0.5207 sec
+Dataset: linear_recurrent, Step Size: 2000, Model: Gaussian Naive Bayes, Precision: 0.857, Recall: 0.877, F1: 0.867, Execution Time: 0.0856 sec
+Dataset: linear_recurrent, Step Size: 2000, Model: Hoeffding Tree, Precision: 0.859, Recall: 0.811, F1: 0.834, Execution Time: 0.0832 sec
+Dataset: linear_recurrent, Step Size: 2000, Model: Adaptive Random Forest, Precision: 0.858, Recall: 0.837, F1: 0.847, Execution Time: 0.8606 sec
+Dataset: linear_sudden, Step Size: 2000, Model: Incremental Learning Vector Quantization, Precision: 0.67, Recall: 0.657, F1: 0.663, Execution Time: 0.7789 sec
+Dataset: linear_sudden, Step Size: 2000, Model: Gaussian Naive Bayes, Precision: 0.724, Recall: 0.705, F1: 0.714, Execution Time: 0.0833 sec
+Dataset: linear_sudden, Step Size: 2000, Model: Hoeffding Tree, Precision: 0.723, Recall: 0.701, F1: 0.712, Execution Time: 0.0856 sec
+Dataset: linear_sudden, Step Size: 2000, Model: Adaptive Random Forest, Precision: 0.679, Recall: 0.655, F1: 0.667, Execution Time: 0.8537 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 5000, Model: Incremental Learning Vector Quantization, Precision: 0.67, Recall: 0.77, F1: 0.717, Execution Time: 0.2718 sec
+Dataset: linear_gradual, Step Size: 5000, Model: Gaussian Naive Bayes, Precision: 0.703, Recall: 0.729, F1: 0.716, Execution Time: 0.0841 sec
+Dataset: linear_gradual, Step Size: 5000, Model: Hoeffding Tree, Precision: 0.698, Recall: 0.733, F1: 0.715, Execution Time: 0.0850 sec
+Dataset: linear_gradual, Step Size: 5000, Model: Adaptive Random Forest, Precision: 0.699, Recall: 0.764, F1: 0.73, Execution Time: 0.8465 sec
+Dataset: linear_recurrent, Step Size: 5000, Model: Incremental Learning Vector Quantization, Precision: 0.849, Recall: 0.842, F1: 0.845, Execution Time: 0.7677 sec
+Dataset: linear_recurrent, Step Size: 5000, Model: Gaussian Naive Bayes, Precision: 0.874, Recall: 0.86, F1: 0.867, Execution Time: 0.0834 sec
+Dataset: linear_recurrent, Step Size: 5000, Model: Hoeffding Tree, Precision: 0.83, Recall: 0.874, F1: 0.851, Execution Time: 0.0828 sec
+Dataset: linear_recurrent, Step Size: 5000, Model: Adaptive Random Forest, Precision: 0.848, Recall: 0.87, F1: 0.859, Execution Time: 0.8205 sec
+Dataset: linear_sudden, Step Size: 5000, Model: Incremental Learning Vector Quantization, Precision: 0.654, Recall: 0.639, F1: 0.646, Execution Time: 0.6974 sec
+Dataset: linear_sudden, Step Size: 5000, Model: Gaussian Naive Bayes, Precision: 0.717, Recall: 0.679, F1: 0.697, Execution Time: 0.0842 sec
+Dataset: linear_sudden, Step Size: 5000, Model: Hoeffding Tree, Precision: 0.717, Recall: 0.648, F1: 0.681, Execution Time: 0.0860 sec
+Dataset: linear_sudden, Step Size: 5000, Model: Adaptive Random Forest, Precision: 0.678, Recall: 0.61, F1: 0.642, Execution Time: 0.9784 sec
+
+================================================================================
+
+Dataset: linear_gradual, Step Size: 10000, Model: Incremental Learning Vector Quantization, Precision: 0.725, Recall: 0.682, F1: 0.703, Execution Time: 0.3404 sec
+Dataset: linear_gradual, Step Size: 10000, Model: Gaussian Naive Bayes, Precision: 0.743, Recall: 0.72, F1: 0.731, Execution Time: 0.0845 sec
+Dataset: linear_gradual, Step Size: 10000, Model: Hoeffding Tree, Precision: 0.741, Recall: 0.722, F1: 0.731, Execution Time: 0.0855 sec
+Dataset: linear_gradual, Step Size: 10000, Model: Adaptive Random Forest, Precision: 0.713, Recall: 0.663, F1: 0.687, Execution Time: 0.8517 sec
+Dataset: linear_recurrent, Step Size: 10000, Model: Incremental Learning Vector Quantization, Precision: 0.846, Recall: 0.871, F1: 0.858, Execution Time: 0.5983 sec
+Dataset: linear_recurrent, Step Size: 10000, Model: Gaussian Naive Bayes, Precision: 0.891, Recall: 0.875, F1: 0.883, Execution Time: 0.0830 sec
+Dataset: linear_recurrent, Step Size: 10000, Model: Hoeffding Tree, Precision: 0.821, Recall: 0.857, F1: 0.839, Execution Time: 0.0811 sec
+Dataset: linear_recurrent, Step Size: 10000, Model: Adaptive Random Forest, Precision: 0.848, Recall: 0.861, F1: 0.854, Execution Time: 0.8270 sec
+Dataset: linear_sudden, Step Size: 10000, Model: Incremental Learning Vector Quantization, Precision: 0.709, Recall: 0.64, F1: 0.673, Execution Time: 0.2226 sec
+Dataset: linear_sudden, Step Size: 10000, Model: Gaussian Naive Bayes, Precision: 0.744, Recall: 0.696, F1: 0.719, Execution Time: 0.0844 sec
+Dataset: linear_sudden, Step Size: 10000, Model: Hoeffding Tree, Precision: 0.748, Recall: 0.677, F1: 0.711, Execution Time: 0.0853 sec
+Dataset: linear_sudden, Step Size: 10000, Model: Adaptive Random Forest, Precision: 0.699, Recall: 0.687, F1: 0.693, Execution Time: 0.8989 sec
+
+================================================================================
+
