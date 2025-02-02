@@ -47,6 +47,9 @@ def get_results(test: str = "test1"):
                 promedio_mensajes_enviados = (df['Veces compartido'].mean() * int(s)) if 'Veces compartido' in df.columns else 0
                 tiempo_total_prom = df['Tiempo total'].mean()
                 ancho_banda_prom = (105 * promedio_prototipos_compartidos) / tiempo_total_prom
+                if not ancho_banda_prom:
+                    promedio_datos_enviados = df['Bytes enviados'].mean() if 'Bytes enviados' in df.columns else 0
+                    ancho_banda_prom = promedio_datos_enviados / tiempo_total_prom
 
                 # Crear el diccionario de resultados
                 resultado = {

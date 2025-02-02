@@ -82,7 +82,6 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
         "Tiempo no compartiendo": nodo.tiempo_no_share_final,
         "Tiempo total espera activa": nodo.tiempo_espera_total,
         "Tiempo total": nodo.tiempo_final_total,
-        "Bytes enviados": nodo.bytes_shared_final,
         "Capacidad de ejecución": cap_ejec
     }
 

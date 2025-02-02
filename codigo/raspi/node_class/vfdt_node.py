@@ -40,21 +40,24 @@ class VFDTreev1:
         self.tiempo_final_total = 0
         self.tiempo_espera_total = 0
             
-       #Atributos para gestionar hilos/estadisticas
+        #Atributos para gestionar hilos/estadisticas
         self.shared_times = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.tiempo_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.tiempo_no_share = self.manager.ListsProxy(num_lists = 1, id = self.id)
+        self.bytes_shared = self.manager.ListsProxy(num_lists = 1, id = self.id)
         self.fin_proceso = multiprocessing.Event()
         self.fin_proceso_emisor = multiprocessing.Event()
         self.send_emisor = multiprocessing.Event()
         self.fin_proceso_emisor.clear()
         self.fin_proceso.clear()
         self.send_emisor.clear()
-        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.lista_modelos, self.nodos, self.puerto_base, self.id, self.s, self.T, self.fin_proceso)
-                                                        , name=f"Receptor_{self.id}")
+        
+        self.proceso_receptor = multiprocessing.Process(target=self.recibir, args=(self.lista_modelos, self.nodos, self.puerto_base, 
+                                                        self.id, self.s, self.T, self.fin_proceso), name=f"Receptor_{self.id}")
+        
         self.proceso_emisor = multiprocessing.Process(target=self.share, args=(self.vecinos, self.send_emisor, self.fin_proceso_emisor, 
-                                                                                self.lista_modelos, self.s, self.T, self.shared_times, self.tiempo_share, 
-                                                                                self.tiempo_no_share), name=f"Emisor_{self.id}")
+                                                        self.lista_modelos, self.s, self.T, self.shared_times, self.tiempo_share, 
+                                                        self.tiempo_no_share, self.bytes_shared),name=f"Emisor_{self.id}")
         
 
         
@@ -107,6 +110,7 @@ class VFDTreev1:
         self.shared_times_final = self.shared_times.pop(0)  # Obtener el número de veces que se compartió.
         self.tiempo_share_final = self.tiempo_share.pop(0)  # Obtener el tiempo total de "share".
         self.tiempo_no_share_final = self.tiempo_no_share.pop(0)  # Obtener el tiempo total de "no share".
+        self.bytes_shared_final = self.bytes_shared.pop(0)  # Obtener el número total de bytes compartidos.
                 
         self.manager.shutdown()
         # Imprimir los tiempos acumulados y el tiempo total de ejecución.
@@ -193,7 +197,7 @@ class VFDTreev1:
 
 
 
-    def share(self, vecinos, send_emisor, fin_proceso_emisor, models_list, s, T, shared_times, tiempo_share, tiempo_no_share):
+    def share(self, vecinos, send_emisor, fin_proceso_emisor, models_list, s, T, shared_times, tiempo_share, tiempo_no_share, bytes_shared):
         """
         Method for sharing model parameters with neighbors in a decentralized network.
 
@@ -223,6 +227,7 @@ class VFDTreev1:
             tiempo_share_local = 0
             shared_times_local = 0
             tiempo_no_share_local = 0
+            bytes_shared_local = 0
 
             while True:
                 inicio_no_share = time.perf_counter()
@@ -232,9 +237,10 @@ class VFDTreev1:
                     client_socket.close()
                     client_context.term()
                     tiempo_share.append(0, tiempo_share_local)
-                    print(f"[NODO {self.id}] Se ha añadido: {shared_times_local} a la lista compartida.")
                     shared_times.append(0, shared_times_local)
                     tiempo_no_share.append(0, tiempo_no_share_local)
+                    bytes_shared.append(0, bytes_shared_local)
+                    print(f"[NODO {self.id}] Se ha añadido: {bytes_shared_local} a la lista de número de bytes compartidos.")
                     print(f"[NODO {self.id}] El hilo emisor ha terminado.")
                     return
 
@@ -247,6 +253,8 @@ class VFDTreev1:
 
                         # Get the latest model parameters
                         params_to_share = models_list.getleft(self.id, 0)  # Retrieve the last parameters
+                        
+                        
                         if params_to_share:
                             # Serialize model parameters for sharing
                             serialized_params = pickle.dumps({
@@ -260,6 +268,7 @@ class VFDTreev1:
                             # Send parameters to the selected neighbors
                             for vecino in vecinos_seleccionados:
                                 client_socket.send_multipart([f"{vecino}".encode(), serialized_params])
+                                bytes_shared_local += len(serialized_params)  
 
                     tiempo_share_local += time.perf_counter() - inicio_share  # Update sharing time
 
