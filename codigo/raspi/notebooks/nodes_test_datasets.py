@@ -11,7 +11,7 @@ import numpy as np  # Import for averaging
 # CONFIG
 # ==============================
 NUM_NODES = 5
-NODE_SAMPLES = 1000
+NODE_SAMPLES = 500 # Probando con 500 muestras, normalmente son 1000
 CYCLE_SHIFT = 5
 
 # Step sizes desired for each dataset

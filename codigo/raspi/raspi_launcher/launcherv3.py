@@ -14,6 +14,27 @@ import numpy as np
 import socket
 
 
+def cyc_sampling_for_node(df: pd.DataFrame, node_id: int, step: int, cycle_shift: int, num_samples: int) -> pd.DataFrame:
+    """
+    Sample num_samples indices from df using a cyclical pattern based on node_id.
+    """
+    total_samples = len(df)
+    indices = []
+    offset = node_id  # Start offset depends on node
+    # Continue until we have the desired number of samples
+    while len(indices) < num_samples:
+        # Determine how many samples per cycle (avoid division by zero)
+        max_per_cycle = total_samples // step if step != 0 else total_samples
+        for i in range(max_per_cycle):
+            idx = (offset + i * step) % total_samples
+            indices.append(idx)
+            if len(indices) == num_samples:
+                break
+        offset += cycle_shift  # Shift for the next cycle
+    sampled_df = df.iloc[indices].reset_index(drop=True)
+    return sampled_df
+
+
 
 def read_dataset(name: str):
     filename = data_name[name]
@@ -36,21 +57,35 @@ def read_dataset(name: str):
 
 
 def main(df: pd.DataFrame):
-
-    #Se adapta para darle a cada nodo su parte
-    init_index = 0
-    tam_muestra = n_muestras * n_nodos
-    if "phis" in dataset or "elec2" in dataset:
+    if dataset == "lgr":
+        step = 1000        
+        cycle_shift = 5    
+        num_samples = 500  
+        df_nodos = cyc_sampling_for_node(df, id, step, cycle_shift, num_samples)
+        print(f"[Node {id}] Using downsampled data: {df_nodos.shape[0]} samples for dataset '{dataset}'")
+    
+    elif "phis" in dataset or "elec2" in dataset:
+        # For the 'phis' or 'elec2' datasets, adjust the total sample size:
+        init_index = 0
+        tam_muestra = n_muestras * n_nodos
+        # Limit the sample size to 1250 if needed
         tam_muestra = min(tam_muestra, 1250)
         max_init_index = len(df) - tam_muestra
-        print(f"max_init_index: {max_init_index}, tam_muestra: {tam_muestra}, len(df): {len(df)}")
+        print(f"[Node {id}] max_init_index: {max_init_index}, tam_muestra: {tam_muestra}, len(df): {len(df)}")
         init_index = np.random.randint(0, max_init_index) if max_init_index > 0 else 0
+        df_short = df[init_index : init_index + tam_muestra]
+        df_nodos = df_short.iloc[id::n_nodos, :].reset_index(drop=True)
+        print(f"[Node {id}] Using 'phis'/'elec2' slicing: {df_nodos.shape[0]} samples")
+    
+    else:
+        # For other datasets, use standard contiguous slicing:
+        init_index = 0
+        tam_muestra = n_muestras * n_nodos
+        df_short = df[init_index : init_index + tam_muestra]
+        df_nodos = df_short.iloc[id::n_nodos, :].reset_index(drop=True)
+        print(f"[Node {id}] Using default slicing: {df_nodos.shape[0]} samples")
 
-    df_short = df[init_index : init_index + tam_muestra]
-    df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
-
-
-    nodo = Nodev3(id, dataset=df_nodos[id], modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
+    nodo = Nodev3(id, dataset=df_nodos, modelo_proto=XuILVQ(), nodos=n_nodos, s=s, T=t, media_llegadas=media_llegadas)
 
     hilo = threading.Thread(target=nodo.run)
     hilo.start()
@@ -305,28 +340,29 @@ if __name__ == "__main__":
         T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo
         S = [i for i in range(1, 5)]
         T = np.array([i for i in range(0, 1001, 50)])
+        T = np.array([i for i in range(0, 1001, 100)])
         T = T / 1000
         tasa_llegadas = 10
         media_llegadas = 1 / tasa_llegadas
 
         iteraciones = 50
-        datasets = ["elec", "phis", "elec2", "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
+        datasets = ["elec", "phis", "elec2", "lgr"] #, "nrr", "lar", "lrr", "ngcr", "nsch" ]
 
         data_name = {"elec": "electricity.csv", 
                     "phis": "phishing.csv",
                     "elec2": "electricity.csv",
                     "lgr": "linear_gradual_rotation_noise_and_redunce.csv" , 
-                    "nrr": "nonlinear_recurrent_rollingtorus_noise_and_redunce.csv",
-                    "lar": "linear_abrupt_noise_and_redunce.csv",                          
-                    "lrr": "linear_recurrent_rotation_noise_and_redunce.csv",              
-                    "ngcr": "nonlinear_gradual_cakerotation_noise_and_redunce.csv",        
-                    "nsch": "nonlinear_sudden_chocolaterotation_noise_and_redunce.csv"     
+                    # "nrr": "nonlinear_recurrent_rollingtorus_noise_and_redunce.csv",
+                    # "lar": "linear_abrupt_noise_and_redunce.csv",                          
+                    # "lrr": "linear_recurrent_rotation_noise_and_redunce.csv",              
+                    # "ngcr": "nonlinear_gradual_cakerotation_noise_and_redunce.csv",        
+                    # "nsch": "nonlinear_sudden_chocolaterotation_noise_and_redunce.csv"     
                     }
         
         # Parámetros temporales para hacer pruebas no simulaciones
-        datasets = [ "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
-        S = [1, 4]
-        T = np.array([0.0, 0.1, 0.5, 1.0])
+        # datasets = [ "lgr", "nrr", "lar", "lrr", "ngcr", "nsch" ]
+        # S = [1, 4]
+        # T = np.array([0.0, 0.1, 0.5, 1.0])
 
 
         directorio_resultados = "../resultados_raspi_indiv"
