@@ -9,9 +9,31 @@ import socket
 ruta_directorio_main = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ruta_directorio_main not in sys.path:
     sys.path.append(ruta_directorio_main)
-from node_class.vfdt_node import VFDTreev1
+from node_class.nb_node import GNBv1
 
-# Function to read and preprocess the dataset
+
+def cyc_sampling_for_node(df: pd.DataFrame, node_id: int, step: int, cycle_shift: int, num_samples: int) -> pd.DataFrame:
+    """
+    Sample num_samples indices from df using a cyclical pattern based on node_id.
+    """
+    total_samples = len(df)
+    indices = []
+    offset = node_id  # Start offset depends on node
+    # Continue until we have the desired number of samples
+    while len(indices) < num_samples:
+        # Determine how many samples per cycle (avoid division by zero)
+        max_per_cycle = total_samples // step if step != 0 else total_samples
+        for i in range(max_per_cycle):
+            idx = (offset + i * step) % total_samples
+            indices.append(idx)
+            if len(indices) == num_samples:
+                break
+        offset += cycle_shift  # Shift for the next cycle
+    sampled_df = df.iloc[indices].reset_index(drop=True)
+    return sampled_df
+
+
+
 def read_dataset(name: str):
     filename = data_name[name]
     dataset = pd.read_csv(f"../dataset/{filename}")
@@ -20,23 +42,39 @@ def read_dataset(name: str):
     dataset.infer_objects(copy=False)
     return dataset
 
-# Main function to run the node
-def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str, s: int, t: float, i_iter: int):
-    # Prepare the dataset for the node
-    init_index = 0
-    tam_muestra = n_muestras * n_nodos
-    if "phis" in dataset or "elec2" in dataset:
+def main(df: pd.DataFrame):
+    if dataset == "lgr":
+        step = 1000        
+        cycle_shift = 5    
+        num_samples = 500  
+        df_nodos = cyc_sampling_for_node(df, id, step, cycle_shift, num_samples)
+        print(f"[Node {id}] Using downsampled data: {df_nodos.shape[0]} samples for dataset '{dataset}'")
+    
+    elif "phis" in dataset or "elec2" in dataset:
+        # For the 'phis' or 'elec2' datasets, adjust the total sample size:
+        init_index = 0
+        tam_muestra = n_muestras * n_nodos
+        # Limit the sample size to 1250 if needed
         tam_muestra = min(tam_muestra, 1250)
         max_init_index = len(df) - tam_muestra
+        print(f"[Node {id}] max_init_index: {max_init_index}, tam_muestra: {tam_muestra}, len(df): {len(df)}")
         init_index = np.random.randint(0, max_init_index) if max_init_index > 0 else 0
-
-    df_short = df[init_index: init_index + tam_muestra]
-    df_nodos = [df_short.iloc[i::n_nodos, :].reset_index(drop=True) for i in range(n_nodos)]
+        df_short = df[init_index : init_index + tam_muestra]
+        df_nodos = df_short.iloc[id::n_nodos, :].reset_index(drop=True)
+        print(f"[Node {id}] Using 'phis'/'elec2' slicing: {df_nodos.shape[0]} samples")
+    
+    else:
+        # For other datasets, use standard contiguous slicing:
+        init_index = 0
+        tam_muestra = n_muestras * n_nodos
+        df_short = df[init_index : init_index + tam_muestra]
+        df_nodos = df_short.iloc[id::n_nodos, :].reset_index(drop=True)
+        print(f"[Node {id}] Using default slicing: {df_nodos.shape[0]} samples")
 
     # Initialize the node
-    nodo = VFDTreev1(
+    nodo = GNBv1(
         id=id,
-        dataset=df_nodos[id],
+        dataset=df_nodos,
         nodos=n_nodos,
         s=s,
         T=t,
@@ -82,6 +120,7 @@ def main(df: pd.DataFrame, id: int, n_nodos: int, n_muestras: int, dataset: str,
         "Tiempo no compartiendo": nodo.tiempo_no_share_final,
         "Tiempo total espera activa": nodo.tiempo_espera_total,
         "Tiempo total": nodo.tiempo_final_total,
+        "Bytes enviados": nodo.bytes_shared_final,
         "Capacidad de ejecución": cap_ejec
     }
 
@@ -288,6 +327,7 @@ if __name__ == "__main__":
         
         T_MAX_IT = 300  # Tiempo máximo de ejecución del hilo por iteración
         S = [i for i in range(1, 5)]
+        T = np.array([i for i in range(0, 1001, 50)])
         T = np.array([i for i in range(0, 1001, 100)])
         T = T / 1000
         tasa_llegadas = 10
@@ -295,15 +335,16 @@ if __name__ == "__main__":
         
         
         iteraciones = 50
-        datasets = ["elec", "phis", "elec2"]
+        datasets = ["elec", "phis", "elec2", "lgr"]
 
         data_name = {"elec": "electricity.csv", 
                     "phis": "phishing.csv",
                     "elec2": "electricity.csv",
+                    "lgr": "linear_gradual_rotation_noise_and_redunce.csv" , 
                     }
 
 
-        directorio_resultados = "../resultados_raspi_indiv_tree"
+        directorio_resultados = "../resultados_raspi_indiv_nb"
 
         if not os.path.exists(directorio_resultados):
             os.makedirs(directorio_resultados)
