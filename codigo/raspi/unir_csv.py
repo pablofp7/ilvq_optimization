@@ -73,6 +73,9 @@ else:
 results_dir = 'resultados_raspi_indiv'
 if "vfdt" in test:
     results_dir += "_tree"
+    
+if "nb" in test:
+    results_dir += "_nb"
 
 target_dir = f'{test}_resultados'
 if not os.path.exists(target_dir):
