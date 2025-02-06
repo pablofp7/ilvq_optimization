@@ -335,7 +335,7 @@ if __name__ == "__main__":
         
         
         iteraciones = 50
-        datasets = ["elec", "phis", "elec2", "lgr"]
+        datasets = ["elec", "phis", "elec2"] #, "lgr"]
 
         data_name = {"elec": "electricity.csv", 
                     "phis": "phishing.csv",
@@ -384,7 +384,7 @@ if __name__ == "__main__":
                         nombre_archivo = f"{directorio_resultados}/result_{new_parametros}.csv"
 
                         print(f"[ITERATION] Post-SINCRO: {i_iter}, dataset: {dataset}, S: {s}, T: {t}")
-                        main(data_frame, id, n_nodos, n_muestras, dataset, s, t, i_iter)
+                        main(data_frame)
                         print(f"- Tiempo de ejecución: {(time.perf_counter() - tiempo_inicio) / 60} minutos.\n")
 
                         t_idx += 1
