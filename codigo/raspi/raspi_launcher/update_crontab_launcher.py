@@ -10,7 +10,10 @@ if len(sys.argv) != 2:
 launcher = sys.argv[1]
 
 # Define the new crontab line. Adjust paths if necessary.
-crontab_line = f"@reboot sleep 120 && cd /home/pablo/ilvq_optimization/codigo/raspi/raspi_launcher && nohup python3 super_launcher.py {launcher} > super_launcher.log 2>&1 &"
+crontab_line = f"@reboot sleep 120 && cd /home/pablo/ilvq_optimization/codigo/raspi/raspi_launcher && echo  && nohup python3 super_launcher.py {launcher} > super_launcher.log 2>&1 &"
+crontab_line = f"@reboot sleep 120 && cd /home/pablo/ilvq_optimization/codigo/raspi && echo \"Starting super_launcher at $(date)\" >
+                super_launcher.log 2>&1 && python3 super_launcher.py {launcher} >> super_launcher.log 2>&1"
+
 
 # Get the current crontab entries
 try:

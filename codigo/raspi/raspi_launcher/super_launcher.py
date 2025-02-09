@@ -17,11 +17,11 @@ LAST_FILE_CHECKED = None
 def get_script_name():
     """Retrieve script name from command-line arguments."""
     if len(sys.argv) < 2:
-        print("Error: No script name provided. Usage: python super_launcher.py <script_suffix>")
+        print("Error: No script name provided. Usage: python super_launcher.py <script_prefix>")
         sys.exit(1)
 
-    script_suffix = sys.argv[1]
-    script_name = f"{script_suffix}.py"
+    script_prefix = sys.argv[1]
+    script_name = f"{script_prefix}.py"
     script_path = os.path.join(LAUNCHER_DIR, script_name)
 
     if not os.path.exists(script_path):
