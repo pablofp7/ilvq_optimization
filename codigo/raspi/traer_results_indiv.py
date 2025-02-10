@@ -4,7 +4,7 @@ import sys
 
 # Check if the first argument is provided
 if len(sys.argv) < 2:
-    raise ValueError("The first argument is required. Please provide an argument.")
+    raise ValueError("The first argument is required. ilvq, tree (vfdt), nb ...")
 
 arg = sys.argv[1]
 
