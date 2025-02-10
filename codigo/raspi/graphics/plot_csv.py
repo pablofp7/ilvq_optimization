@@ -394,7 +394,7 @@ if __name__ == '__main__':
 
     args = parse_args()
     test = args.t
-    test = "test2"
+    # test = "test2"
     if "all" in test:
         get_all(args.metrica)
     else: 
