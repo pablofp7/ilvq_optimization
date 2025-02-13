@@ -8,7 +8,7 @@ METRICS = {'f1': 'F1', 'protos': 'Protos_Entrenados', 'bandwidth': 'Ancho_Banda'
 VALID_DATASETS = ["elec", "phis", "elec2", "lgr"]
 
 
-def plot_results(test_numbers, dataset, metric, export_csv, compare_tests):
+def plot_results(test_numbers, dataset, metric, export_csv):
     combined_df = []
     
     for test_number in test_numbers:
@@ -31,16 +31,10 @@ def plot_results(test_numbers, dataset, metric, export_csv, compare_tests):
     
     combined_df = pd.concat(combined_df).sort_values(by=['T', 'Test'])  # Order by T, then by Test
     
-    if compare_tests:
-        # Print interleaved table
-        table = combined_df.pivot(index=['T', 'Test'], columns='s', values=metric)
-        table.index.names = ['T/s', 'Test']
-        table.columns.name = f'T Test / s'
-    else:
-        # Print standard table for a single test
-        table = combined_df.pivot(index='T', columns='s', values=metric)
-        table.index.name = "T/s"
-        table.insert(0, 'T/s', table.index)
+    # Print interleaved table
+    table = combined_df.pivot(index=['T', 'Test'], columns='s', values=metric)
+    table.index.names = ['T/s', 'Test']
+    table.columns.name = 'T Test / s'
     
     print(f"\nTable of {metric} values for tests {', '.join(map(str, test_numbers))}, dataset: {dataset}\n")
     print(table.reset_index().to_csv(index=False, sep='\t'))
@@ -49,23 +43,19 @@ def plot_results(test_numbers, dataset, metric, export_csv, compare_tests):
     # Export to CSV if requested
     if export_csv:
         export_path = os.path.join(RESULTS_DIR, f"tests_{'_'.join(map(str, test_numbers))}_{dataset}_{metric}.csv")
-        table.to_csv(export_path)
+        table.to_csv(export_path, index=True)
         print(f"Table exported to {export_path}\n")
     
     plt.figure(figsize=(12, 5))
     
-    for key, grp in combined_df.groupby(['Test', 's'] if compare_tests else 's'):
-        if compare_tests:
-            test, s_value = key
-            label = f'Test {test}, s = {s_value}'
-        else:
-            s_value = key
-            label = f's = {s_value}'
+    for key, grp in combined_df.groupby(['Test', 's']):
+        test, s_value = key
+        label = f'Test {test}, s = {s_value}'
         plt.plot(grp['T'], grp[metric], marker='o', label=label)
     
     plt.xlabel('T')
     plt.ylabel(metric)
-    plt.title(f"{dataset.capitalize()} - {metric}=f(T,s). {'Comparison across tests' if compare_tests else ''} {', '.join(map(str, test_numbers))}.")
+    plt.title(f"{dataset.capitalize()} - {metric}=f(T,s). Comparison across tests {', '.join(map(str, test_numbers))}.")
     plt.legend()
     plt.grid()
     plt.show()
@@ -77,10 +67,9 @@ def main():
     parser.add_argument("-d", "--dataset", type=str, required=True, choices=VALID_DATASETS, help="Dataset name")
     parser.add_argument("-m", "--metric", type=str, required=True, choices=METRICS.keys(), help="Metric to plot (f1, protos, bandwidth)")
     parser.add_argument("--export_csv", action='store_true', help="Export table as CSV")
-    parser.add_argument("--compare_tests", action='store_true', help="Compare multiple tests in a single plot and table")
     
     args = parser.parse_args()
-    plot_results(args.tests, args.dataset, METRICS[args.metric], args.export_csv, args.compare_tests)
+    plot_results(args.tests, args.dataset, METRICS[args.metric], args.export_csv)
 
 
 if __name__ == "__main__":
