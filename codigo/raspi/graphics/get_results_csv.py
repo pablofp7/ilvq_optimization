@@ -4,7 +4,7 @@ import pandas as pd
 import ast
 
 # Definimos los conjuntos de datos válidos
-VALID_DATASETS = ["elec", "phis", "elec2", "lgr", "nrr", "lar", "lrr", "ngcr", "nsch"]
+VALID_DATASETS = ["elec", "phis", "elec2", "lgr"] #, "nrr", "lar", "lrr", "ngcr", "nsch"]
 
 def get_results(test: str = "test1"):
     # Directorio donde se encuentran los archivos CSV
