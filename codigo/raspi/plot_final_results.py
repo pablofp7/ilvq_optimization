@@ -7,6 +7,12 @@ RESULTS_DIR = os.path.expanduser('~/ilvq_optimization/codigo/raspi/final_results
 METRICS = {'f1': 'F1', 'protos': 'Protos_Entrenados', 'bandwidth': 'Ancho_Banda'}
 VALID_DATASETS = ["elec", "phis", "elec2", "lgr"]
 
+dataset_names = {
+    'elec': 'Electricity',
+    'phis': 'Phishing',
+    'elec2': 'Electricity 2',
+    'lgr': 'Linear Gradual Rotation of concept drift'
+}
 
 def plot_results(test_numbers, dataset, metric, export_csv):
     combined_df = []
@@ -36,7 +42,7 @@ def plot_results(test_numbers, dataset, metric, export_csv):
     table.index.names = ['T/s', 'Test']
     table.columns.name = 'T Test / s'
     
-    print(f"\nTable of {metric} values for tests {', '.join(map(str, test_numbers))}, dataset: {dataset}\n")
+    print(f"\nTable of {metric} values for tests {', '.join(map(str, test_numbers))}, dataset: {dataset_names.get(dataset, dataset)}\n")
     print(table.reset_index().to_csv(index=False, sep='\t'))
     print("\n")
     
@@ -55,7 +61,7 @@ def plot_results(test_numbers, dataset, metric, export_csv):
     
     plt.xlabel('T')
     plt.ylabel(metric)
-    plt.title(f"{dataset.capitalize()} - {metric}=f(T,s). Comparison across tests {', '.join(map(str, test_numbers))}.")
+    plt.title(f"{dataset_names.get(dataset, dataset)} - {metric}=f(T,s). Comparison across tests {', '.join(map(str, test_numbers))}.")
     plt.legend()
     plt.grid()
     plt.show()
