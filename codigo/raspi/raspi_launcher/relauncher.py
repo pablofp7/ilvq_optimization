@@ -13,7 +13,9 @@ RESULTS_DIR   = os.path.join(PROJECT_DIR, "resultados_raspi_indiv")
 VENV_PATH     = "/home/pablo/.pyenv/versions/3.10.12/envs/raspi_env/bin/activate"
 
 # Patrón para detectar el archivo de iteración final (comodín)
-LAST_ITERATION_FILE = "result_elec2_s4_T1.0_it49_nodo*.csv"
+# LAST_ITERATION_FILE = "result_elec2_s4_T1.0_it49_nodo*.csv"
+LAST_ITERATION_FILE = "result_lgr_s4_T1.0_it49_nodo*.csv"
+
 
 # Variable para llevar el seguimiento del último archivo procesado
 LAST_FILE_CHECKED = None
