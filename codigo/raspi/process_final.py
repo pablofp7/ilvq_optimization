@@ -10,9 +10,9 @@ VALID_DATASETS = ["elec", "phis", "elec2", "lgr"]  # Se pueden agregar más si e
 # Directorio base donde están los resultados
 RESULTS_DIR = os.path.expanduser('~/ilvq_optimization/codigo/raspi/')
 
-# Función para procesar archivos TXT y CSV
 
 def extract_results_from_txt(file_path, s, T):
+    print(f"Processing TXT file: {file_path}")
     with open(file_path, 'r') as file:
         contenido = file.readlines()
 
@@ -49,6 +49,7 @@ def extract_results_from_txt(file_path, s, T):
             prototipos_compartidos += int(match.group(1))
 
     if cuenta_nodos == 0:
+        print("No valid nodes found in TXT file.")
         return None
 
     ancho_banda = (105 * prototipos_compartidos) / tiempo_total if tiempo_total else 0
@@ -63,8 +64,10 @@ def extract_results_from_txt(file_path, s, T):
 
 
 def extract_results_from_csv(file_path, s, T):
+    print(f"Processing CSV file: {file_path}")
     df = pd.read_csv(file_path)
     if df.empty:
+        print("CSV file is empty.")
         return None
 
     # Ajustar valores según estructura CSV
@@ -76,10 +79,13 @@ def extract_results_from_csv(file_path, s, T):
     # Determinar cómo calcular el ancho de banda
     if 'Bytes enviados' in df.columns:
         df['Ancho_Banda'] = df['Bytes enviados'] / df['Tiempo total']
+        print("Using 'Bytes enviados' for bandwidth calculation.")
     elif 'Prototipos compartidos' in df.columns:
         df['Ancho_Banda'] = (105 * df['Prototipos compartidos']) / df['Tiempo total']
+        print("Using 'Prototipos compartidos' with formula for bandwidth calculation.")
     else:
         df['Ancho_Banda'] = 0  # Si no hay ninguna de las dos columnas, poner 0
+        print("No valid bandwidth columns found, setting Ancho_Banda to 0.")
 
     # Reemplazar posibles NaN en 'Ancho_Banda' por 0
     df['Ancho_Banda'] = df['Ancho_Banda'].fillna(0)
@@ -93,19 +99,21 @@ def extract_results_from_csv(file_path, s, T):
     }
 
 
-
-
 def process_results():
     for test_num in range(1, 7):
         test_folder = os.path.join(RESULTS_DIR, f'test{test_num}_resultados')
         if not os.path.exists(test_folder):
+            print(f"Skipping test{test_num}: Folder does not exist.")
             continue
 
+        print(f"\nProcessing test{test_num}...")
         results = {dataset: [] for dataset in VALID_DATASETS}
 
         for filename in os.listdir(test_folder):
+            print(f"Checking file: {filename}")
             match = re.match(r'result_(' + '|'.join(VALID_DATASETS) + r')_s(\d+)_T([\d.]+)_it(\d+).(txt|csv)', filename)
             if not match:
+                print(f"Skipping file: {filename} (does not match pattern)")
                 continue
 
             dataset_name, s, T, it, file_ext = match.groups()
@@ -118,13 +126,20 @@ def process_results():
 
             if result:
                 results[dataset_name].append(result)
+            else:
+                print(f"Warning: No data extracted from {filename}")
 
         for dataset, data in results.items():
             if data:
+                print(f"Aggregating results for dataset: {dataset}")
                 df = pd.DataFrame(data)
                 df = df.groupby(['s', 'T']).mean().reset_index()
-                df.to_csv(os.path.join(RESULTS_DIR, f'final_results/test{test_num}_{dataset}.csv'), index=False)
+                output_path = os.path.join(RESULTS_DIR, f'final_results/test{test_num}_{dataset}.csv')
+                df.to_csv(output_path, index=False)
+                print(f"Saved aggregated results to {output_path}")
+
+        print(f"Finished processing test{test_num}.\n")
 
 if __name__ == "__main__":
     process_results()
-    print("Processing completed. CSV files saved.")
+    print("\nProcessing completed. CSV files saved.")
