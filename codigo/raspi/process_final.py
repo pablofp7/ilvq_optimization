@@ -2,6 +2,7 @@ import os
 import re
 import pandas as pd
 import ast
+import numpy as np
 
 # Definir los datasets válidos
 VALID_DATASETS = ["elec", "phis", "elec2", "lgr"]  # Se pueden agregar más si es necesario
@@ -68,7 +69,20 @@ def extract_results_from_csv(file_path, s, T):
 
     # Ajustar valores según estructura CSV
     df['Protos_Entrenados'] = df.get('Prototipos entrenados', df.get('Parámetros agregados', 0))
-    df['Ancho_Banda'] = df['Bytes enviados'] / df['Tiempo total']
+
+    # Asegurar que 'Tiempo total' no sea cero para evitar división por cero
+    df['Tiempo total'] = df['Tiempo total'].replace(0, np.nan)  # Sustituir ceros por NaN para evitar errores
+
+    # Determinar cómo calcular el ancho de banda
+    if 'Bytes enviados' in df.columns:
+        df['Ancho_Banda'] = df['Bytes enviados'] / df['Tiempo total']
+    elif 'Prototipos compartidos' in df.columns:
+        df['Ancho_Banda'] = (105 * df['Prototipos compartidos']) / df['Tiempo total']
+    else:
+        df['Ancho_Banda'] = 0  # Si no hay ninguna de las dos columnas, poner 0
+
+    # Reemplazar posibles NaN en 'Ancho_Banda' por 0
+    df['Ancho_Banda'] = df['Ancho_Banda'].fillna(0)
 
     return {
         's': int(s),
@@ -77,6 +91,8 @@ def extract_results_from_csv(file_path, s, T):
         'Protos_Entrenados': round(df['Protos_Entrenados'].mean(), 4),
         'Ancho_Banda': round(df['Ancho_Banda'].mean(), 4)
     }
+
+
 
 
 def process_results():
