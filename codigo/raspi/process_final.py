@@ -109,32 +109,40 @@ def process_results():
         print(f"\nProcessing test{test_num}...")
         results = {dataset: [] for dataset in VALID_DATASETS}
 
-        for filename in os.listdir(test_folder):
-            print(f"Checking file: {filename}")
-            match = re.match(r'result_(' + '|'.join(VALID_DATASETS) + r')_s(\d+)_T([\d.]+)_it(\d+).(txt|csv)', filename)
-            if not match:
-                print(f"Skipping file: {filename} (does not match pattern)")
+        for dataset in VALID_DATASETS:
+            output_path = os.path.join(RESULTS_DIR, f'final_results/test{test_num}_{dataset}.csv')
+
+            if os.path.exists(output_path):
+                print(f"Skipping dataset {dataset} for test{test_num}, final file already exists: {output_path}")
                 continue
 
-            dataset_name, s, T, it, file_ext = match.groups()
-            file_path = os.path.join(test_folder, filename)
+            for filename in os.listdir(test_folder):
+                print(f"Checking file: {filename}")
+                match = re.match(r'result_(' + '|'.join(VALID_DATASETS) + r')_s(\d+)_T([\d.]+)_it(\d+).(txt|csv)', filename)
+                if not match:
+                    print(f"Skipping file: {filename} (does not match pattern)")
+                    continue
 
-            if file_ext == 'txt':
-                result = extract_results_from_txt(file_path, s, T)
-            else:
-                result = extract_results_from_csv(file_path, s, T)
+                dataset_name, s, T, it, file_ext = match.groups()
+                file_path = os.path.join(test_folder, filename)
 
-            if result:
-                results[dataset_name].append(result)
-            else:
-                print(f"Warning: No data extracted from {filename}")
+                if dataset_name != dataset:
+                    continue  
 
-        for dataset, data in results.items():
-            if data:
+                if file_ext == 'txt':
+                    result = extract_results_from_txt(file_path, s, T)
+                else:
+                    result = extract_results_from_csv(file_path, s, T)
+
+                if result:
+                    results[dataset_name].append(result)
+                else:
+                    print(f"Warning: No data extracted from {filename}")
+
+            if results[dataset]:  
                 print(f"Aggregating results for dataset: {dataset}")
-                df = pd.DataFrame(data)
+                df = pd.DataFrame(results[dataset])
                 df = df.groupby(['s', 'T']).mean().reset_index()
-                output_path = os.path.join(RESULTS_DIR, f'final_results/test{test_num}_{dataset}.csv')
                 df.to_csv(output_path, index=False)
                 print(f"Saved aggregated results to {output_path}")
 
