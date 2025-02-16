@@ -62,7 +62,7 @@ try:
     if not test:
         raise Exception()
 except Exception as e:
-    print(f"Debes el test para definir el directotorio donde se van a almacenar los csv unidos. Error: {e}")
+    print(f"Debes el test para definir el directotorio donde se van a almacenar los csv unidos (ilvq, vfdt, nb...). Error: {e}")
     exit(1)
 
 if "test4" in test:
