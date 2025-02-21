@@ -336,6 +336,8 @@ if __name__ == "__main__":
         
         iteraciones = 50
         datasets = ["elec", "phis", "elec2"] #, "lgr"]
+        datasets = ["lgr"]
+
 
         data_name = {"elec": "electricity.csv", 
                     "phis": "phishing.csv",
