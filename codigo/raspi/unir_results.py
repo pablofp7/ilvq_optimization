@@ -70,7 +70,7 @@ if not os.path.exists(target_dir):
 
 N_NODOS = 5
 it_range = range(50)  # Desde 0 hasta 49
-datasets = ['elec', 'phis', 'elec2']
+datasets = ['elec', 'phis', 'elec2', 'lgr']
 s_values = [1, 2, 3, 4]
 T_values = [1.0, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1, 0.05, 0.0]
 T_values = T_values[::-1]
