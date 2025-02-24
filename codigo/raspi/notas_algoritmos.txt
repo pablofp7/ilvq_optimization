@@ -1,0 +1,33 @@
+En cuanto a los ALGORITMOS:
+
+Después de buscar diferentes algoritmos y modelos, no encontré ninguno que pudiera tomarse como referencia clara que cumpliese con los requisitos que necesitaba para poder compararlo directamente con la propuesta:
+• Bajo coste computacional, ya que el sistema está pensado para dispositivos IoT con recursos limitados.
+• Adecuado para online learning, siguiendo una estrategia de predict/test-then-train, donde cada muestra se predice antes de usarse para el entrenamiento.
+• Capacidad de clasificación binaria, ya que el problema a resolver se basa en distinguir entre dos clases (0 y 1).
+• Que sus parámetros puedan extraerse y combinarse con los de otros modelos, permitiendo actualizar cada modelo local con información de otros nodos.
+• Compatibilidad con DFL en un esquema de agregación asíncrona basada en gossip learning, es decir, que cada nodo pueda compartir su modelo con otros de manera descentralizada y sin necesidad de sincronización global.
+
+Como no encontré modelos que cumplieran con todas estas condiciones, decidí implementar una estrategia basada en un ensemble adaptado a gossip learning, similar al bagging pero sin usar bootstrap. El bootstrapping probablemente mejoraría el rendimiento del modelo, pero en este caso estoy simulando un entorno real donde cada nodo solo tiene acceso a sus propias muestras y no puede ver las de sus vecinos, por lo que aplicar bootstrap no tendría sentido y no reflejaría una situación realista.
+
+La idea es que cada nodo mantenga su propio modelo local, pero también almacene modelos que recibe de sus vecinos. Así, cada nodo tiene una lista de modelos que contiene:
+• Su modelo local, que es el único que se actualiza con las muestras de sensores.
+• n-1 modelos de sus vecinos, que solo se actualizan cuando el nodo recibe una versión nueva del modelo de cada vecino.
+
+Cuando un nodo recibe datos de sensores, solo entrena su modelo local, lo que reduce la carga computacional y evita tener que entrenar múltiples modelos en cada actualización.
+
+Para la fase de predicción, utilizo soft voting, adaptado a test-then-train, ya que estamos en un entorno de online learning. El proceso es el siguiente:
+• Cada modelo que tiene el nodo (su propio modelo y los de sus vecinos) predice la probabilidad de que la muestra pertenezca a la clase positiva (1).
+• Se calcula la media no ponderada de estas probabilidades.
+• Se aplica un decisor duro: si la media es mayor o igual a 0.5, la predicción final es 1; en caso contrario, 0.
+
+Este es el esquema más básico del sistema, pero hay varias mejoras que se podrían implementar para optimizarlo:
+• Entrenar los modelos de los vecinos mientras no lleguen versiones actualizadas: actualmente, cada nodo solo entrena su propio modelo, pero una mejora sería actualizar también los modelos que mantiene de sus vecinos con las muestras que le llegan de los sensores. De esta forma, mientras un nodo espera a recibir una versión actualizada del modelo de un vecino, podría seguir refinando la versión que tiene localmente.
+• Ponderar las predicciones al calcular la media: ahora mismo, todas las predicciones tienen el mismo peso, pero sería más lógico dar más importancia a la predicción del modelo propio del nodo(que casi siempre va a estar más actualizado que el de los vecinos, en casos puntuales podrian estar igual de actualizados como mucho pero en general no).
+• Ajustar el peso de los modelos de los vecinos según su antigüedad: en un entorno de online learning con concept drift, los modelos antiguos pueden perder precisión. Para evitar esto, se podría reducir su peso en la media a medida que se vuelven más obsoletos.
+
+Aun así, necesitaba lanzar pruebas lo antes posible, así que implementé esta versión inicial sin incluir estas mejoras.
+
+Modelos utilizados en las pruebas:
+• Test 5: Very Fast Decision Tree (también conocido como Hoeffding Tree), utilizando la implementación de river (HoeffdingTreeClassifier). Es una opción muy utilizada en online learning porque permite actualizaciones incrementales de manera eficiente.
+• Test 6: Gaussian Naive Bayes, también con la implementación de river (GaussianNB). Es un modelo adecuado para este entorno porque actualiza sus parámetros de forma incremental y no necesita un entrenamiento batch convencional.
+

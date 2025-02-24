@@ -54,10 +54,9 @@ class ParameterCombinations:
         self.current_s_index = start_s
         self.current_T_index = start_T
         self.current_lim_range_index = start_lim_range
-
-
+        
+        
 # Directorios de origen y destino
-results_dir = 'resultados_raspi_indiv'
 try:
     test = sys.argv[1]     
 except:
@@ -66,6 +65,13 @@ except:
 target_dir = f'{test}_resultados'
 if not os.path.exists(target_dir):
     os.makedirs(target_dir)
+
+suffix = ""
+if test == "test5":
+    suffix = "_tree"
+elif test == "test6":
+    suffix = "_nb"
+results_dir = f"resultados_raspi_indiv{suffix}"
 
 
 N_NODOS = 5

@@ -1,0 +1,35 @@
+El DATASET que he escogido está en un repositorio en github (https://github.com/songqiaohu/THU-Concept-Drift-Datasets-v1.0 -> linear_gradual_rotation_noise_and_redunce.csv). En el propio readme hay GIFs representando visualmente algunos de los concept drifts generados sintéticamente, también proporcionan una cita por si han sido útiles para nuestras pruebas:
+
+@article{hu2024cadm,
+  title={CADM $+ $: Confusion-Based Learning Framework With Drift Detection and Adaptation for Real-Time Safety Assessment},
+  author={Hu, Songqiao and Liu, Zeyi and Li, Minyue and He, Xiao},
+  journal={IEEE Transactions on Neural Networks and Learning Systems},
+  year={2024},
+  publisher={IEEE}
+}
+
+@INPROCEEDINGS{10295743,
+  author={Liu, Zeyi and Hu, Songqiao and He, Xiao},
+  booktitle={2023 CAA Symposium on Fault Detection, Supervision and Safety for Technical Processes (SAFEPROCESS)}, 
+  title={Real-time Safety Assessment of Dynamic Systems in Non-stationary Environments: A Review of Methods and Techniques}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1-6},
+  doi={10.1109/SAFEPROCESS58597.2023.10295743}}
+
+Tras hacer pruebas con los distintos datasets y sus correspondientes concept drifts variables, el que mejor resultados ha dado ha sido este pero he tenido que seguir una estrategia de submuestreo puesto que el concept drift varía muy lento y el modelo daba resultados demasiado buenos con un nodo único sin compartición de datos. Opté por realizar un muestre ciclico con desplazamiento:
+
+Al principio, usé un esquema más directo: si tenía un dataset con 1000 muestras y n nodos, asignaba las muestras de forma escalonada, es decir, al nodo 0 se le asignaban los índices 0, n, 2n; al nodo 1, los índices 1, n+1, 2n+1; y así con el resto (básicamente como se hace con los otros datasets). Sin embargo, este método generaba un conjunto de datos demasiado sencillo para el algoritmo, ya que cada nodo siempre recibía muestras muy cercanas (aún con el salto imprescindible correspondiente a los nodos, i.e., cada nodo coge 1 de cada n muestras consecutivas, no era suficiente)
+
+Para evitar esto, intenté aumentar la separación entre muestras usando un step mayor, para que los nodos tomaran muestras más espaciadas. El problema que encontré fue que, si el step necesario para que el modelo diera resultados aceptables era demasiado grande, la cantidad total de muestras que se podían asignar a cada nodo no llegaban a las mínimas aceptables (mínimo de 250). Por ejemplo, si el dataset tenía 1000 muestras y el step óptimo era de 100, a cada nodo solo se le podrían asignar 10 muestras, lo cual no era suficiente para un entrenamiento distribuido eficaz.
+
+Para solucionar esta limitación, decidí aplicar un muestreo cíclico que combina el step con un desplazamiento cíclico (cycle_shift). Cada nodo empieza en un índice inicial (offset) que depende de su identificador y avanza tomando muestras en saltos de tamaño step. Sin embargo, al completar un ciclo (un ciclo sería llegar al final de dataset), en lugar de repetir exactamente los mismos índices, aplico un pequeño desplazamiento (cycle_shift) al offset para que, en la siguiente vuelta, las posiciones muestreadas cambien. Así, consigo que cada nodo tenga una variedad de muestras más amplia sin perder la cantidad que necesita para entrenar.
+
+En cada iteración, calculo el índice de la muestra con la fórmula:
+
+idx = (offset + i * step) % total_samples
+
+donde i es la iteración actual.
+
+Una vez completado un ciclo, sumo el valor de cycle_shift al offset, lo que asegura que, en la siguiente iteración, los índices no sean siempre los mismos. Repito este proceso hasta alcanzar el número deseado de muestras (num_samples) y, finalmente, selecciono las filas correspondientes en el dataset. Gracias a este método, consigo que el entrenamiento distribuido disponga de suficientes datos en cada nodo y, al mismo tiempo, que esas muestras sean lo bastante variadas para evitar que el modelo se limite a patrones demasiado simples. En nuestro caso utiliza como desplazamiento de ciclo 5 (suficiente apra que en el segundo ciclo el nodo0 no coja la muestra del nodo 4), step entre muestras de un mismo nodo 1000, tamaño del dataset -> 100k. Por lo tanto no se produciria ningún tipo de overlapping (que un nodo coja muestras previamente seleccionadas por este nodo o por otro) Puesto que para que se podruzca overlapping el offset inicial tendría que llegar a 1000 para nodo0 por ejemplo, para llegar a 1000 en incrementos de 5, necesitaría 200 iteraciones, pero en nuestro caso teniendo 100k / 1k = 100 muestras por cada ciclo, se necesitan 500 por nodo, harian falta 5 ciclos, con lo que el offset inicial simplemente llegaría a 20 (el nodo0 cogería muestras 20, 1020, 2020... nodo4 24, 1024, 2024.....) Y como dije antes para que haya este overlapping (que tampoco tiene por qué ser un problema si no es demasiado grande) tendría que llegar el nodo0 a offset 1000, para que cogiera como primera muestra de esta ejecución, la que fue la segunda muestra de este propio nodo en la iteración 0 (muestras 0, 1000, 2000,....)
