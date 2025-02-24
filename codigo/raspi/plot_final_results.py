@@ -22,7 +22,7 @@ def generate_distinct_colors(n):
     colors = [colorsys.hsv_to_rgb(i / n, 0.7, 0.9) for i in range(n)]
     return colors
 
-def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', markers=False):
+def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', markers=False, save_image=None):
     combined_df = []
     
     for test_number in test_numbers:
@@ -36,16 +36,16 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
             print(f"No data available or metric {metric} not found in {file_path}")
             continue
         
-        df['Test'] = test_number  # Add a column to identify the test
+        df['Test'] = test_number  # Agregar columna para identificar el test
         combined_df.append(df)
     
     if not combined_df:
         print("No valid data found for the selected tests.")
         return
     
-    combined_df = pd.concat(combined_df).sort_values(by=['T', 'Test'])  # Order by T, then by Test
+    combined_df = pd.concat(combined_df).sort_values(by=['T', 'Test'])
     
-    # Print interleaved table
+    # Imprimir tabla intercalada
     table = combined_df.pivot(index=['T', 'Test'], columns='s', values=metric)
     table.index.names = ['T/s', 'Test']
     table.columns.name = 'T Test / s'
@@ -54,7 +54,7 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
     print(table.reset_index().to_csv(index=False, sep='\t'))
     print("\n")
     
-    # Export to CSV if requested
+    # Exportar a CSV si se solicita
     if export_csv:
         os.makedirs(EXPORT_DIR, exist_ok=True)
         export_path = os.path.join(EXPORT_DIR, f"tests_{'_'.join(map(str, test_numbers))}_{dataset}_{metric}.csv")
@@ -64,24 +64,20 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
     plt.figure(figsize=(12, 5))
     
     line_styles = ['-', '--', '-.', ':']
+    # Lista de marcadores, usados si markers es True.
+    markers_list = ['o', 's', '^', 'v', '<', '>', 'd', 'p', 'h', 'H', '8', '*', 'X', 'D', 'P']
     
-    # Set up a list of markers if the markers flag is provided.
-    if markers:
-        markers_list = ['o', 's', '^', 'v', '<', '>', 'd', 'p', 'h', 'H', '8', '*', 'X', 'D', 'P']
-        marker_idx = 0
-
     if plot_mode == 'color':
-        # In "color" mode, assign one unique color per (test, s) combination.
         total_combinations = sum(grp['s'].nunique() for _, grp in combined_df.groupby('Test'))
         distinct_colors = generate_distinct_colors(total_combinations)
         color_idx = 0
+        marker_idx = 0
         
-        # Use a fixed line style (solid) for color mode.
         for test, grp in combined_df.groupby('Test'):
             for s_value, sub_grp in grp.groupby('s'):
                 color = distinct_colors[color_idx]
                 color_idx += 1
-                style = '-'  # fixed style in color mode
+                style = '-'  # estilo fijo en color mode
                 marker_val = markers_list[marker_idx % len(markers_list)] if markers else None
                 if markers:
                     marker_idx += 1
@@ -90,9 +86,9 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
                          color=color, marker=marker_val)
                 
     elif plot_mode == 'hybrid':
-        # In "hybrid" mode, assign one color per test and different line styles for different s values.
         test_list = sorted(combined_df['Test'].unique())
         distinct_colors = generate_distinct_colors(len(test_list))
+        marker_idx = 0
         
         for i, (test, grp) in enumerate(combined_df.groupby('Test')):
             test_color = distinct_colors[i]
@@ -106,7 +102,7 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
                          color=test_color, marker=marker_val)
                 
     elif plot_mode == 'bw':
-        # In black & white mode, use black color and vary the line style.
+        marker_idx = 0
         for test, grp in combined_df.groupby('Test'):
             for j, (s_value, sub_grp) in enumerate(grp.groupby('s')):
                 style = line_styles[j % len(line_styles)]
@@ -116,13 +112,36 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
                 label = f'Test {test}, s = {s_value}'
                 plt.plot(sub_grp['T'], sub_grp[metric], linestyle=style, label=label,
                          color='black', marker=marker_val)
-    
+
+    elif plot_mode == 'test_marker':
+        # Cada test tiene un estilo de línea fijo, diferenciando los distintos s con marcadores.
+        # Actualmente se usa el color negro para todas las líneas.
+        test_list = sorted(combined_df['Test'].unique())
+        distinct_colors = generate_distinct_colors(len(test_list))  # Para opción futura de color por test
+        
+        for i, (test, grp) in enumerate(combined_df.groupby('Test')):
+            # Para usar un color distinto por test en el futuro, descomenta la siguiente línea:
+            # test_color = distinct_colors[i]
+            test_color = 'black'
+            test_line_style = line_styles[i % len(line_styles)]
+            for j, (s_value, sub_grp) in enumerate(grp.groupby('s')):
+                marker_val = markers_list[j % len(markers_list)] if markers else None
+                label = f'Test {test}, s = {s_value}'
+                plt.plot(sub_grp['T'], sub_grp[metric], linestyle=test_line_style, label=label,
+                         color=test_color, marker=marker_val)
+
     plt.xlabel('T')
     plt.ylabel(metric)
     plt.title(f"{dataset_names.get(dataset, dataset)} - {metric}=f(T,s). Comparison across tests {', '.join(map(str, test_numbers))}.")
     plt.legend()
     plt.grid()
-    plt.show()
+    
+    if save_image:
+        plt.savefig(save_image, bbox_inches='tight')
+        print(f"Image saved as {save_image}")
+    else:
+        plt.show()
+
 
 
 def main():
@@ -134,14 +153,17 @@ def main():
     parser.add_argument("-m", "--metric", type=str, required=True, choices=METRICS.keys(),
                         help="Metric to plot (f1, protos, bandwidth)")
     parser.add_argument("--export_csv", action='store_true', help="Export table as CSV")
-    parser.add_argument("--plot_mode", type=str, choices=['bw', 'color', 'hybrid'], default='color',
-                        help="Plot mode: bw (black & white), color, hybrid (color per test, line style per s)")
+    parser.add_argument("--plot_mode", type=str,
+                        choices=['bw', 'color', 'hybrid', 'test_marker'], default='color',
+                        help="Plot mode: bw (black & white), color, hybrid (color per test, line style per s), test_marker (color and line style per test with markers differentiating s)")
     parser.add_argument("--markers", action='store_true',
                         help="Add markers to the plot lines (each line gets a distinct marker)")
+    parser.add_argument("--save_image", "-si", type=str,
+                        help="Save image to file instead of showing it (e.g., image_file.png)")
     
     args = parser.parse_args()
     plot_results(args.tests, args.dataset, METRICS[args.metric],
-                 args.export_csv, args.plot_mode, args.markers)
+                 args.export_csv, args.plot_mode, args.markers, save_image=args.save_image)
 
 
 if __name__ == "__main__":
