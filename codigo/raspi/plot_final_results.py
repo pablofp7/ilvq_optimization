@@ -129,10 +129,18 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
                 label = f'Test {test}, s = {s_value}'
                 plt.plot(sub_grp['T'], sub_grp[metric], linestyle=test_line_style, label=label,
                          color=test_color, marker=marker_val)
+                
+    # Definir el nombre a mostrar en el plot según la métrica
+    if metric == "Protos_Entrenados":
+        metric_display = "Number of Trained Prototypes"
+    elif metric == "Ancho_Banda":
+        metric_display = "Bandwidth"
+    else:
+        metric_display = metric
 
     plt.xlabel('T')
-    plt.ylabel(metric)
-    plt.title(f"{dataset_names.get(dataset, dataset)} - {metric}=f(T,s). Comparison across tests {', '.join(map(str, test_numbers))}.")
+    plt.ylabel(metric_display)
+    plt.title(f"{dataset_names.get(dataset, dataset)} - {metric_display}=f(T,s). Comparison across tests {', '.join(map(str, test_numbers))}.")
     plt.legend()
     plt.grid()
     
