@@ -63,7 +63,7 @@ try:
     if not test:
         raise Exception("Falta definir el test.")
 except Exception as e:
-    print(f"Debes indicar el test (ilvq, vfdt, nb, etc.). Error: {e}")
+    print(f"Debes indicar el test (ilvq (test1, test2,... ,test4), vfdt, nb, etc.). Error: {e}")
     exit(1)
 
 if "test4" in test:
