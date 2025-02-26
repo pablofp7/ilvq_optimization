@@ -14,7 +14,16 @@ dataset_names = {
     'elec': 'Electricity',
     'phis': 'Phishing',
     'elec2': 'Electricity 2',
-    'lgr': 'Linear Gradual Rotation of concept drift'
+    'lgr': 'Linear Gradual Rotation'
+}
+
+test_names = {
+    1: 'Base Test',
+    2: 'JSD Test',
+    3: 'Limit Queue Size Test',
+    4: 'Clustering Test',
+    5: 'VFDT Test',
+    6: 'GaussianNB Test',
 }
 
 def generate_distinct_colors(n):
@@ -22,8 +31,10 @@ def generate_distinct_colors(n):
     colors = [colorsys.hsv_to_rgb(i / n, 0.7, 0.9) for i in range(n)]
     return colors
 
-def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', markers=False, save_image=None):
+def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', markers=False, one_marker=False, save_image=None):
     combined_df = []
+    
+    print(f"Test numbers: {test_numbers}")
     
     for test_number in test_numbers:
         file_path = os.path.join(RESULTS_DIR, f'test{test_number}_{dataset}.csv')
@@ -66,6 +77,7 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
     line_styles = ['-', '--', '-.', ':']
     # Lista de marcadores, usados si markers es True.
     markers_list = ['o', 's', '^', 'v', '<', '>', 'd', 'p', 'h', 'H', '8', '*', 'X', 'D', 'P']
+    one_marker = 'o'
     
     if plot_mode == 'color':
         total_combinations = sum(grp['s'].nunique() for _, grp in combined_df.groupby('Test'))
@@ -78,10 +90,11 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
                 color = distinct_colors[color_idx]
                 color_idx += 1
                 style = '-'  # estilo fijo en color mode
-                marker_val = markers_list[marker_idx % len(markers_list)] if markers else None
+                # marker_val = markers_list[marker_idx % len(markers_list)] if markers else None
+                marker_val = 'o' if one_marker else (markers_list[marker_idx % len(markers_list)] if markers else None)
                 if markers:
                     marker_idx += 1
-                label = f'Test {test}, s = {s_value}'
+                label = f'Test {test}, s = {s_value}' if len(test_numbers) > 1 else f's = {s_value}'
                 plt.plot(sub_grp['T'], sub_grp[metric], linestyle=style, label=label,
                          color=color, marker=marker_val)
                 
@@ -94,10 +107,11 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
             test_color = distinct_colors[i]
             for j, (s_value, sub_grp) in enumerate(grp.groupby('s')):
                 style = line_styles[j % len(line_styles)]
-                marker_val = markers_list[marker_idx % len(markers_list)] if markers else None
+                # marker_val = markers_list[marker_idx % len(markers_list)] if markers else None
+                marker_val = 'o' if one_marker else (markers_list[marker_idx % len(markers_list)] if markers else None)
                 if markers:
                     marker_idx += 1
-                label = f'Test {test}, s = {s_value}'
+                label = f'Test {test}, s = {s_value}' if len(test_numbers) > 1 else f's = {s_value}'
                 plt.plot(sub_grp['T'], sub_grp[metric], linestyle=style, label=label,
                          color=test_color, marker=marker_val)
                 
@@ -106,10 +120,11 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
         for test, grp in combined_df.groupby('Test'):
             for j, (s_value, sub_grp) in enumerate(grp.groupby('s')):
                 style = line_styles[j % len(line_styles)]
-                marker_val = markers_list[marker_idx % len(markers_list)] if markers else None
+                # marker_val = markers_list[marker_idx % len(markers_list)] if markers else None
+                marker_val = 'o' if one_marker else (markers_list[marker_idx % len(markers_list)] if markers else None)
                 if markers:
                     marker_idx += 1
-                label = f'Test {test}, s = {s_value}'
+                label = f'Test {test}, s = {s_value}' if len(test_numbers) > 1 else f's = {s_value}'
                 plt.plot(sub_grp['T'], sub_grp[metric], linestyle=style, label=label,
                          color='black', marker=marker_val)
 
@@ -126,7 +141,7 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
             test_line_style = line_styles[i % len(line_styles)]
             for j, (s_value, sub_grp) in enumerate(grp.groupby('s')):
                 marker_val = markers_list[j % len(markers_list)] if markers else None
-                label = f'Test {test}, s = {s_value}'
+                label = f'{test_names[test]}, s = {s_value}' if len(test_numbers) > 1 else f's = {s_value}'
                 plt.plot(sub_grp['T'], sub_grp[metric], linestyle=test_line_style, label=label,
                          color=test_color, marker=marker_val)
                 
@@ -138,9 +153,14 @@ def plot_results(test_numbers, dataset, metric, export_csv, plot_mode='color', m
     else:
         metric_display = metric
 
+    if len(test_numbers) > 1:
+        title_str = f"{dataset_names.get(dataset, dataset)} - {metric_display}=f(T,s). Comparison across tests: {' and '.join(test_names[t] for t in test_numbers)}."
+    else:
+        title_str = f"{test_names[test_numbers[0]]} - {metric_display}=f(T,s). As a function of T, for different values of s."
+        
     plt.xlabel('T')
     plt.ylabel(metric_display)
-    plt.title(f"{dataset_names.get(dataset, dataset)} - {metric_display}=f(T,s). Comparison across tests {', '.join(map(str, test_numbers))}.")
+    plt.title(title_str)
     plt.legend()
     plt.grid()
     
@@ -168,6 +188,9 @@ def main():
                         help="Add markers to the plot lines (each line gets a distinct marker)")
     parser.add_argument("--save_image", "-si", type=str,
                         help="Save image to file instead of showing it (e.g., image_file.png)")
+    parser.add_argument("--one_marker", action='store_true',
+                    help="Use a single marker type for all lines (default: 'o')")
+
     
     args = parser.parse_args()
     plot_results(args.tests, args.dataset, METRICS[args.metric],

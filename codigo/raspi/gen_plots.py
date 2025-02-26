@@ -15,12 +15,20 @@ os.makedirs(output_dir, exist_ok=True)
 # - Test 4 y 5 con elec y lgr.
 # - Test 4 y 6 con elec y lgr.
 combinations = [
-    {"tests": [1, 4], "datasets": ["lgr"]},
-    {"tests": [1, 5], "datasets": ["elec", "lgr"]},
-    {"tests": [1, 6], "datasets": ["elec", "lgr"]},
+    # {"tests": [1, 4], "datasets": ["lgr"]},
+    # {"tests": [1, 5], "datasets": ["elec", "lgr"]},
+    # {"tests": [1, 6], "datasets": ["elec", "lgr"]},
     {"tests": [4, 5], "datasets": ["elec", "lgr"]},
     {"tests": [4, 6], "datasets": ["elec", "lgr"]},
 ]
+
+# Nuevas combinaciones individuales con `elec` y `lgr`
+# combinations = [
+#     {"tests": [1], "datasets": ["elec", "lgr"]},
+#     {"tests": [2], "datasets": ["elec", "lgr"]},
+#     {"tests": [3], "datasets": ["elec", "lgr"]},
+#     {"tests": [4], "datasets": ["elec", "lgr"]},
+# ]
 
 # Métricas a utilizar
 metrics = ["f1", "bandwidth", "protos"]
@@ -28,6 +36,11 @@ metrics = ["f1", "bandwidth", "protos"]
 # Función para definir el nombre de la métrica en el fichero (para "protos" usamos "trained_protos")
 def file_metric_name(metric):
     return "trained_protos" if metric == "protos" else metric
+
+# Modos disponibles para cuando se comparan gráficas y para cuando se usa una solo
+modo1 = "comp"
+modo2 = "color"
+modo = modo1
 
 # Recorrer las combinaciones y llamar al script para cada una
 for combo in combinations:
@@ -39,17 +52,23 @@ for combo in combinations:
             image_file = f"{file_metric_name(metric)}_tests{tests_str}_{dataset}.png"
             image_path = os.path.join(output_dir, image_file)
             
-            # Construir el comando:
-            #   -t <tests>, -d <dataset>, -m <metric>,
-            #   --plot_mode test_marker --markers --save_image <image_path>
+            # Construir el comando según el modo
             cmd = ["python3", script_name,
                    "-t"] + [str(t) for t in tests] + [
                    "-d", dataset,
                    "-m", metric,
-                   "--plot_mode", "test_marker",
-                   "--markers",
-                   "--save_image", image_path
+                   "--plot_mode", "test_marker" if modo == "comp" else "color",
+                   "--markers"
             ]
             
+            # Si el modo es "color", agregar "--one_marker"
+            if modo == "color":
+                cmd.append("--one_marker")
+            
+            # Agregar la opción de guardar imagen
+            cmd.extend(["--save_image", image_path])
+
+            # Ejecutar el comando
             print("Ejecutando comando:", " ".join(cmd))
             subprocess.run(cmd)
+
