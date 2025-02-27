@@ -14,21 +14,21 @@ os.makedirs(output_dir, exist_ok=True)
 # - Test 1 y 6 con elec y lgr.
 # - Test 4 y 5 con elec y lgr.
 # - Test 4 y 6 con elec y lgr.
-combinations = [
-    # {"tests": [1, 4], "datasets": ["lgr"]},
-    # {"tests": [1, 5], "datasets": ["elec", "lgr"]},
-    # {"tests": [1, 6], "datasets": ["elec", "lgr"]},
-    {"tests": [4, 5], "datasets": ["elec", "lgr"]},
-    {"tests": [4, 6], "datasets": ["elec", "lgr"]},
-]
+# combinations = [
+#     {"tests": [1, 4], "datasets": ["lgr"]},
+#     {"tests": [1, 5], "datasets": ["elec", "lgr"]},
+#     {"tests": [1, 6], "datasets": ["elec", "lgr"]},
+#     {"tests": [4, 5], "datasets": ["elec", "lgr"]},
+#     {"tests": [4, 6], "datasets": ["elec", "lgr"]},
+# ]
 
 # Nuevas combinaciones individuales con `elec` y `lgr`
-# combinations = [
-#     {"tests": [1], "datasets": ["elec", "lgr"]},
-#     {"tests": [2], "datasets": ["elec", "lgr"]},
-#     {"tests": [3], "datasets": ["elec", "lgr"]},
-#     {"tests": [4], "datasets": ["elec", "lgr"]},
-# ]
+combinations = [
+    {"tests": [1], "datasets": ["elec", "lgr"]},
+    {"tests": [2], "datasets": ["elec", "lgr"]},
+    {"tests": [3], "datasets": ["elec", "lgr"]},
+    {"tests": [4], "datasets": ["elec", "lgr"]},
+]
 
 # Métricas a utilizar
 metrics = ["f1", "bandwidth", "protos"]
@@ -40,7 +40,7 @@ def file_metric_name(metric):
 # Modos disponibles para cuando se comparan gráficas y para cuando se usa una solo
 modo1 = "comp"
 modo2 = "color"
-modo = modo1
+modo = modo2
 
 # Recorrer las combinaciones y llamar al script para cada una
 for combo in combinations:
