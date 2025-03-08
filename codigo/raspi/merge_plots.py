@@ -31,46 +31,45 @@ asignacion = {}
 for i, combo in enumerate(combinations):
     tests = combo["tests"]
     for j, dataset in enumerate(datasets):  # Iterar sobre los datasets inferidos
-        if dataset in combo["datasets"]:  # Solo asignar si el dataset está en la combinación
+        if dataset in combo["datasets"]:
             tests_str = "-".join(str(t) for t in tests)
             filename = f"{metric}_tests{tests_str}_{dataset}.png"
             asignacion[(i + 1, j + 1)] = filename  # Índices 1-based
 
 # Factores de escala para ajustar dinámicamente el tamaño de los subplots
-base_width = 4   
+base_width = 6  
 base_height = 3  
 
-# Calcular el tamaño de la figura dinámicamente
-fig_width = max(ncols * base_width * 0.8, 6)
-fig_height = max(nrows * base_height * 0.8, 4)
+# Calcular el tamaño de la figura
+fig_width = max(ncols * base_width, 6)
+fig_width *= 1.5
+fig_height = max(nrows * base_height, 4)
 
-# Crear la figura y los subplots con `constrained_layout=True`
-fig, axes = plt.subplots(nrows, ncols, figsize=(fig_width, fig_height), constrained_layout=True)
-
-# Asegurar que `axes` sea un array bidimensional
+# Crear la figura y los subplots
+fig, axes = plt.subplots(nrows, ncols, figsize=(fig_width, fig_height))
 if nrows == 1 or ncols == 1:
-    axes = axes.flatten()
+    axes = axes.reshape(nrows, ncols)
 
-# Añadir títulos a las columnas con más espacio para evitar que se corten
+# Añadir títulos a las columnas
 for col in range(ncols):
-    axes[0, col].set_title(column_titles[col], fontsize=12, fontweight="bold", pad=30)  # Aumentamos `pad`
+    axes[0, col].set_title(column_titles[col], fontsize=12, fontweight="bold", pad=20)  # Reducido el pad
 
-# Ajustar espacio en la parte superior para que los títulos no se corten
-plt.subplots_adjust(top=0.88)  # Ajusta este valor si sigue cortándose
+# Ajustar espacios entre subplots: eliminar espacios entre ellos
+plt.subplots_adjust(wspace=0, hspace=0, top=0.85)
 
 # Colocar cada imagen en la posición asignada
 for (fila, col), archivo in asignacion.items():
-    ax = axes[fila - 1, col - 1] if isinstance(axes, list) else axes[fila - 1, col - 1]
-    
-    # Verificar si el archivo existe antes de cargarlo
+    ax = axes[fila - 1, col - 1]
     image_path = os.path.join(directorio_imagenes, archivo)
     if os.path.exists(image_path):
         img = mpimg.imread(image_path)
-        ax.imshow(img)
-    
-    # No quitar los títulos ni ejes para mantener la apariencia original
+        ax.imshow(img, aspect="auto")  # Permitir ajuste automático de aspecto
     ax.set_xticks([])
     ax.set_yticks([])
+
+    # Quitar el borde (spines) alrededor del subplot
+    for spine in ax.spines.values():
+        spine.set_visible(False)
 
 # Ocultar subplots vacíos
 for i in range(nrows):
